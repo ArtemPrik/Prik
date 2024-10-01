@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>test.prik</url>
+            <bookmark id="1">
+                <name/>
+                <line>0</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/prik/prik/src/prik/parser/Lexer.java</file>
+            <file>file:/D:/prik/prik/src/prik/lib/ValueUtils.java</file>
+            <file>file:/D:/prik/prik/programs/test.prik</file>
+            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/ui/Canvas.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/Parser.java</file>
+            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/ui/Forms.java</file>
+        </group>
+    </open-files>
+</project-private>

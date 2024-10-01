@@ -1,0 +1,23 @@
+use "std"
+use "system"
+
+var f_num = double(readln())
+var oper = readln()
+var s_num = double(readln())
+
+var result
+
+if oper == "+" {
+    result = f_num + s_num
+} else if oper == "-" {
+    result = f_num - s_num
+} else if oper == "*" {
+    result = f_num * s_num
+} else if oper == "/" {
+    result = f_num / s_num
+} else {
+    error("Uknown operation : " + oper)
+    exit(0)
+}
+
+println "\n" + f_num + " " + oper + " " + s_num + " = " + result

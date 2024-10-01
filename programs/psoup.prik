@@ -1,0 +1,9 @@
+use "psoup"
+
+parser("https://www.google.ru/")
+
+var title = select("title")
+var text = select("h3")
+
+println(title)
+print(text)

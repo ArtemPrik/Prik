@@ -1,0 +1,8 @@
+use std // example to use modules
+
+func()
+def func() println "function\n"
+
+a = 2 + 3 * 4 
+// println a
+echo(a) // example to use methods from modules

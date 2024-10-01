@@ -1,0 +1,64 @@
+use "math"
+use "std"
+use "console"
+
+var word1 = 2 + 2
+var word2 = PI + word1
+var str = "Hello world"
+
+println str
+println "word1 = " + word1
+println "word2 = " + word2
+println "1" == "1"
+println "1" == "abc"
+if (1 <= 2) print "true\n"
+else println "false\n"
+if (40 < 50 || 50 > 60) {
+    print "true1\n"
+    print "true2\n"
+    var i = 0
+    print "do while\n"
+    do {
+       print "i = " + i + "\n"
+       i = i + 1
+    } while (i < 10)
+    var i = 0
+    print "while\n"
+    while (i < 10) {
+        print "i = " + i + "\n"
+        i = i + 1
+    }
+    print "for\n"
+    for (i = 0, i < 10, i = i + 1) {
+        print "i = " + i + "\n"
+    }
+}
+else println "false"
+
+println "sin(PI) = " + sin(PI)
+echo(1,2,3,"4","5","text",sin(0),cos(0),sin(PI),cos(PI),PI)
+
+def test(a,b) {
+    echo("a = " + a, "b = " + b)
+}
+test(1,"text")
+
+echo(summary(10,15))
+
+var arr = [1, "text", summary(10, 15), [], ["text", [90, [7 + 6, [50]]]]]
+println arr
+arr[0] = arr[0] + 1000 + arr[2]
+println arr
+arr[4][1] = "text"
+println arr[4][1]
+var friendsArr = ["Artem", "Tynki", "Matvey"]
+echo("Friends = " + friendsArr)
+print("\n\n")
+
+var array = newArray(2, 2)
+echo(array)
+//readln()
+
+var word3 = null
+
+println word3

@@ -1,0 +1,32 @@
+var i = 0
+var j = 0
+
+def fir() {
+    for (i = 0, i < 12, i = i + 2) {
+        var spaces = ""
+        for (j = 0, j < (11 - i) / 2, j = j + 1) {
+            spaces = spaces + " "
+        }
+        var stars = "^"
+        for (j = 0, j < i, j = j + 1) {
+            stars = stars + "^"
+        }
+        println spaces + stars
+    }
+    println "\n\t make with \"prik\""
+}
+
+def fir_new(stars) {
+    for (i = 0, i < 12, i = i + 2) {
+        var spaces = ""
+        for (j = 0, j < (11 - i) / 2, j = j + 1) {
+            spaces = spaces + " "
+        }
+        var stars2 = stars
+        for (j = 0, j < i, j = j + 1) {
+            stars2 = stars2 + stars
+        }
+        println spaces + stars2
+    }
+    println "\n\t make with \"prik\""
+}

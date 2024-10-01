@@ -1,0 +1,58 @@
+word1 = 2 + 2
+word2 = PI + word1
+str = "Hello world\n"
+print str
+print "word1 = " + word1 + "\n"
+print "word2 = " + word2 + "\n"
+print "1" == "1" 
+print "\n"
+print "1" == "abc"
+print "\n"
+if (1 <= 2) print "true\n"
+else print "false\n"
+print "\n"
+if (40 < 50 || 50 > 60) {
+    print "true1\n"
+    print "true2\n"
+    i = 0
+    print "do while\n"
+    do {
+       print "i = " + i + "\n"
+       i = i + 1
+    } while (i < 10)
+    i = 0
+    print "while\n"
+    while (i < 10) {
+        print "i = " + i + "\n"
+        i = i + 1
+    }
+    print "for\n"
+    for i = 0, i < 10, i = i + 1 {
+        print "i = " + i + "\n"
+    }
+}
+else print "false"
+
+print "sin(PI) = " + sin(PI) + "\n"
+echo(1,2,3,"4","5","text",sin(0),cos(0),sin(PI),cos(PI),PI)
+
+def name(a,b) {
+    echo("a = " + a, "b = " + b)
+}
+name(1,"text")
+
+method sum(a,b) return a + b
+echo(sum(10,15))
+
+arr = [1, "text", sum(10, 15), [], ["text", [90, [7 + 6, [50]]]]]
+print arr + "\n"
+arr[0] = arr[0] + 1000 + arr[2]
+print arr + "\n"
+arr[4][1] = "text"
+print arr[4][1] + "\n"
+friendsArr = ["Artem", "Tynki", "Matvey"]
+echo("Friends = " + friendsArr)
+print("\n\n")
+
+array = newArray(2, 2)
+echo(array)

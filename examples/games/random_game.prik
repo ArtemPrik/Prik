@@ -1,0 +1,14 @@
+use "std"
+
+var num = rand(0, 100)
+
+println(num)
+
+print "Number: "
+var user_num = readln()
+
+if num == user_num {
+    println("VERNO")
+} else {
+    println("NEVERNO")
+}

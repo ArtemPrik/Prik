@@ -1,0 +1,5 @@
+use "console"
+
+print "Welcome!\nWhat`s your name?"
+name = readln()
+println "Hello," + name
