@@ -32,6 +32,7 @@ public enum TokenType {
     
     USE,
     USING,
+    NAMESPACE,
     
     PLUS,
     MINUS, 

@@ -20,10 +20,10 @@ public final class AssignmentExpression implements Expression {
     @Override
     public Value eval() {
         final Value result = expression.eval();
-        if (Variables.isExists(variable)) {
-            Variables.set(variable, result);
-        } else throw new VariableDoesNotExistsException(variable);
-//        Variables.set(variable, result);
+//        if (Variables.isExists(variable)) {
+//            Variables.set(variable, result);
+//        } else throw new VariableDoesNotExistsException(variable);
+        Variables.set(variable, result);
         return result;
     }
     

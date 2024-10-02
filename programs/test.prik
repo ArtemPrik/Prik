@@ -1,5 +1,5 @@
-var a = 4
+i = 0
 
-if (a == 4) {
-    println a
+for i = 0, i < 10, i = i + 1 {
+    println i
 }

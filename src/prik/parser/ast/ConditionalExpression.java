@@ -76,8 +76,9 @@ public final class ConditionalExpression implements Expression {
             default:
                 throw new OperationNotSupportedException(operation);
         }
-        return StringValue.fromBoolean(result);
+//        return StringValue.fromBoolean(result);
 //        return NumberValue.fromBoolean(result);
+        return new BooleanValue(result);
     }
     
     @Override

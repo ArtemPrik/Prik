@@ -19,7 +19,7 @@ import prik.util.ModuleUtils;
 public final class String implements Module {
     @Override
     public void init() {
-        MapValue map = new MapValue(0);
+        MapValue map = new MapValue(16);
         map.set("getBytes", (Value... args) -> {
             Arguments.checkOrOr(1, 2, args.length);
             final java.lang.String charset = (args.length == 2) ? args[1].asString() : "UTF-8";
