@@ -124,11 +124,6 @@ public abstract class AbstractVisitor implements Visitor {
     }
 
     @Override
-    public void visit(FunctionStatement s) {
-        s.function.accept(this);
-    }
-
-    @Override
     public void visit(FunctionalExpression s) {
         for (Expression argument : s.arguments) {
             argument.accept(this);

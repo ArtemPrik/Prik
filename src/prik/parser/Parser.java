@@ -101,7 +101,7 @@ public class Parser {
         }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
-            return new FunctionStatement(function());
+            return new ExprStatement(function());
         }
         
         return assignmentStatement();
@@ -238,12 +238,13 @@ public class Parser {
     
     private FunctionDefineStatement functionDefine() {
         final String name = consume(TokenType.WORD).getText();
-        consume(TokenType.LPAREN);
-        final List<String> argNames = new ArrayList<>();
-        while (!match(TokenType.RPAREN)) {
-            argNames.add(consume(TokenType.WORD).getText());
-            match(TokenType.COMMA);
-        }
+//        consume(TokenType.LPAREN);
+//        final List<String> argNames = new ArrayList<>();
+//        while (!match(TokenType.RPAREN)) {
+//            argNames.add(consume(TokenType.WORD).getText());
+//            match(TokenType.COMMA);
+//        }
+        final Arguments argNames = arguments();
         final Statement body = statementBody();
         return new FunctionDefineStatement(name, argNames, body);
     }
@@ -277,9 +278,10 @@ public class Parser {
     }
     
     private FunctionalExpression function() {
-        final String name = consume(TokenType.WORD).getText();
+        String name = consume(TokenType.WORD).getText();
         consume(TokenType.LPAREN);
-        final FunctionalExpression function = new FunctionalExpression(name);
+        final FunctionalExpression function = new FunctionalExpression(
+                new ValueExpression(name));
         while (!match(TokenType.RPAREN)) {
             function.addArgument(expression());
             match(TokenType.COMMA);
@@ -584,13 +586,13 @@ public class Parser {
         }
         if (match(TokenType.DEF)) {
             // anonymous function def(args) ...
-//            final Arguments arguments = arguments();
-            consume(TokenType.LPAREN);
-            final List<String> arguments = new ArrayList();
-            while (!match(TokenType.RPAREN)) {
-                arguments.add(consume(TokenType.WORD).getText());
-                match(TokenType.COMMA);
-            }
+            final Arguments arguments = arguments();
+//            consume(TokenType.LPAREN);
+//            final List<String> arguments = new ArrayList();
+//            while (!match(TokenType.RPAREN)) {
+//                arguments.add(consume(TokenType.WORD).getText());
+//                match(TokenType.COMMA);
+//            }
             final Statement statement = statementBody();
             return new ValueExpression(new UserDefinedFunction(arguments, statement));
         }

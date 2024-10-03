@@ -10,10 +10,11 @@ import prik.lib.UserDefinedFunction;
  */
 public final class FunctionDefineStatement implements Statement {
     public final String name;
-    public final List<String> arguments;
+//    public final List<String> arguments;
+    public final Arguments arguments;
     public final Statement body;
     
-    public FunctionDefineStatement(String name, List<String> argNames, Statement body) {
+    public FunctionDefineStatement(String name, Arguments argNames, Statement body) {
         this.name = name;
         this.arguments = argNames;
         this.body = body;

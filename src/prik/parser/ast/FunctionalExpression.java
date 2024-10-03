@@ -10,15 +10,15 @@ import prik.lib.*;
  * @author Professional
  */
 public final class FunctionalExpression implements Expression {
-    public final String name;
+    public final Expression name;
     public final List<Expression> arguments;
     
-    public FunctionalExpression(String name) {
+    public FunctionalExpression(Expression name) {
         this.name = name;
         arguments = new ArrayList<>();
     }
     
-    public FunctionalExpression(String name, List<Expression> arguments) {
+    public FunctionalExpression(Expression name, List<Expression> arguments) {
         this.name = name;
         this.arguments = arguments;
     }
@@ -39,7 +39,7 @@ public final class FunctionalExpression implements Expression {
         final Function function = getFunction(name);
         if (function instanceof UserDefinedFunction) {
             final UserDefinedFunction userFunction = (UserDefinedFunction) function;
-            if (size != userFunction.getArgsCount()) throw new RuntimeException("Args count mismatch");
+//            if (size != userFunction.getArgsCount()) throw new RuntimeException("Args count mismatch");
             
             Variables.push();
             for (int i = 0; i < size; i++) {
@@ -50,6 +50,15 @@ public final class FunctionalExpression implements Expression {
             return result;
         }
         return function.execute(values);
+    }
+    
+    private Function getFunction(Expression key) {
+        if (Functions.isExists(key.eval().asString())) return Functions.get(key.eval().asString());
+        if (Variables.isExists(key.eval().asString())) {
+            final Value variable = Variables.get(key.eval().asString());
+            if (variable.type() == Types.FUNCTION) return ((FunctionValue)variable).getValue();
+        }
+        throw new UnknownFunctionException(key.eval().asString());
     }
     
     private Function getFunction(String key) {
