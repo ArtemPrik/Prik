@@ -1,5 +1,1 @@
-def name() {
-    println "Hello World"
-}
-
-name()
+echo("Helo")
