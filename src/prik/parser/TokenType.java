@@ -29,6 +29,7 @@ public enum TokenType {
     
     NULL,
     REPEAT,
+    ASSERT,
     
     USE,
     USING,

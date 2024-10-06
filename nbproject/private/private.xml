@@ -12,24 +12,28 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/BinaryExpression.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Lexer.java</file>
             <file>file:/D:/prik/prik/old/modules/std.java</file>
             <file>file:/D:/prik/prik/programs/test.prik</file>
             <file>file:/D:/prik/prik/src/prik/parser/ast/UseStatement.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/ui/Canvas.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/ast/AssignmentExpression.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/ResultVisitor.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/lang/Math.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/lang/System.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/Functions.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/ui/Forms.java</file>
+            <file>file:/D:/prik/prik/src/prik/lib/UserDefinedFunction.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/ForStatement.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/ast/ContainerAccessExpression.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/ValueUtils.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/ast/ArrayAccessExpression.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/Node.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/lang/Boolean.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/ast/FunctionalExpression.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/ast/RepeatStatement.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/Statement.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Parser.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/util/Random.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/TokenType.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/visitors/AbstractVisitor.java</file>
         </group>
     </open-files>
 </project-private>

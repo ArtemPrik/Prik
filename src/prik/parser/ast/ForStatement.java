@@ -7,7 +7,7 @@ import java.util.Iterator;
  *
  * @author Professional
  */
-public final class ForStatement extends InterruptableNode implements Statement, Iterable {
+public final class ForStatement extends InterruptableNode implements Statement {
     public final Statement initialization;
     public final Expression termination;
     public final Statement increment;
@@ -35,13 +35,12 @@ public final class ForStatement extends InterruptableNode implements Statement, 
     }
     
     @Override
-    public Iterator iterator() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-    
-    @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
+    }
+
+    public <R, T> R accept(ResultVisitor<R, T> visitor, T input) {
+        return visitor.visit(this, input);
     }
 
     @Override

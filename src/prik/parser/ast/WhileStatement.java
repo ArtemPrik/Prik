@@ -6,7 +6,7 @@ import java.util.Iterator;
  *
  * @author Professional
  */
-public final class WhileStatement implements Statement, Iterable {
+public final class WhileStatement implements Statement {
     public final Expression condition;
     public final Statement statement;
 
@@ -35,21 +35,6 @@ public final class WhileStatement implements Statement, Iterable {
     
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
-    }
-    
-    @Override
-    public Iterator iterator() {
-        return new Iterator() {
-            @Override
-            public boolean hasNext() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-
-            @Override
-            public Object next() {
-                throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-            }
-        };
     }
 
     @Override

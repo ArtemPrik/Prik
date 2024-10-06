@@ -1,1 +1,9 @@
-echo("Helo")
+//arr = [def(x, y) = x + y]
+
+//println arr[0](2+2)
+
+assert 10 == 10
+
+a = 1
+b = 2
+assert a == b

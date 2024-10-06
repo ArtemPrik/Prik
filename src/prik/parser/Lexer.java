@@ -58,6 +58,19 @@ public final class Lexer {
         OPERATORS.put("++", TokenType.PLUSPLUS);
         OPERATORS.put("--", TokenType.MINUSMINUS);
         
+        OPERATORS.put("+=", TokenType.PLUSEQ);
+        OPERATORS.put("-=", TokenType.MINUSEQ);
+        OPERATORS.put("*=", TokenType.STAREQ);
+        OPERATORS.put("/=", TokenType.SLASHEQ);
+        OPERATORS.put("%=", TokenType.PERCENTEQ);
+        OPERATORS.put("&=", TokenType.AMPEQ);
+        OPERATORS.put("^=", TokenType.CARETEQ);
+        OPERATORS.put("|=", TokenType.BAREQ);
+        OPERATORS.put("::=", TokenType.COLONCOLONEQ);
+        OPERATORS.put("<<=", TokenType.LTLTEQ);
+        OPERATORS.put(">>=", TokenType.GTGTEQ);
+        OPERATORS.put(">>>=", TokenType.GTGTGTEQ);
+        
         OPERATORS.put("::", TokenType.COLONCOLON);
         OPERATORS.put("->", TokenType.ARROW);
         
@@ -93,9 +106,11 @@ public final class Lexer {
         KEYWORDS.put("def", TokenType.DEF);
         KEYWORDS.put("return", TokenType.RETURN);
         KEYWORDS.put("null", TokenType.NULL);
-        KEYWORDS.put("repeat", TokenType.REPEAT);
         KEYWORDS.put("use", TokenType.USE);
         KEYWORDS.put("using", TokenType.USING);
+        
+        KEYWORDS.put("repeat", TokenType.REPEAT);
+        KEYWORDS.put("assert", TokenType.ASSERT);
     }
     
     public static Set<String> getKeywords() {
