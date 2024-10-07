@@ -14,7 +14,9 @@
         <group>
             <file>file:/D:/prik/prik/src/prik/parser/Lexer.java</file>
             <file>file:/D:/prik/prik/programs/test.prik</file>
+            <file>file:/D:/prik/prik/src/prik/Interpreter.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Parser.java</file>
+            <file>file:/D:/prik/prik/src/prik/Executor.java</file>
         </group>
     </open-files>
 </project-private>
