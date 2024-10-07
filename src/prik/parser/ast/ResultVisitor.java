@@ -8,7 +8,6 @@ package prik.parser.ast;
  */
 public interface ResultVisitor<R, T> {
     R visit(ArrayExpression s, T t);
-    R visit(AssertReturnStatement s, T t);
     R visit(AssertStatement s, T t);
     R visit(AssignmentExpression s, T t);
 //    R visit(AssignmentStatement s, T t);

@@ -11,7 +11,6 @@ public interface Visitor {
     void visit(ArrayExpression s);
     void visit(AssignmentStatement s);
     void visit(AssertStatement s);
-    void visit(AssertReturnStatement s);
     void visit(AssignmentExpression s);
     void visit(BinaryExpression s);
     void visit(BlockStatement s);

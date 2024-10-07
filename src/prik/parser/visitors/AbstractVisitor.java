@@ -36,12 +36,6 @@ public abstract class AbstractVisitor implements Visitor {
     }
 
     @Override
-    public void visit(AssertReturnStatement s) {
-        s.condition.accept(this);
-        s.expression.accept(this);
-    }
-
-    @Override
     public void visit(AssertStatement s) {
         s.condition.accept(this);
     }

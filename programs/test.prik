@@ -2,8 +2,6 @@
 
 //println arr[0](2+2)
 
-assert 10 == 10
+def name(a, b) assertReturn a == b, a + b
 
-a = 1
-b = 2
-assert a == b
+println name(10, 10)
