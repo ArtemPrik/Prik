@@ -1,7 +1,4 @@
-//arr = [def(x, y) = x + y]
+use "prik.util.Arrays"
 
-//println arr[0](2+2)
-
-def name(a, b) assertReturn a == b, a + b
-
-println name(10, 10)
+arr = newArray(30000)
+println arr

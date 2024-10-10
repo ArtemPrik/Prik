@@ -7,7 +7,7 @@ import prik.lib.*;
  *
  * @author Professional
  */
-public final class UnaryExpression implements Expression {
+public final class UnaryExpression implements Expression, Statement {
     public static enum Operator {
         NEGATE("-"),
         
@@ -32,6 +32,11 @@ public final class UnaryExpression implements Expression {
     public UnaryExpression(Operator operation, Expression expr1) {
         this.operation = operation;
         this.expr1 = expr1;
+    }
+
+    @Override
+    public void execute() {
+        eval();
     }
     
     @Override

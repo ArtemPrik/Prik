@@ -8,7 +8,7 @@ import prik.lib.Variables;
  *
  * @author Professional
  */
-public final class AssignmentExpression implements Expression {
+public final class AssignmentExpression implements Expression, Statement {
 //    public final String variable;
     public final Accessible target;
     public final BinaryExpression.Operator operation;
@@ -18,6 +18,11 @@ public final class AssignmentExpression implements Expression {
         this.operation = operation;
         this.target = target;
         this.expression = expr;
+    }
+
+    @Override
+    public void execute() {
+        eval();
     }
     
     @Override

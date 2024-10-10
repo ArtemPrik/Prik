@@ -3,6 +3,7 @@ package prik.lib.modules.prik.util;
 import prik.lib.Arguments;
 import prik.lib.BooleanValue;
 import prik.lib.Function;
+import prik.lib.Functions;
 import prik.lib.MapValue;
 import prik.lib.NumberValue;
 import prik.lib.Value;
@@ -39,5 +40,24 @@ public final class Random implements Module {
         });
         
         Variables.define("Random", map);
+        
+        Functions.set("rand", new Function() {
+            private static final java.util.Random RND = new java.util.Random();
+            
+            @Override
+            public Value execute(Value... args) {
+                if (args.length == 0) return new NumberValue(RND.nextDouble());
+            
+                int from = 0;
+                int to = 100;
+                if (args.length == 1) {
+                    to = (int) args[0].asNumber();
+                } else if (args.length == 2) {
+                    from = (int) args[0].asNumber();
+                    to = (int) args[1].asNumber();
+                }
+                return new NumberValue(RND.nextInt(to - from) + from);
+            }
+        });
     }
 }

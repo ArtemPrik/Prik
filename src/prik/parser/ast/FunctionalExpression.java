@@ -9,7 +9,7 @@ import prik.lib.*;
  *
  * @author Professional
  */
-public final class FunctionalExpression implements Expression {
+public final class FunctionalExpression implements Expression, Statement {
     public final Expression name;
     public final List<Expression> arguments;
     
@@ -25,6 +25,11 @@ public final class FunctionalExpression implements Expression {
     
     public void addArgument(Expression arg) {
         arguments.add(arg);
+    }
+
+    @Override
+    public void execute() {
+        eval();
     }
     
     @Override
@@ -59,15 +64,6 @@ public final class FunctionalExpression implements Expression {
             if (variable.type() == Types.FUNCTION) return ((FunctionValue)variable).getValue();
         }
         throw new UnknownFunctionException(key.eval().asString());
-    }
-    
-    private Function getFunction(String key) {
-        if (Functions.isExists(key)) return Functions.get(key);
-        if (Variables.isExists(key)) {
-            final Value variable = Variables.get(key);
-            if (variable.type() == Types.FUNCTION) return ((FunctionValue)variable).getValue();
-        }
-        throw new UnknownFunctionException(key);
     }
     
     @Override

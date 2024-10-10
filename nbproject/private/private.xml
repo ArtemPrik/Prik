@@ -12,11 +12,15 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/lang/Thread.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Lexer.java</file>
+            <file>file:/D:/prik/prik/old/modules/std.java</file>
             <file>file:/D:/prik/prik/programs/test.prik</file>
-            <file>file:/D:/prik/prik/src/prik/Interpreter.java</file>
+            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/util/Arrays.java</file>
+            <file>file:/D:/prik/prik/examples/games/agar.prik</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/RepeatStatement.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Parser.java</file>
-            <file>file:/D:/prik/prik/src/prik/Executor.java</file>
+            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/util/Random.java</file>
         </group>
     </open-files>
 </project-private>

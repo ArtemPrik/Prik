@@ -652,6 +652,16 @@ public class Parser {
         throw new ParseException("Unknown expression: " + current);
     }
     
+//    private Expression qualifiedName() {
+//        final Token current = get(0);
+//        if (!match(TokenType.WORD)) return null;
+//
+//        final List<Expression> indices = variableSuffix();
+//        if (indices == null || indices.isEmpty()) {
+//            return new VariableExpression(current.getText());
+//        }
+//        return new ContainerAccessExpression(current.getText(), indices);
+//    }
     private Expression qualifiedName() {
         final Token current = get(0);
         if (!match(TokenType.WORD)) return null;

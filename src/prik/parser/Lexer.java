@@ -149,6 +149,7 @@ public final class Lexer {
             if (Character.isDigit(current)) tokenizeNumber();
             else if (Character.isLetter(current)) tokenizeWord();
             else if (current == '`') tokenizeExtendedWord();
+            else if (current == '\'') tokenizeMiniText();
             else if (current == '"') tokenizeText();
 //            else if (current == '"' || current == '\'') tokenizeText();
             else if (current == '#') {
@@ -303,6 +304,56 @@ public final class Lexer {
                 continue;
             }
             if (current == '"') break;
+//            if (current == '"' || current == '\'') break;
+            buffer.append(current);
+            current = next();
+        }
+        next(); // skip closing "
+        
+        addToken(TokenType.TEXT, buffer.toString());
+    }
+    
+    private void tokenizeMiniText() {
+        next();// skip "
+        final StringBuilder buffer = new StringBuilder();
+        char current = peek(0);
+        while (true) {
+            if (current == '\0') throw error("Reached end of file while parsing text string.");
+            if (current == '\\') {
+                current = next();
+                switch (current) {
+                    case '\'': current = next(); buffer.append('\''); continue;
+                    case 'n': current = next(); buffer.append('\n'); continue;
+                    case 't': current = next(); buffer.append('\t'); continue;
+                    case 'b': current = next(); buffer.append('\b'); continue;
+                    case 'f': current = next(); buffer.append('\f'); continue;
+                    case 'r': current = next(); buffer.append('\r'); continue;
+                    case 's': current = next(); buffer.append('\s'); continue;
+                    case 'u': // http://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.3
+                        int rollbackPosition = pos;
+                        while (current == 'u') current = next();
+                        int escapedValue = 0;
+                        for (int i = 12; i >= 0 && escapedValue != -1; i -= 4) {
+                            if (isHexNumber(current)) {
+                                escapedValue |= (Character.digit(current, 16) << i);
+                            } else {
+                                escapedValue = -1;
+                            }
+                            current = next();
+                        }
+                        if (escapedValue >= 0) {
+                            buffer.append((char) escapedValue);
+                        } else {
+                            // rollback
+                            buffer.append("\\u");
+                            pos = rollbackPosition;
+                        }
+                        continue;
+                }
+                buffer.append('\\');
+                continue;
+            }
+            if (current == '\'') break;
 //            if (current == '"' || current == '\'') break;
             buffer.append(current);
             current = next();
