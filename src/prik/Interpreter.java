@@ -26,6 +26,7 @@ public final class Interpreter {
         program.accept(new AssignValidator());
         program.accept(new CodegenVisitor());
 //        program.accept(new VariablePrinter());
+        Optimizer.optimize(program, 2);
         program.execute();
         /*Functions.get("main").execute();*/
     }

@@ -34,7 +34,7 @@ public final class System implements Module {
             try {
                 java.lang.System.exit(args[0].asInt());
             } finally {
-                Thread.currentThread().interrupt();
+                java.lang.Thread.currentThread().interrupt();
             }
             return NumberValue.MINUS_ONE;
         });

@@ -16,11 +16,19 @@
             <file>file:/D:/prik/prik/src/prik/parser/Lexer.java</file>
             <file>file:/D:/prik/prik/old/modules/std.java</file>
             <file>file:/D:/prik/prik/programs/test.prik</file>
+            <file>file:/D:/prik/prik/src/prik/Interpreter.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/ResultVisitor.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/visitors/VariablePrinter.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/util/Arrays.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/Node.java</file>
             <file>file:/D:/prik/prik/examples/games/agar.prik</file>
+            <file>file:/D:/prik/prik/src/prik/parser/optimization/ConstantFolding.java</file>
+            <file>file:/D:/prik/prik/src/prik/Main.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/Optimizer.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/ast/RepeatStatement.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Parser.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/util/Random.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/visitors/AbstractVisitor.java</file>
         </group>
     </open-files>
 </project-private>

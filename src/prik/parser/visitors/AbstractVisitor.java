@@ -23,12 +23,6 @@ public abstract class AbstractVisitor implements Visitor {
     }
 
     @Override
-    public void visit(ArrayAssignmentStatement s) {
-        s.array.accept(this);
-        s.expression.accept(this);
-    }
-
-    @Override
     public void visit(ArrayExpression s) {
         for (Expression index : s.elements) {
             index.accept(this);
@@ -42,11 +36,6 @@ public abstract class AbstractVisitor implements Visitor {
 
     @Override
     public void visit(AssignmentExpression s) {
-        s.expression.accept(this);
-    }
-    
-    @Override
-    public void visit(AssignmentStatement s) {
         s.expression.accept(this);
     }
 

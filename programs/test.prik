@@ -1,4 +1,4 @@
-use "prik.util.Arrays"
+a =1
+b=0
 
-arr = newArray(30000)
-println arr
+if a >= b {}

@@ -20,13 +20,13 @@ public final class AssignValidator extends AbstractVisitor {
         } catch (Exception ex) {    }
     }
     
-    @Override
-    public void visit(AssignmentStatement s) {
-        super.visit(s);
-        if (Variables.isExists(s.variable)) {
-            throw new PrikException("CannotAssignValueToConstantError", "Cannot assign value to constant \"" + s.variable + "\"");
-        }
-    }
+//    @Override
+//    public void visit(AssignmentExpression s) {
+//        super.visit(s);
+//        if (Variables.isExists(s.target.get().asString())) {
+//            throw new PrikException("CannotAssignValueToConstantError", "Cannot assign value to constant \"" + s.target.get().asString() + "\"");
+//        }
+//    }
     
     @Override
     public void visit(DeclareVarStatement s) {

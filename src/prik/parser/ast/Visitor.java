@@ -7,9 +7,7 @@ package prik.parser.ast;
 public interface Visitor {
     void visit(ArrayAccessExpression s);
     void visit(ArrayAssignmentExpression s);
-    void visit(ArrayAssignmentStatement s);
     void visit(ArrayExpression s);
-    void visit(AssignmentStatement s);
     void visit(AssertStatement s);
     void visit(AssignmentExpression s);
     void visit(BinaryExpression s);

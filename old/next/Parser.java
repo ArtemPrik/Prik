@@ -331,17 +331,6 @@ public class Parser {
         return new ArrayExpression(elements);
     }
     
-    private ArrayAccessExpression element() {
-        final String variable = consume(TokenType.WORD).getText();
-        final List<Expression> indices = new ArrayList<>();
-        do {
-            consume(TokenType.LBRACKET);
-            indices.add(expression());
-            consume(TokenType.RBRACKET);
-        } while(lookMatch(0, TokenType.LBRACKET));
-        return new ArrayAccessExpression(variable, indices);
-    }
-    
     private Expression expression() {
 //        return ternary();
         return assignment();
@@ -607,7 +596,7 @@ public class Parser {
             return function();
         }
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
-            return element();
+//            return element();
         }
         if (lookMatch(0, TokenType.LBRACKET)) {
             return array();
@@ -651,6 +640,17 @@ public class Parser {
         
         throw new ParseException("Unknown expression: " + current);
     }
+    
+//    private Expression qualifiedName() {
+//        final Token current = get(0);
+//        if (!match(TokenType.WORD)) return null;
+//
+//        final List<Expression> indices = variableSuffix();
+//        if (indices == null || indices.isEmpty()) {
+//            return new VariableExpression(current.getText());
+//        }
+//        return new ContainerAccessExpression(current.getText(), indices);
+//    }
     private Expression qualifiedName() {
         final Token current = get(0);
         if (!match(TokenType.WORD)) return null;
