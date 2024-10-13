@@ -44,7 +44,6 @@ public final class ValueExpression implements Expression {
         visitor.visit(this);
     }
     
-    @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
     }

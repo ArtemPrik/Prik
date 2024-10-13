@@ -1,6 +1,6 @@
 package prik.parser.ast;
 
-import prik.exceptions.OperationNotSupportedException;
+import prik.exceptions.OperationIsNotSupportedException;
 import prik.lib.*;
 
 
@@ -85,7 +85,7 @@ public final class BinaryExpression implements Expression {
             case URSHIFT: result = (int)number1 >>> (int)number2; break;
             
             default:
-                throw new OperationNotSupportedException(operation);
+                throw new OperationIsNotSupportedException(operation);
         }
         return new NumberValue(result);
     }

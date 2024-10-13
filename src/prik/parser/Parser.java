@@ -120,6 +120,9 @@ public class Parser {
         if (match(TokenType.ASSERT)) {
             return new AssertStatement(expression());
         }
+        if (match(TokenType.READLN)) {
+            return new ReadlnStatement();
+        }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return new ExprStatement(function());

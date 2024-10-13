@@ -1,1 +1,3 @@
-println "text".upper
+//println "text".length
+
+readln

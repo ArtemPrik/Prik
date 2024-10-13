@@ -110,6 +110,7 @@ public final class Lexer {
         
         KEYWORDS.put("repeat", TokenType.REPEAT);
         KEYWORDS.put("assert", TokenType.ASSERT);
+        KEYWORDS.put("readln", TokenType.READLN);
     }
     
     public static Set<String> getKeywords() {

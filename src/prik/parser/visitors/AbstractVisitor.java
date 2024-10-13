@@ -139,6 +139,10 @@ public abstract class AbstractVisitor implements Visitor {
     }
 
     @Override
+    public void visit(ReadlnStatement s) {
+    }
+
+    @Override
     public void visit(RepeatStatement s) {
         s.condition.accept(this);
         s.body.accept(this);
@@ -163,7 +167,7 @@ public abstract class AbstractVisitor implements Visitor {
     
     @Override
     public void visit(UseStatement s) {
-//        if (s.expression != null) s.expression.accept(this);
+        if (s.expression != null) s.expression.accept(this);
     }
 
     @Override

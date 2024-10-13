@@ -1,6 +1,6 @@
 package prik.parser.ast;
 
-import prik.exceptions.OperationNotSupportedException;
+import prik.exceptions.OperationIsNotSupportedException;
 import prik.lib.*;
 
 /**
@@ -77,7 +77,7 @@ public final class UnaryExpression implements Expression, Statement {
             case COMPLEMENT: return new NumberValue(~(int)value.asNumber());
             case NOT: return new NumberValue(value.asNumber() != 0 ? 0 : 1);
             default:
-                throw new OperationNotSupportedException(operation.name);
+                throw new OperationIsNotSupportedException(operation.name);
         }
     }
     
@@ -86,7 +86,6 @@ public final class UnaryExpression implements Expression, Statement {
         visitor.visit(this);
     }
     
-    @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
     }

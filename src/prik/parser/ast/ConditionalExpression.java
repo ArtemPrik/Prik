@@ -1,6 +1,6 @@
 package prik.parser.ast;
 
-import prik.exceptions.OperationNotSupportedException;
+import prik.exceptions.OperationIsNotSupportedException;
 import prik.lib.*;
 
 
@@ -74,7 +74,7 @@ public final class ConditionalExpression implements Expression {
             case GTEQ: result = number1 >= number2; break;
             
             default:
-                throw new OperationNotSupportedException(operation);
+                throw new OperationIsNotSupportedException(operation);
         }
 //        return StringValue.fromBoolean(result);
 //        return NumberValue.fromBoolean(result);
