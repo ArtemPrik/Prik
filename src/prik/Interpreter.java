@@ -19,14 +19,14 @@ public final class Interpreter {
         /* for (int i = 0; i < tokens.size(); i++) {
             Console.println(i + " " + tokens.get(i));
         } */
-        final Statement program = new Parser(tokens).parse();
+        final Statement program = Parser.parse(tokens);
 //        Console.println(input);
 //        Console.println(program.toString()); // Вывод команды в консоль
         program.accept(new FunctionAdder());
         program.accept(new AssignValidator());
         program.accept(new CodegenVisitor());
 //        program.accept(new VariablePrinter());
-        Optimizer.optimize(program, 2);
+//        Optimizer.optimize(program, 2);
         program.execute();
         /*Functions.get("main").execute();*/
     }

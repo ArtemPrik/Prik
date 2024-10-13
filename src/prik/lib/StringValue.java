@@ -34,7 +34,7 @@ public final class StringValue implements Value {
             }
 
             // Functions
-            case "repeat":
+            case "`repeat`":
                 return new FunctionValue((Value... args) -> {
                     Arguments.check(1, args.length);
                     StringBuilder buffer = new StringBuilder();

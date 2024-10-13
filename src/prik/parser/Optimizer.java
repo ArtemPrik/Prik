@@ -16,14 +16,14 @@ public final class Optimizer {
         if (level == 0) return statement;
         
         final ConstantFolding constantFolding = new ConstantFolding();
-        final DeadCodeElimination deadCodeElimination = new DeadCodeElimination();
+//        final DeadCodeElimination deadCodeElimination = new DeadCodeElimination();
         Statement result = statement;
         for (int i = 0; i < level; i++) {
             result = (Statement) result.accept(constantFolding, null);
 //            result = (Statement) result.accept(deadCodeElimination, null);
         }
         System.out.print(constantFolding.summaryInfo());
-        System.out.print(deadCodeElimination.summaryInfo());
+//        System.out.print(deadCodeElimination.summaryInfo());
         System.out.println();
         return result;
     }

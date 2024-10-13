@@ -128,14 +128,6 @@ public class Parser {
         return assignmentStatement();
     }
     
-//    private UseStatement useStatement() {
-//        final var modules = new HashSet<String>();
-//        do {
-//            modules.add(consume(TokenType.WORD).getText());
-//        } while (match(TokenType.COMMA));
-//        return new UseStatement(modules);
-//    }
-    
     private Statement assignmentStatement() {
 //        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.EQ)) {
 //            final String variable = consume(TokenType.WORD).getText();
@@ -148,9 +140,15 @@ public class Parser {
 //            return new ArrayAssignmentStatement(array, expression());
 //        }
 //        throw new ParseException("Unknown statement: " + get(0));
-        final Expression assignment = assignmentStrict();
-        if (assignment != null) {
-            return new ExprStatement(assignment);
+
+//        final Expression assignment = assignmentStrict();
+//        if (assignment != null) {
+//            return new ExprStatement(assignment);
+//        }
+//        throw new ParseException("Unknown statement: " + get(0));
+        final Expression expression = expression();
+        if (expression instanceof Statement) {
+            return (Statement) expression;
         }
         throw new ParseException("Unknown statement: " + get(0));
     }
@@ -292,17 +290,38 @@ public class Parser {
     }
     
     private Statement statementBody() {
-        if (match(TokenType.EQ) || match(TokenType.ARROW)) {
+        if (match(TokenType.EQ)) {
             return new ReturnStatement(expression());
         }
         return statementOrBlock();
     }
     
-    private FunctionalExpression function() {
-        String name = consume(TokenType.WORD).getText();
+    private Expression functionChain(Expression qualifiedNameExpr) {
+        // f1()()() || f1().f2().f3() || f1().key
+        final Expression expr = function(qualifiedNameExpr);
+        if (lookMatch(0, TokenType.LPAREN)) {
+            return functionChain(expr);
+        }
+        if (lookMatch(0, TokenType.DOT)) {
+            final List<Expression> indices = variableSuffix();
+            if (indices == null || indices.isEmpty()) {
+                return expr;
+            }
+
+            if (lookMatch(0, TokenType.LPAREN)) {
+                // next function call
+                return functionChain(new ContainerAccessExpression(expr, indices));
+            }
+            // container access
+            return new ContainerAccessExpression(expr, indices);
+        }
+        return expr;
+    }
+
+    private FunctionalExpression function(Expression qualifiedNameExpr) {
+        // function(arg1, arg2, ...)
         consume(TokenType.LPAREN);
-        final FunctionalExpression function = new FunctionalExpression(
-                new ValueExpression(name));
+        final FunctionalExpression function = new FunctionalExpression(qualifiedNameExpr);
         while (!match(TokenType.RPAREN)) {
             function.addArgument(expression());
             match(TokenType.COMMA);
@@ -310,10 +329,11 @@ public class Parser {
         return function;
     }
     
-    private FunctionalExpression function(Expression qualifiedName) {
+    private FunctionalExpression function() {
+        String name = consume(TokenType.WORD).getText();
         consume(TokenType.LPAREN);
         final FunctionalExpression function = new FunctionalExpression(
-                qualifiedName);
+                new ValueExpression(name));
         while (!match(TokenType.RPAREN)) {
             function.addArgument(expression());
             match(TokenType.COMMA);
@@ -329,17 +349,6 @@ public class Parser {
             match(TokenType.COMMA);
         }
         return new ArrayExpression(elements);
-    }
-    
-    private ArrayAccessExpression element() {
-        final String variable = consume(TokenType.WORD).getText();
-        final List<Expression> indices = new ArrayList<>();
-        do {
-            consume(TokenType.LBRACKET);
-            indices.add(expression());
-            consume(TokenType.RBRACKET);
-        } while(lookMatch(0, TokenType.LBRACKET));
-        return new ArrayAccessExpression(variable, indices);
     }
     
     private Expression expression() {
@@ -580,6 +589,12 @@ public class Parser {
     }
     
     private Expression unary() {
+        if (match(TokenType.PLUSPLUS)) {
+            return new UnaryExpression(UnaryExpression.Operator.INCREMENT_PREFIX, primary());
+        }
+        if (match(TokenType.MINUSMINUS)) {
+            return new UnaryExpression(UnaryExpression.Operator.DECREMENT_PREFIX, primary());
+        }
         if (match(TokenType.MINUS)) {
             return new UnaryExpression(UnaryExpression.Operator.NEGATE, primary());
         }
@@ -597,24 +612,6 @@ public class Parser {
     
     private Expression primary() {
         final Token current = get(0);
-        if (match(TokenType.NUMBER)) {
-            return new ValueExpression(Double.parseDouble(current.getText()));
-        }
-        if (match(TokenType.HEX_NUMBER)) {
-            return new ValueExpression(Long.parseLong(current.getText(), 16));
-        }
-        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
-            return function();
-        }
-        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
-            return element();
-        }
-        if (lookMatch(0, TokenType.LBRACKET)) {
-            return array();
-        }
-        if (lookMatch(0, TokenType.LBRACE)) {
-            return map();
-        }
         if (match(TokenType.COLONCOLON)) {
             // ::method reference
             final String functionName = consume(TokenType.WORD).getText();
@@ -635,9 +632,6 @@ public class Parser {
         if (match(TokenType.WORD)) {
             return new VariableExpression(current.getText());
         }
-        if (match(TokenType.TEXT)) {
-            return new ValueExpression(current.getText());
-        }
         if (match(TokenType.LPAREN)) {
             Expression result = expression();
 //            match(TokenType.RPAREN);
@@ -649,8 +643,39 @@ public class Parser {
         if (match(TokenType.TRUE)) return new ValueExpression(true);
         if (match(TokenType.FALSE)) return new ValueExpression(false);
         
-        throw new ParseException("Unknown expression: " + current);
+        return variable();
     }
+    
+    private Expression variable() {
+        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
+            return function();
+        }
+        
+        final Expression qualifiedNameExpr = qualifiedName();
+        if (qualifiedNameExpr != null) {
+            // variable(args) || arr["key"](args) || obj.key(args)
+            if (lookMatch(0, TokenType.LPAREN)) {
+                return function(qualifiedNameExpr);
+            }
+            // postfix increment/decrement
+            if (match(TokenType.PLUSPLUS)) {
+                return new UnaryExpression(UnaryExpression.Operator.INCREMENT_POSTFIX, qualifiedNameExpr);
+            }
+            if (match(TokenType.MINUSMINUS)) {
+                return new UnaryExpression(UnaryExpression.Operator.DECREMENT_POSTFIX, qualifiedNameExpr);
+            }
+            return qualifiedNameExpr;
+        }
+        
+        if (lookMatch(0, TokenType.LBRACKET)) {
+            return array();
+        }
+        if (lookMatch(0, TokenType.LBRACE)) {
+            return map();
+        }
+        return value();
+    }
+    
     private Expression qualifiedName() {
         final Token current = get(0);
         if (!match(TokenType.WORD)) return null;
@@ -680,6 +705,39 @@ public class Parser {
             }
         }
         return indices;
+    }
+    
+    private Expression value() {
+        final Token current = get(0);
+        
+        if (match(TokenType.NUMBER)) {
+            return new ValueExpression(Double.parseDouble(current.getText()));
+        }
+        if (match(TokenType.HEX_NUMBER)) {
+            return new ValueExpression(Long.parseLong(current.getText(), 16));
+        }
+        if (match(TokenType.TEXT)) {
+//            return new ValueExpression(current.getText());
+            final ValueExpression strExpr = new ValueExpression(current.getText());
+            // "text".property || "text".func()
+            if (lookMatch(0, TokenType.DOT)) {
+                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
+                    match(TokenType.DOT);
+                    return functionChain(new ContainerAccessExpression(
+                            strExpr, Collections.singletonList(
+                                    new ValueExpression(consume(TokenType.WORD).getText())
+                    )));
+                }
+                final List<Expression> indices = variableSuffix();
+                if (indices == null || indices.isEmpty()) {
+                    return strExpr;
+                }
+                return new ContainerAccessExpression(strExpr, indices);
+            }
+            return strExpr;
+        }
+        
+        throw new ParseException("Unknown expression: " + current);
     }
     
     private Token consume(TokenType type) {

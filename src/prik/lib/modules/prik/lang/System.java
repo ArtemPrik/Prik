@@ -8,6 +8,7 @@ import prik.lib.MapValue;
 import prik.lib.NumberValue;
 import prik.lib.StringValue;
 import prik.lib.Value;
+import prik.lib.Variables;
 import prik.lib.modules.Module;
 
 /**
@@ -67,5 +68,7 @@ public final class System implements Module {
             Arguments.check(0, args.length);
             return new NumberValue((Runtime.getRuntime().availableProcessors()));
         });
+        
+        Variables.define("System", system);
     }
 }

@@ -9,6 +9,10 @@ import prik.lib.*;
  */
 public final class UnaryExpression implements Expression, Statement {
     public static enum Operator {
+        INCREMENT_PREFIX("++"),
+        DECREMENT_PREFIX("--"),
+        INCREMENT_POSTFIX("++"),
+        DECREMENT_POSTFIX("--"),
         NEGATE("-"),
         
         NOT("!"),
@@ -43,6 +47,32 @@ public final class UnaryExpression implements Expression, Statement {
     public Value eval() {
         final Value value = expr1.eval();
         switch (operation) {
+            case INCREMENT_PREFIX: {
+                if (expr1 instanceof Accessible) {
+                    return ((Accessible) expr1).set(new NumberValue(value.asNumber() + 1));
+                }
+                return new NumberValue(value.asNumber() + 1);
+            }
+            case DECREMENT_PREFIX: {
+                if (expr1 instanceof Accessible) {
+                    return ((Accessible) expr1).set(new NumberValue(value.asNumber() - 1));
+                }
+                return new NumberValue(value.asNumber() - 1);
+            }
+            case INCREMENT_POSTFIX: {
+                if (expr1 instanceof Accessible) {
+                    ((Accessible) expr1).set(new NumberValue(value.asNumber() + 1));
+                    return value;
+                }
+                return new NumberValue(value.asNumber() + 1);
+            }
+            case DECREMENT_POSTFIX: {
+                if (expr1 instanceof Accessible) {
+                    ((Accessible) expr1).set(new NumberValue(value.asNumber() - 1));
+                    return value;
+                }
+                return new NumberValue(value.asNumber() - 1);
+            }
             case NEGATE: return new NumberValue(-value.asNumber());
             case COMPLEMENT: return new NumberValue(~(int)value.asNumber());
             case NOT: return new NumberValue(value.asNumber() != 0 ? 0 : 1);
@@ -56,6 +86,7 @@ public final class UnaryExpression implements Expression, Statement {
         visitor.visit(this);
     }
     
+    @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
     }

@@ -72,7 +72,6 @@ public final class Lexer {
         OPERATORS.put(">>>=", TokenType.GTGTGTEQ);
         
         OPERATORS.put("::", TokenType.COLONCOLON);
-        OPERATORS.put("->", TokenType.ARROW);
         
         OPERATORS.put("&&", TokenType.AMPAMP);
         OPERATORS.put("||", TokenType.BARBAR);

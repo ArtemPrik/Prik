@@ -24,6 +24,9 @@ public final class Executor {
         while (true) {
             System.out.print(str);
             input = sc.nextLine();
+            if ("exit".equals(input)) {
+                System.exit(0);
+            }
             tokens = Lexer.tokenize(input);
             program = new Parser(tokens).parse();
             program.accept(new FunctionAdder());

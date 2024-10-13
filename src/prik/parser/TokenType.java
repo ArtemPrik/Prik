@@ -82,7 +82,6 @@ public enum TokenType {
     COLON,
     COLONCOLON,
     SEMICOLON,
-    ARROW,
     
     LPAREN, 
     RPAREN, 

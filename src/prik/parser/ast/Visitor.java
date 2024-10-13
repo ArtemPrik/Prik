@@ -5,8 +5,6 @@ package prik.parser.ast;
  * @author Professional
  */
 public interface Visitor {
-    void visit(ArrayAccessExpression s);
-    void visit(ArrayAssignmentExpression s);
     void visit(ArrayExpression s);
     void visit(AssertStatement s);
     void visit(AssignmentExpression s);

@@ -10,19 +10,6 @@ import prik.parser.ast.*;
 public abstract class AbstractVisitor implements Visitor {
 
     @Override
-    public void visit(ArrayAccessExpression s) {
-        for (Expression index : s.indices) {
-            index.accept(this);
-        }
-    }
-
-    @Override
-    public void visit(ArrayAssignmentExpression s) {
-        s.array.accept(this);
-        s.expression.accept(this);
-    }
-
-    @Override
     public void visit(ArrayExpression s) {
         for (Expression index : s.elements) {
             index.accept(this);

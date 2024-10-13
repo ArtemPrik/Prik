@@ -14,7 +14,6 @@ import prik.lib.Value;
  * @author Professional
  */
 public final class ContainerAccessExpression implements Expression, Accessible {
-    
     public final Expression root;
     public final List<Expression> indices;
     private boolean rootIsVariable;
