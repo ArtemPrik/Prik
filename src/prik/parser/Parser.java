@@ -651,7 +651,7 @@ public class Parser {
     
     private Expression variable() {
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
-            return function();
+            return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
         }
         
         final Expression qualifiedNameExpr = qualifiedName();
