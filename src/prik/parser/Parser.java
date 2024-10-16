@@ -615,6 +615,9 @@ public class Parser {
     
     private Expression primary() {
         final Token current = get(0);
+        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
+            return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
+        }
         if (match(TokenType.COLONCOLON)) {
             // ::method reference
             final String functionName = consume(TokenType.WORD).getText();
@@ -650,9 +653,9 @@ public class Parser {
     }
     
     private Expression variable() {
-        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
-            return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
-        }
+//        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
+//            return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
+//        }
         
         final Expression qualifiedNameExpr = qualifiedName();
         if (qualifiedNameExpr != null) {

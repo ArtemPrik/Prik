@@ -1,2 +1,3 @@
 //println "text".length
 
+println "Hello, World!"

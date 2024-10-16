@@ -15,22 +15,16 @@
             <file>file:/D:/prik/prik/old/modules/std.java</file>
             <file>file:/D:/prik/prik/programs/test.prik</file>
             <file>file:/D:/prik/prik/src/prik/parser/ast/Visitor.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/ast/UseStatement.java</file>
             <file>file:/D:/prik/prik/src/prik/Interpreter.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/StringValue.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/ast/ConditionalExpression.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/modules/prik/lang/System.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/Functions.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/visitors/VariablePrinter.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/ui/Forms.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/ast/ContainerAccessExpression.java</file>
+            <file>file:/D:/prik/prik/src/prik/parser/ast/ValueExpression.java</file>
             <file>file:/D:/prik/prik/src/prik/lib/ModuleLoader.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/modules/prik/util/Arrays.java</file>
-            <file>file:/D:/prik/prik/src/prik/lib/Value.java</file>
             <file>file:/D:/prik/prik/examples/games/agar.prik</file>
+            <file>file:/D:/prik/prik/old/modules/console.java</file>
+            <file>file:/D:/prik/prik/src/prik/Main.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/ParseException.java</file>
+            <file>file:/D:/prik/prik/src/prik/exceptions/UnknownFunctionException.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/Parser.java</file>
-            <file>file:/D:/prik/prik/src/prik/parser/visitors/AbstractVisitor.java</file>
             <file>file:/D:/prik/prik/src/prik/parser/TokenType.java</file>
         </group>
     </open-files>

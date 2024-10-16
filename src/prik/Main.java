@@ -10,7 +10,7 @@ public final class Main {
     
     public static void main(String[] args) throws IOException {
         Interpreter.run(file);
-        ConsoleExecutor.Start();
+//        ConsoleExecutor.Start();
 //        Executor.execute();
         
 //        Console.println("""
