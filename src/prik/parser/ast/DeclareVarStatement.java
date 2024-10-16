@@ -34,7 +34,6 @@ public final class DeclareVarStatement implements Statement {
 
     @Override
     public String toString() {
-        if (expression != null) return "var " + name + " = " + expression;
-        return "var " + name;
+        return "var " + name + (expression == null ? "" : " = " + expression);
     }
 }

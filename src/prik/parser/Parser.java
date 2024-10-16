@@ -56,9 +56,37 @@ public class Parser {
     public Statement parse() {
         final BlockStatement result = new BlockStatement();
         while (!match(TokenType.EOF)) {
-            result.add(statement());
+//            result.add(statement());
+            try {
+                result.add(statement());
+            } catch (Exception ex) {
+                parseErrors.add(ex, getErrorLine());
+                recover();
+                throw new ParseException("\n\n" + parseErrors.toString());
+            }
         }
         return result;
+    }
+    
+    private int getErrorLine() {
+        if (size == 0) return 0;
+        if (pos >= size) return tokens.get(size - 1).getRow();
+        return tokens.get(pos).getRow();
+    }
+    
+    private void recover() {
+        int preRecoverPosition = pos;
+        for (int i = preRecoverPosition; i <= size; i++) {
+            pos = i;
+            try {
+                statement();
+                // successfully parsed,
+                pos = i; // restore position
+                return;
+            } catch (Exception ex) {
+                // fail
+            }
+        }
     }
     
     private Statement block() {
@@ -105,7 +133,6 @@ public class Parser {
         }
         if (match(TokenType.USE)) {
             return new UseStatement(expression());
-//            return useStatement();
         }
         if (match(TokenType.DEF)) {
             return functionDefine();
@@ -132,18 +159,6 @@ public class Parser {
     }
     
     private Statement assignmentStatement() {
-//        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.EQ)) {
-//            final String variable = consume(TokenType.WORD).getText();
-//            consume(TokenType.EQ);
-//            return new AssignmentStatement(variable, expression());
-//        }
-//        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
-//            final ArrayAccessExpression array = element();
-//            consume(TokenType.EQ);
-//            return new ArrayAssignmentStatement(array, expression());
-//        }
-//        throw new ParseException("Unknown statement: " + get(0));
-
 //        final Expression assignment = assignmentStrict();
 //        if (assignment != null) {
 //            return new ExprStatement(assignment);
@@ -217,14 +232,11 @@ public class Parser {
         }
         
         boolean openParen = match(TokenType.LPAREN); // необязательные скобки
-//        match(TokenType.LPAREN); // необязательные скобки
         final Statement initialization = assignmentStatement();
-//        final Statement initialization = assignmentOrDeclareNumber();
         consume(TokenType.COMMA);
         final Expression termination = expression();
         consume(TokenType.COMMA);
         final Statement increment = assignmentStatement();
-//        match(TokenType.RPAREN); // необязательные скобки
         if (openParen) consume(TokenType.RPAREN); // скобки
         final Statement statement = statementOrBlock();
         return new ForStatement(initialization, termination, increment, statement);
@@ -260,12 +272,6 @@ public class Parser {
     
     private FunctionDefineStatement functionDefine() {
         final String name = consume(TokenType.WORD).getText();
-//        consume(TokenType.LPAREN);
-//        final List<String> argNames = new ArrayList<>();
-//        while (!match(TokenType.RPAREN)) {
-//            argNames.add(consume(TokenType.WORD).getText());
-//            match(TokenType.COMMA);
-//        }
         final Arguments argNames = arguments();
         final Statement body = statementBody();
         return new FunctionDefineStatement(name, argNames, body);
@@ -280,7 +286,6 @@ public class Parser {
             final String name = consume(TokenType.WORD).getText();
             if (match(TokenType.EQ)) {
                 startsOptionalArgs = true;
-//                arguments.addOptional(name, variable());
                 arguments.addOptional(name, expression());
             } else if (!startsOptionalArgs) {
                 arguments.addRequired(name);
@@ -355,7 +360,6 @@ public class Parser {
     }
     
     private Expression expression() {
-//        return ternary();
         return assignment();
     }
     
@@ -559,10 +563,6 @@ public class Parser {
                 result = new BinaryExpression(BinaryExpression.Operator.SUBTRACT, result, multiplicative());
                 continue;
             }
-//            if (match(TokenType.COLONCOLON)) {
-//                result = new BinaryExpression(BinaryExpression.Operator.PUSH, result, multiplicative());
-//                continue;
-//            }
             break;
         }
         
@@ -618,6 +618,15 @@ public class Parser {
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
         }
+        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
+            return qualifiedName();
+        }
+        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.DOT)) {
+            return qualifiedName();
+        }
+        if (match(TokenType.READLN)) {
+            return new ReadlnStatement();
+        }
         if (match(TokenType.COLONCOLON)) {
             // ::method reference
             final String functionName = consume(TokenType.WORD).getText();
@@ -626,12 +635,6 @@ public class Parser {
         if (match(TokenType.DEF)) {
             // anonymous function def(args) ...
             final Arguments arguments = arguments();
-//            consume(TokenType.LPAREN);
-//            final List<String> arguments = new ArrayList();
-//            while (!match(TokenType.RPAREN)) {
-//                arguments.add(consume(TokenType.WORD).getText());
-//                match(TokenType.COMMA);
-//            }
             final Statement statement = statementBody();
             return new ValueExpression(new UserDefinedFunction(arguments, statement));
         }
@@ -640,7 +643,6 @@ public class Parser {
         }
         if (match(TokenType.LPAREN)) {
             Expression result = expression();
-//            match(TokenType.RPAREN);
             consume(TokenType.RPAREN);
             return result;
         }
@@ -723,7 +725,6 @@ public class Parser {
             return new ValueExpression(Long.parseLong(current.getText(), 16));
         }
         if (match(TokenType.TEXT)) {
-//            return new ValueExpression(current.getText());
             final ValueExpression strExpr = new ValueExpression(current.getText());
             // "text".property || "text".func()
             if (lookMatch(0, TokenType.DOT)) {

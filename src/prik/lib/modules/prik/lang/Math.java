@@ -5,6 +5,7 @@ import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
 import prik.lib.Function;
 import prik.lib.Functions;
+import prik.lib.MapValue;
 import prik.lib.NumberValue;
 import prik.lib.Value;
 import prik.lib.Variables;
@@ -19,7 +20,11 @@ public final class Math implements Module {
 
     @Override
     public void init() {
-        Variables.set("PI", new NumberValue(java.lang.Math.PI));
+        MapValue map = new MapValue(1);
+        
+        map.set("PI", new NumberValue(java.lang.Math.PI));
+        Variables.define("Math", map);
+        
         Variables.set("TAU", new NumberValue(java.lang.Math.TAU));
         Variables.set("E", new NumberValue(java.lang.Math.E));
         

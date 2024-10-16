@@ -1,5 +1,6 @@
 package prik.lib;
 
+import java.util.Locale;
 import prik.exceptions.UnknownException;
 
 /**
