@@ -20,11 +20,8 @@ public final class Math implements Module {
 
     @Override
     public void init() {
-        MapValue map = new MapValue(1);
         
-        map.set("PI", new NumberValue(java.lang.Math.PI));
-        Variables.define("Math", map);
-        
+        Variables.set("PI", new NumberValue(java.lang.Math.PI));
         Variables.set("TAU", new NumberValue(java.lang.Math.TAU));
         Variables.set("E", new NumberValue(java.lang.Math.E));
         
@@ -34,6 +31,7 @@ public final class Math implements Module {
         Functions.set("asin", functionConvert(java.lang.Math::asin));
         Functions.set("sin", functionConvert(java.lang.Math::sin));
         Functions.set("log", functionConvert(java.lang.Math::log));
+        Functions.set("tan", functionConvert(java.lang.Math::tan));
         
         Functions.set("sqrt", functionConvert(java.lang.Math::sqrt));
         Functions.set("toDegrees", functionConvert(java.lang.Math::toDegrees));

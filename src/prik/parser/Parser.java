@@ -618,10 +618,8 @@ public class Parser {
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
         }
-        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
-            return qualifiedName();
-        }
-        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.DOT)) {
+        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.DOT) 
+                || lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
             return qualifiedName();
         }
         if (match(TokenType.READLN)) {
@@ -647,6 +645,22 @@ public class Parser {
             return result;
         }
         
+        final Expression qualifiedNameExpr = qualifiedName();
+        if (qualifiedNameExpr != null) {
+            // variable(args) || arr["key"](args) || obj.key(args)
+            if (lookMatch(0, TokenType.LPAREN)) {
+                return function(qualifiedNameExpr);
+            }
+            // postfix increment/decrement
+            if (match(TokenType.PLUSPLUS)) {
+                return new UnaryExpression(UnaryExpression.Operator.INCREMENT_POSTFIX, qualifiedNameExpr);
+            }
+            if (match(TokenType.MINUSMINUS)) {
+                return new UnaryExpression(UnaryExpression.Operator.DECREMENT_POSTFIX, qualifiedNameExpr);
+            }
+            return qualifiedNameExpr;
+        }
+        
         if (match(TokenType.NULL)) return new ValueExpression(new NullValue());
         if (match(TokenType.TRUE)) return new ValueExpression(true);
         if (match(TokenType.FALSE)) return new ValueExpression(false);
@@ -655,10 +669,6 @@ public class Parser {
     }
     
     private Expression variable() {
-//        if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
-//            return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
-//        }
-        
         final Expression qualifiedNameExpr = qualifiedName();
         if (qualifiedNameExpr != null) {
             // variable(args) || arr["key"](args) || obj.key(args)
