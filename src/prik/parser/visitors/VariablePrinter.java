@@ -19,12 +19,6 @@ public final class VariablePrinter extends AbstractVisitor {
         super.visit(s);
         Console.println(s.target);
     }
-    
-    @Override
-    public void visit(DeclareVarStatement s) {
-        super.visit(s);
-        Console.println(s.name);
-    }
 
     @Override
     public void visit(VariableExpression s) {

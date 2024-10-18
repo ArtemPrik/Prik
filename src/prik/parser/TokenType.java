@@ -10,8 +10,6 @@ public enum TokenType {
     WORD,
     TEXT,
     
-    VAR,
-    
     TRUE,
     FALSE,
     

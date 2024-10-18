@@ -87,8 +87,6 @@ public final class Lexer {
         
         KEYWORDS.put("and", TokenType.AMPAMP);
         KEYWORDS.put("or", TokenType.BARBAR);
-        
-        KEYWORDS.put("var", TokenType.VAR);
 
         KEYWORDS.put("true", TokenType.TRUE);
         KEYWORDS.put("false", TokenType.FALSE);

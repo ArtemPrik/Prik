@@ -141,9 +141,6 @@ public class Parser {
             return repeatStatement();
         }
         
-        if (match(TokenType.VAR)) {
-            return declareVar();
-        }
         if (match(TokenType.ASSERT)) {
             return new AssertStatement(expression());
         }
@@ -169,18 +166,6 @@ public class Parser {
             return (Statement) expression;
         }
         throw new ParseException("Unknown statement: " + get(0));
-    }
-    
-    private DeclareVarStatement declareVar() {
-        String name = consume(TokenType.WORD).getText();
-        if (match(TokenType.EQ)) return new DeclareVarStatement(name, expression());
-        return new DeclareVarStatement(name);
-//        if(match(TokenType.VAR)) return new DeclareVarStatement(consume(TokenType.WORD).getText());
-//        if(match(TokenType.VAR)) {
-//            String name = consume(TokenType.WORD).getText();
-//            consume(TokenType.EQ);
-//            return new DeclareVarStatement(name, expression());
-//        }
     }
     
     private Statement repeatStatement() {

@@ -58,11 +58,6 @@ public abstract class AbstractVisitor implements Visitor {
     @Override
     public void visit(ContinueStatement s) {
     }
-    
-    @Override
-    public void visit(DeclareVarStatement s) {
-        if (s.expression != null) s.expression.accept(this);
-    }
 
     @Override
     public void visit(DoWhileStatement s) {
