@@ -600,12 +600,24 @@ public class Parser {
     
     private Expression primary() {
         final Token current = get(0);
+        if (match(TokenType.NUMBER)) {
+            return new ValueExpression(Double.parseDouble(current.getText()));
+        }
+        if (match(TokenType.HEX_NUMBER)) {
+            return new ValueExpression(Long.parseLong(current.getText(), 16));
+        }
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
         }
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.DOT) 
                 || lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
             return qualifiedName();
+        }
+        if (lookMatch(0, TokenType.LBRACKET)) {
+            return array();
+        }
+        if (lookMatch(0, TokenType.LBRACE)) {
+            return map();
         }
         if (match(TokenType.READLN)) {
             return new ReadlnStatement();
@@ -624,59 +636,36 @@ public class Parser {
         if (match(TokenType.WORD)) {
             return new VariableExpression(current.getText());
         }
+        
         if (match(TokenType.LPAREN)) {
             Expression result = expression();
             consume(TokenType.RPAREN);
             return result;
         }
-        
-        final Expression qualifiedNameExpr = qualifiedName();
-        if (qualifiedNameExpr != null) {
-            // variable(args) || arr["key"](args) || obj.key(args)
-            if (lookMatch(0, TokenType.LPAREN)) {
-                return function(qualifiedNameExpr);
+        if (match(TokenType.TEXT)) {
+            final ValueExpression strExpr = new ValueExpression(current.getText());
+            // "text".property || "text".func()
+            if (lookMatch(0, TokenType.DOT)) {
+                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
+                    match(TokenType.DOT);
+                    return functionChain(new ContainerAccessExpression(
+                            strExpr, Collections.singletonList(
+                                    new ValueExpression(consume(TokenType.WORD).getText())
+                    )));
+                }
+                final List<Expression> indices = variableSuffix();
+                if (indices == null || indices.isEmpty()) {
+                    return strExpr;
+                }
+                return new ContainerAccessExpression(strExpr, indices);
             }
-            // postfix increment/decrement
-            if (match(TokenType.PLUSPLUS)) {
-                return new UnaryExpression(UnaryExpression.Operator.INCREMENT_POSTFIX, qualifiedNameExpr);
-            }
-            if (match(TokenType.MINUSMINUS)) {
-                return new UnaryExpression(UnaryExpression.Operator.DECREMENT_POSTFIX, qualifiedNameExpr);
-            }
-            return qualifiedNameExpr;
+            return strExpr;
         }
-        
         if (match(TokenType.NULL)) return new ValueExpression(new NullValue());
         if (match(TokenType.TRUE)) return new ValueExpression(true);
         if (match(TokenType.FALSE)) return new ValueExpression(false);
         
-        return variable();
-    }
-    
-    private Expression variable() {
-        final Expression qualifiedNameExpr = qualifiedName();
-        if (qualifiedNameExpr != null) {
-            // variable(args) || arr["key"](args) || obj.key(args)
-            if (lookMatch(0, TokenType.LPAREN)) {
-                return function(qualifiedNameExpr);
-            }
-            // postfix increment/decrement
-            if (match(TokenType.PLUSPLUS)) {
-                return new UnaryExpression(UnaryExpression.Operator.INCREMENT_POSTFIX, qualifiedNameExpr);
-            }
-            if (match(TokenType.MINUSMINUS)) {
-                return new UnaryExpression(UnaryExpression.Operator.DECREMENT_POSTFIX, qualifiedNameExpr);
-            }
-            return qualifiedNameExpr;
-        }
-        
-        if (lookMatch(0, TokenType.LBRACKET)) {
-            return array();
-        }
-        if (lookMatch(0, TokenType.LBRACE)) {
-            return map();
-        }
-        return value();
+        throw new ParseException("Unknown expression: " + current);
     }
     
     private Expression qualifiedName() {
@@ -708,38 +697,6 @@ public class Parser {
             }
         }
         return indices;
-    }
-    
-    private Expression value() {
-        final Token current = get(0);
-        
-        if (match(TokenType.NUMBER)) {
-            return new ValueExpression(Double.parseDouble(current.getText()));
-        }
-        if (match(TokenType.HEX_NUMBER)) {
-            return new ValueExpression(Long.parseLong(current.getText(), 16));
-        }
-        if (match(TokenType.TEXT)) {
-            final ValueExpression strExpr = new ValueExpression(current.getText());
-            // "text".property || "text".func()
-            if (lookMatch(0, TokenType.DOT)) {
-                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
-                    match(TokenType.DOT);
-                    return functionChain(new ContainerAccessExpression(
-                            strExpr, Collections.singletonList(
-                                    new ValueExpression(consume(TokenType.WORD).getText())
-                    )));
-                }
-                final List<Expression> indices = variableSuffix();
-                if (indices == null || indices.isEmpty()) {
-                    return strExpr;
-                }
-                return new ContainerAccessExpression(strExpr, indices);
-            }
-            return strExpr;
-        }
-        
-        throw new ParseException("Unknown expression: " + current);
     }
     
     private Token consume(TokenType type) {

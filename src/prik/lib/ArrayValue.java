@@ -66,7 +66,7 @@ public final class ArrayValue implements Value, Iterable<Value> {
         final String prop = index.asString();
         return switch (prop) {
             case "length" -> NumberValue.of(size());
-            case "isEmpty" -> NumberValue.fromBoolean(size() == 0);
+            case "isEmpty" -> new BooleanValue(size() == 0);
             default -> get(index.asInt());
         };
     }
