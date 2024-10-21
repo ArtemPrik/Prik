@@ -1,5 +1,6 @@
 package prik.parser.ast;
 
+import prik.Console;
 import prik.exceptions.OperationIsNotSupportedException;
 import prik.lib.*;
 

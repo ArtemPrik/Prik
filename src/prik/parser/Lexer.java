@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import prik.lib.BooleanValue;
+import prik.lib.Functions;
 import prik.lib.MapValue;
 import prik.lib.NumberValue;
 import prik.lib.StringValue;
@@ -421,7 +422,7 @@ public final class Lexer {
         types.set("int", args -> NumberValue.of(args[0].asInt()));
         types.set("long", args -> NumberValue.of((long)args[0].asNumber()));
         types.set("float", args -> NumberValue.of((float)args[0].asInt()));
-        types.set("double", args -> NumberValue.of(args[0].asNumber()));
+        Functions.set("double", args -> NumberValue.of(args[0].asNumber()));
         
         types.set("isString", (Value... args) -> {
             prik.lib.Arguments.check(1, args.length);

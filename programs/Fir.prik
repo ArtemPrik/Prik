@@ -1,13 +1,10 @@
-var i = 0
-var j = 0
-
 def fir() {
     for (i = 0, i < 12, i = i + 2) {
-        var spaces = ""
+        spaces = ""
         for (j = 0, j < (11 - i) / 2, j = j + 1) {
             spaces = spaces + " "
         }
-        var stars = "^"
+        stars = "^"
         for (j = 0, j < i, j = j + 1) {
             stars = stars + "^"
         }
@@ -18,11 +15,11 @@ def fir() {
 
 def fir_new(stars) {
     for (i = 0, i < 12, i = i + 2) {
-        var spaces = ""
+        spaces = ""
         for (j = 0, j < (11 - i) / 2, j = j + 1) {
             spaces = spaces + " "
         }
-        var stars2 = stars
+        stars2 = stars
         for (j = 0, j < i, j = j + 1) {
             stars2 = stars2 + stars
         }
