@@ -78,6 +78,10 @@ public final class StringValue implements Value {
         throw new UnknownException("Property ", prop);
     }
     
+    public Value get(int index) {
+        return new StringValue(Character.toString(value.charAt(index)));
+    }
+    
     public int length() {
         return value.length();
     }
