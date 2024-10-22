@@ -1,6 +1,6 @@
 package prik.lib;
 
-import prik.PrikException;
+import prik.exceptions.PrikException;
 import prik.lib.modules.Module;
 
 /**

@@ -1,4 +1,6 @@
-package prik;
+package prik.exceptions;
+
+import prik.Console;
 
 /**
  *

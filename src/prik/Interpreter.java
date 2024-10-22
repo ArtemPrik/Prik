@@ -6,6 +6,7 @@ import java.util.List;
 import prik.parser.*;
 import prik.parser.ast.Statement;
 import prik.parser.visitors.*;
+import prik.preprocessor.Preprocessor;
 
 /**
  *
@@ -14,8 +15,8 @@ import prik.parser.visitors.*;
 public final class Interpreter {
     public static void run(String file) throws java.io.IOException {
         final String input = new String(Files.readAllBytes(Paths.get(file)), "UTF-8");
-//        final List<Token> tokens = new Lexer(input).tokenize();
-        final List<Token> tokens = Lexer.tokenize(input);
+        final String preprocess = Preprocessor.preprocess(input);
+        final List<Token> tokens = Lexer.tokenize(preprocess);
         /* for (int i = 0; i < tokens.size(); i++) {
             Console.println(i + " " + tokens.get(i));
         } */
@@ -29,17 +30,6 @@ public final class Interpreter {
 //        Optimizer.optimize(program, 2);
         program.execute();
         /*Functions.get("main").execute();*/
-    }
-    
-    public static void compile(String file) throws java.io.IOException {
-        final String input = new String(Files.readAllBytes(Paths.get(file)), "UTF-8");
-        final List<Token> tokens = Lexer.tokenize(input);
-        final Statement program = new Parser(tokens).parse();
-//        program.execute();
-        
-        StringBuilder output = new StringBuilder();
-        output.append(program);
-        Console.println(output);
     }
 }
    

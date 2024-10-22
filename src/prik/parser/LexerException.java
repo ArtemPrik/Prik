@@ -1,7 +1,7 @@
 package prik.parser;
 
 import prik.Main;
-import prik.PrikException;
+import prik.exceptions.PrikException;
 
 /**
  *

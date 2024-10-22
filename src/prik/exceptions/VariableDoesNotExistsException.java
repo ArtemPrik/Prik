@@ -1,7 +1,5 @@
 package prik.exceptions;
 
-import prik.PrikException;
-
 /**
  *
  * @author Professional

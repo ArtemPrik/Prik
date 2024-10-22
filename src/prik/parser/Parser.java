@@ -2,7 +2,7 @@ package prik.parser;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import prik.PrikException;
+import prik.exceptions.PrikException;
 import prik.lib.NullValue;
 import prik.lib.UserDefinedFunction;
 import prik.parser.ast.*;

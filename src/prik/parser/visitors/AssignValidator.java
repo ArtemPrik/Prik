@@ -1,6 +1,6 @@
 package prik.parser.visitors;
 
-import prik.PrikException;
+import prik.exceptions.PrikException;
 import prik.lib.Variables;
 import prik.lib.modules.Module;
 import prik.parser.ast.*;

@@ -1,9 +1,11 @@
-package prik;
+package prik.executors;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Scanner;
+import prik.Console;
+import prik.Interpreter;
 
 /**
  *

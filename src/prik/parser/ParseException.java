@@ -1,6 +1,6 @@
 package prik.parser;
 
-import prik.PrikException;
+import prik.exceptions.PrikException;
 
 
 /**

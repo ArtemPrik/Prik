@@ -3,6 +3,7 @@ package prik.lib.modules.prik.lang;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoubleUnaryOperator;
+import prik.lib.ArrayValue;
 import prik.lib.Function;
 import prik.lib.Functions;
 import prik.lib.MapValue;
@@ -20,6 +21,9 @@ public final class Math implements Module {
 
     @Override
     public void init() {
+        ArrayValue array = new ArrayValue(1);
+        array.set(0, new NumberValue(java.lang.Math.PI));
+        Variables.define("Math", array);
         
         Variables.set("PI", new NumberValue(java.lang.Math.PI));
         Variables.set("TAU", new NumberValue(java.lang.Math.TAU));
