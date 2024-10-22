@@ -86,7 +86,7 @@ public final class ContainerAccessExpression implements Expression, Accessible {
             final Value index = index(i);
             switch (container.type()) {
                 case Types.STRING:
-                    container = ((StringValue) container).get(index.asInt());
+                    container = ((StringValue) container).access(index);
                     break;
                 
                 case Types.ARRAY:

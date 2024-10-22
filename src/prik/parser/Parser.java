@@ -147,6 +147,9 @@ public class Parser {
         if (match(TokenType.READLN)) {
             return new ReadlnStatement();
         }
+        if (match(TokenType.VAR)) {
+            return declareVar();
+        }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return new ExprStatement(function());
@@ -166,6 +169,14 @@ public class Parser {
             return (Statement) expression;
         }
         throw new ParseException("Unknown statement: " + get(0));
+    }
+    
+    private Statement declareVar() {
+        String name = consume(TokenType.WORD).getText();
+        if (match(TokenType.EQ)) {
+            return new DeclareVarStatement(name, expression());
+        }
+        return new DeclareVarStatement(name);
     }
     
     private Statement repeatStatement() {

@@ -36,15 +36,11 @@ public final class UseStatement extends InterruptableNode implements Statement {
         switch (value.type()) {
             case Types.ARRAY:
                 for (Value module : ((ArrayValue) value)) {
-                    try {
-                        ModuleLoader.loadAndUse(module.asString());
-                    } catch(Exception e) {    }
+                    ModuleLoader.loadAndUse(module.asString());
                 }
                 break;
             case Types.STRING:
-                try {
-                    ModuleLoader.loadAndUse(value.asString());
-                } catch(Exception e) {    }
+                ModuleLoader.loadAndUse(value.asString());
                 break;
             default:
                 throw typeException(value);
