@@ -42,6 +42,10 @@ public abstract class AbstractVisitor implements Visitor {
     @Override
     public void visit(BreakStatement s) {
     }
+    
+    @Override
+    public void visit(ClassDeclarationStatement s) {
+    }
 
     @Override
     public void visit(ConditionalExpression s) {
@@ -120,6 +124,13 @@ public abstract class AbstractVisitor implements Visitor {
         for (Map.Entry<Expression, Expression> entry : s.elements.entrySet()) {
             entry.getKey().accept(this);
             entry.getValue().accept(this);
+        }
+    }
+    
+    @Override
+    public void visit(ObjectCreationExpression s) {
+        for (Expression argument : s.constructorArguments) {
+            argument.accept(this);
         }
     }
 

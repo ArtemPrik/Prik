@@ -137,10 +137,13 @@ public class Parser {
         if (match(TokenType.DEF)) {
             return functionDefine();
         }
+        if (match(TokenType.CLASS)) {
+            return classDeclaration();
+        }
+        
         if (match(TokenType.REPEAT)) {
             return repeatStatement();
         }
-        
         if (match(TokenType.ASSERT)) {
             return new AssertStatement(expression());
         }
@@ -355,6 +358,30 @@ public class Parser {
         return new ArrayExpression(elements);
     }
     
+    private Statement classDeclaration() {
+        // class Name {
+        //   x = 123
+        //   str = ""
+        //   def method() = str
+        // }
+        final String name = consume(TokenType.WORD).getText();
+        final ClassDeclarationStatement classDeclaration = new ClassDeclarationStatement(name);
+        consume(TokenType.LBRACE);
+        do {
+            if (match(TokenType.DEF)) {
+                classDeclaration.addMethod(functionDefine());
+            } else {
+                final AssignmentExpression fieldDeclaration = assignmentStrict();
+                if (fieldDeclaration != null) {
+                    classDeclaration.addField(fieldDeclaration);
+                } else {
+                    throw new ParseException("Class can contain only assignments and function declarations");
+                }
+            }
+        } while (!match(TokenType.RBRACE));
+        return classDeclaration;
+    }
+    
     private Expression expression() {
         return assignment();
     }
@@ -367,7 +394,7 @@ public class Parser {
         return ternary();
     }
 
-    private Expression assignmentStrict() {
+    private AssignmentExpression assignmentStrict() {
         final int position = pos;
         final Expression targetExpr = qualifiedName();
         if ((targetExpr == null) || !(targetExpr instanceof Accessible)) {
@@ -566,7 +593,7 @@ public class Parser {
     }
     
     private Expression multiplicative() {
-        Expression result = unary();
+        Expression result = objectCreation();
         
         while (true) {
             if (match(TokenType.STAR)) {
@@ -585,6 +612,21 @@ public class Parser {
         }
         
         return result;
+    }
+    
+    private Expression objectCreation() {
+       if (match(TokenType.NEW)) {
+            final String className = consume(TokenType.WORD).getText();
+            final List<Expression> args = new ArrayList<>();
+            consume(TokenType.LPAREN);
+            while (!match(TokenType.RPAREN)) {
+                args.add(expression());
+                match(TokenType.COMMA);
+            }
+            return new ObjectCreationExpression(className, args);
+        }
+        
+        return unary();
     }
     
     private Expression unary() {

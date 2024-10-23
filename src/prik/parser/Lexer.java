@@ -106,6 +106,8 @@ public final class Lexer {
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("use", TokenType.USE);
         KEYWORDS.put("using", TokenType.USING);
+        KEYWORDS.put("class", TokenType.CLASS);
+        KEYWORDS.put("new", TokenType.NEW);
         
         KEYWORDS.put("repeat", TokenType.REPEAT);
         KEYWORDS.put("assert", TokenType.ASSERT);

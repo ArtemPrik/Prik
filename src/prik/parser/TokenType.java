@@ -24,6 +24,8 @@ public enum TokenType {
     CONTINUE,
     DEF,
     RETURN,
+    CLASS,
+    NEW,
     
     NULL,
     REPEAT,

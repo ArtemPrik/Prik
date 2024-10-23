@@ -11,6 +11,7 @@ public interface Visitor {
     void visit(BinaryExpression s);
     void visit(BlockStatement s);
     void visit(BreakStatement s);
+    void visit(ClassDeclarationStatement s);
     void visit(ConditionalExpression s);
     void visit(ContainerAccessExpression s);
     void visit(ContinueStatement s);
@@ -24,6 +25,7 @@ public interface Visitor {
     void visit(FunctionalExpression s);
     void visit(IfStatement s);
     void visit(MapExpression s);
+    void visit(ObjectCreationExpression s);
     void visit(PrintStatement s);
     void visit(PrintlnStatement s);
     void visit(ReadlnStatement s);
