@@ -43,10 +43,6 @@ public final class Variables {
     public static void clear() {
         scope = new Scope();
         scope.variables.clear();
-//        scope.variables.put("true", NumberValue.ONE);
-//        scope.variables.put("false", NumberValue.ZERO);
-//        scope.variables.put("true", new BooleanValue(true));
-//        scope.variables.put("false", new BooleanValue(false));
     }
     
     public static void push() {
