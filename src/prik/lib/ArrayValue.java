@@ -9,7 +9,7 @@ import prik.exceptions.TypeException;
  *
  * @author Professional
  */
-public final class ArrayValue implements Value, Iterable<Value> {
+public class ArrayValue implements Value, Iterable<Value> {
     private final Value[] elements;
 
     public ArrayValue(int size) {

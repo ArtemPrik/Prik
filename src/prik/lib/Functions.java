@@ -1,10 +1,12 @@
 package prik.lib;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import prik.Console;
 import prik.exceptions.UnknownFunctionException;
+import prik.lib.functions.Range;
 
 /**
  *
@@ -51,6 +53,8 @@ public final class Functions {
             }
             return new StringValue(String.format(format, values));
         });
+        
+        functions.put("range", new Range());
         
     }
     

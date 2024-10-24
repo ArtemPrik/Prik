@@ -13,7 +13,12 @@ import prik.parser.ast.*;
  */
 public class Parser {
     public static Statement parse(List<Token> tokens) {
-        return new Parser(tokens).parse();
+        final Parser parser = new Parser(tokens);
+        final Statement program = parser.parse();
+        if (parser.getParseErrors().hasErrors()) {
+            throw new ParseException(parser.getParseErrors().toString());
+        }
+        return program;
     }
     
     private static final Token EOF = new Token(TokenType.EOF, "", -1, -1);
@@ -56,13 +61,11 @@ public class Parser {
     public Statement parse() {
         final BlockStatement result = new BlockStatement();
         while (!match(TokenType.EOF)) {
-//            result.add(statement());
             try {
                 result.add(statement());
             } catch (Exception ex) {
                 parseErrors.add(ex, getErrorLine());
                 recover();
-                throw new ParseException("\n\n" + parseErrors.toString());
             }
         }
         return result;
