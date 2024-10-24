@@ -6,7 +6,7 @@ import java.util.Iterator;
  *
  * @author Professional
  */
-public final class DoWhileStatement implements Statement, Iterable {
+public final class DoWhileStatement implements Statement {
     public final Expression condition;
     public final Statement statement;
 
@@ -36,11 +36,6 @@ public final class DoWhileStatement implements Statement, Iterable {
     
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
-    }
-    
-    @Override
-    public Iterator iterator() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
