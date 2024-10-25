@@ -64,6 +64,16 @@ public abstract class AbstractVisitor implements Visitor {
     }
 
     @Override
+    public void visit(DeclareVarStatement s) {
+        s.expression.accept(this);
+    }
+
+    @Override
+    public void visit(DatatypeExpression s) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
     public void visit(DoWhileStatement s) {
         s.condition.accept(this);
         s.statement.accept(this);
@@ -117,6 +127,11 @@ public abstract class AbstractVisitor implements Visitor {
         if (s.elseStatement != null) {
             s.elseStatement.accept(this);
         }
+    }
+
+    @Override
+    public void visit(ImportStatement s) {
+        s.expression.accept(this);
     }
     
     @Override

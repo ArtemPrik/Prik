@@ -13,6 +13,10 @@ public enum TokenType {
     TRUE,
     FALSE,
     
+    NUMBER_DATA,
+    STRING_DATA,
+    BOOLEAN_DATA,
+    
     PRINT,
     PRINTLN,
     IF,
@@ -26,6 +30,7 @@ public enum TokenType {
     RETURN,
     CLASS,
     NEW,
+    IMPORT,
     
     NULL,
     REPEAT,

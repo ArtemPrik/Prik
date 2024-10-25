@@ -15,6 +15,8 @@ public interface Visitor {
     void visit(ConditionalExpression s);
     void visit(ContainerAccessExpression s);
     void visit(ContinueStatement s);
+    void visit(DatatypeExpression s);
+    void visit(DeclareVarStatement s);
     void visit(DoWhileStatement s);
     void visit(ExprStatement s);
     void visit(ForStatement s);
@@ -24,6 +26,7 @@ public interface Visitor {
     void visit(FunctionReferenceExpression s);
     void visit(FunctionalExpression s);
     void visit(IfStatement s);
+    void visit(ImportStatement s);
     void visit(MapExpression s);
     void visit(ObjectCreationExpression s);
     void visit(PrintStatement s);

@@ -92,6 +92,10 @@ public final class Lexer {
         KEYWORDS.put("true", TokenType.TRUE);
         KEYWORDS.put("false", TokenType.FALSE);
         
+        KEYWORDS.put("number", TokenType.NUMBER_DATA);
+        KEYWORDS.put("string", TokenType.STRING_DATA);
+        KEYWORDS.put("boolean", TokenType.BOOLEAN_DATA);
+        
         KEYWORDS.put("print", TokenType.PRINT);
         KEYWORDS.put("println", TokenType.PRINTLN);
         KEYWORDS.put("if", TokenType.IF);
@@ -108,6 +112,7 @@ public final class Lexer {
         KEYWORDS.put("using", TokenType.USING);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
+        KEYWORDS.put("import", TokenType.IMPORT);
         
         KEYWORDS.put("repeat", TokenType.REPEAT);
         KEYWORDS.put("assert", TokenType.ASSERT);
@@ -153,7 +158,6 @@ public final class Lexer {
             else if (current == '`') tokenizeExtendedWord();
             else if (current == '\'') tokenizeMiniText();
             else if (current == '"') tokenizeText();
-//            else if (current == '"' || current == '\'') tokenizeText();
             else if (current == '#') {
                 next();
                 tokenizeHexNumber();
@@ -306,7 +310,6 @@ public final class Lexer {
                 continue;
             }
             if (current == '"') break;
-//            if (current == '"' || current == '\'') break;
             buffer.append(current);
             current = next();
         }
@@ -356,7 +359,6 @@ public final class Lexer {
                 continue;
             }
             if (current == '\'') break;
-//            if (current == '"' || current == '\'') break;
             buffer.append(current);
             current = next();
         }

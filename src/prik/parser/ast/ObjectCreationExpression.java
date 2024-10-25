@@ -44,7 +44,7 @@ public final class ObjectCreationExpression implements Expression {
         }
         instance.callConstructor(ctorArgs);
         
-        return instance.getThisMap();
+        return instance;
     }
     
     @Override

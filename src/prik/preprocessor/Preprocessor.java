@@ -29,6 +29,11 @@ public final class Preprocessor {
                 if (parts.length == 2) {
                     processedCode.append("use ").append(parts[1]).append("\n");
                 }
+            } else if (trimmedLine.startsWith("#import")) {
+                String[] parts = trimmedLine.split("\\s+", 2);
+                if (parts.length == 2) {
+                    processedCode.append("import ").append(parts[1]).append("\n");
+                }
             } /*else if (trimmedLine.startsWith("#jInclude")) {
                 String[] parts = trimmedLine.split("\\s+", 2);
                 if (parts.length == 2) {

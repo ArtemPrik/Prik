@@ -25,6 +25,7 @@ public interface ResultVisitor<R, T> {
     R visit(FunctionReferenceExpression s, T t);
     R visit(FunctionalExpression s, T t);
     R visit(IfStatement s, T t);
+    R visit(ImportStatement s, T t);
     R visit(MapExpression s, T t);
     R visit(ObjectCreationExpression s, T t);
     R visit(PrintStatement s, T t);

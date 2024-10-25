@@ -143,6 +143,9 @@ public class Parser {
         if (match(TokenType.CLASS)) {
             return classDeclaration();
         }
+        if (match(TokenType.IMPORT)) {
+            return new ImportStatement(expression());
+        }
         
         if (match(TokenType.REPEAT)) {
             return repeatStatement();
@@ -179,6 +182,11 @@ public class Parser {
     
     private Statement declareVar() {
         String name = consume(TokenType.WORD).getText();
+        if (match(TokenType.COLON)) {
+            if (match(TokenType.NUMBER_DATA)) {
+                throw new RuntimeException("NUMBER_VARIABLES!!!!!!!!!");
+            }
+        }
         if (match(TokenType.EQ)) {
             return new DeclareVarStatement(name, expression());
         }
@@ -656,24 +664,12 @@ public class Parser {
     
     private Expression primary() {
         final Token current = get(0);
-        if (match(TokenType.NUMBER)) {
-            return new ValueExpression(Double.parseDouble(current.getText()));
-        }
-        if (match(TokenType.HEX_NUMBER)) {
-            return new ValueExpression(Long.parseLong(current.getText(), 16));
-        }
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return functionChain(new ValueExpression(consume(TokenType.WORD).getText()));
         }
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.DOT) 
                 || lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LBRACKET)) {
             return qualifiedName();
-        }
-        if (lookMatch(0, TokenType.LBRACKET)) {
-            return array();
-        }
-        if (lookMatch(0, TokenType.LBRACE)) {
-            return map();
         }
         if (match(TokenType.READLN)) {
             return new ReadlnStatement();
@@ -698,6 +694,32 @@ public class Parser {
             consume(TokenType.RPAREN);
             return result;
         }
+        if (match(TokenType.NULL)) return new ValueExpression(new NullValue());
+        if (match(TokenType.TRUE)) return new ValueExpression(true);
+        if (match(TokenType.FALSE)) return new ValueExpression(false);
+        
+        return variable();
+    }
+    
+    private Expression variable() {
+        final Token current = get(0);
+        if (lookMatch(0, TokenType.LBRACKET)) {
+            return array();
+        }
+        if (lookMatch(0, TokenType.LBRACE)) {
+            return map();
+        }
+        return value();
+    }
+    
+    private Expression value() {
+        final Token current = get(0);
+        if (match(TokenType.NUMBER)) {
+            return new ValueExpression(Double.parseDouble(current.getText()));
+        }
+        if (match(TokenType.HEX_NUMBER)) {
+            return new ValueExpression(Long.parseLong(current.getText(), 16));
+        }
         if (match(TokenType.TEXT)) {
             final ValueExpression strExpr = new ValueExpression(current.getText());
             // "text".property || "text".func()
@@ -717,10 +739,6 @@ public class Parser {
             }
             return strExpr;
         }
-        if (match(TokenType.NULL)) return new ValueExpression(new NullValue());
-        if (match(TokenType.TRUE)) return new ValueExpression(true);
-        if (match(TokenType.FALSE)) return new ValueExpression(false);
-        
         throw new ParseException("Unknown expression: " + current);
     }
     

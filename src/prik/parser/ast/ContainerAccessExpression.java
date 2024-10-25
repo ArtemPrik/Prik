@@ -3,6 +3,7 @@ package prik.parser.ast;
 import java.util.List;
 import prik.exceptions.TypeException;
 import prik.lib.ArrayValue;
+import prik.lib.ClassInstanceValue;
 import prik.lib.MapValue;
 import prik.lib.StringValue;
 import prik.lib.Types;
@@ -54,6 +55,9 @@ public final class ContainerAccessExpression implements Expression, Accessible {
 
             case Types.STRING:
                 return ((StringValue) container).access(lastIndex);
+            
+            case Types.CLASS:
+                return ((ClassInstanceValue) container).access(lastIndex);
                 
             default:
                 throw new TypeException("Array or map expected. Got " + Types.typeToString(container.type()));

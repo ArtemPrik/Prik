@@ -30,7 +30,7 @@ public final class DeclareVarStatement implements Statement {
 
     @Override
     public void accept(Visitor visitor) {
-//        visitor.visit(this);
+        visitor.visit(this);
     }
 
     @Override
