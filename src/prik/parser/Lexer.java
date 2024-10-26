@@ -109,7 +109,7 @@ public final class Lexer {
         KEYWORDS.put("return", TokenType.RETURN);
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("use", TokenType.USE);
-        KEYWORDS.put("using", TokenType.USING);
+        KEYWORDS.put("using", TokenType.USE);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
         KEYWORDS.put("import", TokenType.IMPORT);

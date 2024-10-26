@@ -1,0 +1,35 @@
+balance = 0
+isRunning = true
+
+def show_balance() println("\n##### Ваш баланс: $" + balance + "\n")
+
+def deposit() {
+    print("\n Введите сумму депозита: ")
+    amount = double(`readln`())
+    println amount
+}
+
+def withdraw() {}
+
+while isRunning {
+    println("Добро пожаловать в банкомат!")
+    println("1. Показать баланс")
+    println("2. Депозит")
+    println("3. Вывести деньги")
+    println("4. Выход")
+
+    print("Выберите действие (1-4): ")
+    choice = readln
+
+    if (choice == "1") {
+        show_balance()
+    } else if (choice == "2") {
+        deposit()
+    } else if (choice == "3") {
+        withdraw()
+    } else if (choice == "4") {
+        isRunning = false
+    } else {
+        println("Неверный ввод!")
+    }
+}

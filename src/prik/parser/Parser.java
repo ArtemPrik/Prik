@@ -16,7 +16,7 @@ public class Parser {
         final Parser parser = new Parser(tokens);
         final Statement program = parser.parse();
         if (parser.getParseErrors().hasErrors()) {
-            throw new ParseException(parser.getParseErrors().toString());
+            throw new ParseException("\n\n" + parser.getParseErrors().toString());
         }
         return program;
     }
@@ -182,15 +182,24 @@ public class Parser {
     
     private Statement declareVar() {
         String name = consume(TokenType.WORD).getText();
-        if (match(TokenType.COLON)) {
-            if (match(TokenType.NUMBER_DATA)) {
-                throw new RuntimeException("NUMBER_VARIABLES!!!!!!!!!");
-            }
+        final Datatypes.Datatype type;
+        consume(TokenType.COLON);
+        if (match(TokenType.NUMBER_DATA)) {
+            type = Datatypes.Datatype.NUMBER;
         }
-        if (match(TokenType.EQ)) {
-            return new DeclareVarStatement(name, expression());
+        else if (match(TokenType.STRING_DATA)) {
+            type = Datatypes.Datatype.STRING;
         }
-        return new DeclareVarStatement(name);
+        else if (match(TokenType.BOOLEAN_DATA)) {
+            type = Datatypes.Datatype.BOOLEAN;
+        } else {
+            throw new ParseException("After COLON(:) doesn`t match type");
+        }
+//        if (match(TokenType.EQ)) {
+//            return new DeclareVarStatement(name, expression());
+//        }
+        consume(TokenType.EQ);
+        return new DeclareVarStatement(name, expression(), type);
     }
     
     private Statement repeatStatement() {

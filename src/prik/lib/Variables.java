@@ -80,6 +80,21 @@ public final class Variables {
             findScope(key).scope.variables.put(key, value);
         }
     }
+    public static void setNumber(String key, NumberValue value) {
+        synchronized (lock) {
+            findScope(key).scope.variables.put(key, value);
+        }
+    }
+    public static void set(String key, StringValue value) {
+        synchronized (lock) {
+            findScope(key).scope.variables.put(key, value);
+        }
+    }
+    public static void set(String key, BooleanValue value) {
+        synchronized (lock) {
+            findScope(key).scope.variables.put(key, value);
+        }
+    }
     
     public static void define(String key, Value value) {
         synchronized (lock) {
