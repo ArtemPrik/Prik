@@ -16,12 +16,8 @@ public final class StringValue implements Value {
     }
     
     public Value access(Value propertyValue) {
-        switch (propertyValue.type()) {
-            case Types.NUMBER:
-                return get(propertyValue.asInt());
-            case Types.STRING:
-                final String prop = propertyValue.asString();
-                switch (prop) {
+        final String prop = propertyValue.asString();
+        switch (prop) {
                     // Properties
                     case "length":
                         return NumberValue.of(length());
@@ -78,10 +74,8 @@ public final class StringValue implements Value {
                             });
                         }
                         break;
-            }
-            default:
-                throw new RuntimeException("String or number expexted. Got " + Types.typeToString(propertyValue.type()));
         }
+        throw new RuntimeException("Unkown property: " + prop);
     }
     
     public Value get(int index) {

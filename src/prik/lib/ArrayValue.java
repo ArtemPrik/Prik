@@ -30,6 +30,24 @@ public class ArrayValue implements Value, Iterable<Value> {
         this(array.elements);
     }
     
+    public static ArrayValue add(ArrayValue array, Value value) {
+        final int last = array.elements.length;
+        final ArrayValue result = new ArrayValue(last + 1);
+        System.arraycopy(array.elements, 0, result.elements, 0, last);
+        result.elements[last] = value;
+        return result;
+    }
+    
+    public static ArrayValue merge(ArrayValue array1, ArrayValue array2) {
+        final int length1 = array1.elements.length;
+        final int length2 = array2.elements.length;
+        final int length = length1 + length2;
+        final ArrayValue result = new ArrayValue(length);
+        System.arraycopy(array1.elements, 0, result.elements, 0, length1);
+        System.arraycopy(array2.elements, 0, result.elements, length1, length2);
+        return result;
+    }
+    
     public static ArrayValue of(byte[] array) {
         final int size = array.length;
         final ArrayValue result = new ArrayValue(size);
@@ -121,6 +139,7 @@ public class ArrayValue implements Value, Iterable<Value> {
         hash = 79 * hash + Arrays.deepHashCode(this.elements);
         return hash;
     }
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -135,4 +154,6 @@ public class ArrayValue implements Value, Iterable<Value> {
     public Iterator<Value> iterator() {
         return Arrays.asList(elements).iterator();
     }
+    
+    
 }

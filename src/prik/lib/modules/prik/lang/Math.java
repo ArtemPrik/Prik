@@ -21,9 +21,6 @@ public final class Math implements Module {
 
     @Override
     public void init() {
-        ArrayValue array = new ArrayValue(1);
-        array.set(0, new NumberValue(java.lang.Math.PI));
-        Variables.define("Math", array);
         
         Variables.set("PI", new NumberValue(java.lang.Math.PI));
         Variables.set("TAU", new NumberValue(java.lang.Math.TAU));
@@ -40,6 +37,8 @@ public final class Math implements Module {
         Functions.set("sqrt", functionConvert(java.lang.Math::sqrt));
         Functions.set("toDegrees", functionConvert(java.lang.Math::toDegrees));
         Functions.set("toRadians", functionConvert(java.lang.Math::toRadians));
+        
+        Functions.set("round", functionConvert(java.lang.Math::round));
         
         Functions.set("pow", biFunctionConvert(java.lang.Math::pow));
         Functions.set("atan", functionConvert(java.lang.Math::atan));

@@ -35,7 +35,7 @@ public class Parser {
         assignOperator.put(TokenType.AMPEQ, BinaryExpression.Operator.AND);
         assignOperator.put(TokenType.CARETEQ, BinaryExpression.Operator.XOR);
         assignOperator.put(TokenType.BAREQ, BinaryExpression.Operator.OR);
-//        assignOperator.put(TokenType.COLONCOLONEQ, BinaryExpression.Operator.PUSH);
+        assignOperator.put(TokenType.COLONCOLONEQ, BinaryExpression.Operator.PUSH);
         assignOperator.put(TokenType.LTLTEQ, BinaryExpression.Operator.LSHIFT);
         assignOperator.put(TokenType.GTGTEQ, BinaryExpression.Operator.RSHIFT);
         assignOperator.put(TokenType.GTGTGTEQ, BinaryExpression.Operator.URSHIFT);
@@ -159,6 +159,9 @@ public class Parser {
         if (match(TokenType.VAR)) {
             return declareVar();
         }
+        if (match(TokenType.CONST)) {
+            return declareConst();
+        }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return new ExprStatement(function());
@@ -182,24 +185,29 @@ public class Parser {
     
     private Statement declareVar() {
         String name = consume(TokenType.WORD).getText();
-        final Datatypes.Datatype type;
-        consume(TokenType.COLON);
-        if (match(TokenType.NUMBER_DATA)) {
-            type = Datatypes.Datatype.NUMBER;
+        if (match(TokenType.EQ)) {
+            return new DeclareVarStatement(name, expression());
         }
-        else if (match(TokenType.STRING_DATA)) {
-            type = Datatypes.Datatype.STRING;
-        }
-        else if (match(TokenType.BOOLEAN_DATA)) {
-            type = Datatypes.Datatype.BOOLEAN;
-        } else {
-            throw new ParseException("After COLON(:) doesn`t match type");
-        }
-//        if (match(TokenType.EQ)) {
-//            return new DeclareVarStatement(name, expression());
+        return new DeclareVarStatement(name);
+    }
+    
+    private Statement declareConst() {
+        String name = consume(TokenType.WORD).getText();
+//        final Datatypes.Datatype type;
+//        consume(TokenType.COLON);
+//        if (match(TokenType.NUMBER_DATA)) {
+//            type = Datatypes.Datatype.NUMBER;
+//        }
+//        else if (match(TokenType.STRING_DATA)) {
+//            type = Datatypes.Datatype.STRING;
+//        }
+//        else if (match(TokenType.BOOLEAN_DATA)) {
+//            type = Datatypes.Datatype.BOOLEAN;
+//        } else {
+//            throw new ParseException("After COLON(:) doesn`t match type");
 //        }
         consume(TokenType.EQ);
-        return new DeclareVarStatement(name, expression(), type);
+        return new DeclareConstStatement(name, expression());
     }
     
     private Statement repeatStatement() {
@@ -588,6 +596,10 @@ public class Parser {
                 expression = new BinaryExpression(BinaryExpression.Operator.URSHIFT, expression, additive());
                 continue;
             }
+            if (match(TokenType.DOTDOT)) {
+                expression = new BinaryExpression(BinaryExpression.Operator.RANGE, expression, additive());
+                continue;
+            }
             break;
         }
         
@@ -604,6 +616,18 @@ public class Parser {
             }
             if (match(TokenType.MINUS)) {
                 result = new BinaryExpression(BinaryExpression.Operator.SUBTRACT, result, multiplicative());
+                continue;
+            }
+            if (match(TokenType.COLONCOLON)) {
+                result = new BinaryExpression(BinaryExpression.Operator.PUSH, result, multiplicative());
+                continue;
+            }
+            if (match(TokenType.AT)) {
+                result = new BinaryExpression(BinaryExpression.Operator.AT, result, multiplicative());
+                continue;
+            }
+            if (match(TokenType.CARETCARET)) {
+                result = new BinaryExpression(BinaryExpression.Operator.CARETCARET, result, multiplicative());
                 continue;
             }
             break;
@@ -626,6 +650,10 @@ public class Parser {
             }
             if (match(TokenType.PERCENT)) {
                 result = new BinaryExpression(BinaryExpression.Operator.REMAINDER, result, unary());
+                continue;
+            }
+            if (match(TokenType.STARSTAR)) {
+                result = new BinaryExpression(BinaryExpression.Operator.POWER, result, expression());
                 continue;
             }
             break;

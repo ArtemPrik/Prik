@@ -36,6 +36,7 @@ public enum TokenType {
     REPEAT,
     READLN,
     VAR,
+    CONST,
     
     ASSERT,
     
@@ -48,6 +49,7 @@ public enum TokenType {
     STAR, 
     SLASH, 
     PERCENT,
+    AT,
     
     EQ,
     EQEQ,
@@ -71,19 +73,25 @@ public enum TokenType {
     GTGTEQ, // >>=
     GTGTGTEQ, // >>>=
     
+    PLUSPLUS,
+    MINUSMINUS,
+    
     LTLT,
     GTGT,
     GTGTGT,
     
-    PLUSPLUS,
-    MINUSMINUS,
+    DOTDOT, // ..
+    STARSTAR, // **
+    QUESTIONCOLON, // ?:
+    QUESTIONQUESTION,
     
-    TILDE, 
-    CARET, 
-    BAR, 
-    BARBAR, 
-    AMP, 
-    AMPAMP, 
+    TILDE,
+    CARET,
+    CARETCARET,
+    BAR,
+    BARBAR,
+    AMP,
+    AMPAMP,
     
     QUESTION, 
     COLON,

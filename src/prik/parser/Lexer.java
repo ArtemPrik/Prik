@@ -80,6 +80,13 @@ public final class Lexer {
         OPERATORS.put("<<", TokenType.LTLT);
         OPERATORS.put(">>", TokenType.GTGT);
         OPERATORS.put(">>>", TokenType.GTGTGT);
+        
+        OPERATORS.put("@", TokenType.AT);
+        OPERATORS.put("..", TokenType.DOTDOT);
+        OPERATORS.put("**", TokenType.STARSTAR);
+        OPERATORS.put("^^", TokenType.CARETCARET);
+        OPERATORS.put("?:", TokenType.QUESTIONCOLON);
+        OPERATORS.put("??", TokenType.QUESTIONQUESTION);
     }
     
     private static final Map<String, TokenType> KEYWORDS;
@@ -106,6 +113,7 @@ public final class Lexer {
         KEYWORDS.put("break", TokenType.BREAK);
         KEYWORDS.put("continue", TokenType.CONTINUE);
         KEYWORDS.put("def", TokenType.DEF);
+        KEYWORDS.put("func", TokenType.DEF);
         KEYWORDS.put("return", TokenType.RETURN);
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("use", TokenType.USE);
@@ -118,6 +126,7 @@ public final class Lexer {
         KEYWORDS.put("assert", TokenType.ASSERT);
         KEYWORDS.put("readln", TokenType.READLN);
         KEYWORDS.put("var", TokenType.VAR);
+        KEYWORDS.put("const", TokenType.CONST);
     }
     
     public static Set<String> getKeywords() {
@@ -414,10 +423,7 @@ public final class Lexer {
     }
     
     private void typesModule() {
-        MapValue types = new MapValue(10);
-        
-        types.set("typeof", args -> NumberValue.of(args[0].type()));
-        types.set("typetostring", args -> new StringValue(Types.typeToString(args[0].type())));
+        MapValue types = new MapValue(8);
         
         types.set("string", args -> new StringValue(args[0].asString()));
         types.set("number", args -> NumberValue.of(args[0].asNumber()));

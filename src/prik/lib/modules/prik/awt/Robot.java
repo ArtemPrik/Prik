@@ -72,8 +72,8 @@ public final class Robot implements prik.lib.modules.Module {
                 } catch (IllegalArgumentException iae) { }
                 return NumberValue.ZERO;
             });
-            Functions.set("toClipboard", new robot_toclipboard());
-            Functions.set("fromClipboard", new robot_fromclipboard());
+            map.set("toClipboard", new robot_toclipboard());
+            map.set("fromClipboard", new robot_fromclipboard());
         }
         map.set("execProcess", new robot_exec(robot_exec.Mode.EXEC));
         map.set("execProcessAndWait", new robot_exec(robot_exec.Mode.EXEC_AND_WAIT));

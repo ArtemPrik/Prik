@@ -1,5 +1,6 @@
 package prik.parser.ast;
 
+import prik.exceptions.PrikException;
 import prik.exceptions.VariableDoesNotExistsException;
 import prik.lib.*;
 
@@ -21,13 +22,23 @@ public final class VariableExpression implements Expression, Accessible {
 
     @Override
     public Value get() {
-        if (!Variables.isExists(name)) throw new VariableDoesNotExistsException(name);
-        return Variables.get(name);
+        if (Variables.isExists(name)) {
+            if (Variables.isConstant(name)) {
+                return Variables.getConstant(name);
+            } else return Variables.get(name);
+        } else throw new VariableDoesNotExistsException(name);
     }
 
     @Override
     public Value set(Value value) {
-        Variables.set(name, value);
+        if (Variables.isExists(name)) {
+            if (!Variables.isConstant(name)) {
+                Variables.set(name, value);
+            } else throw new PrikException("CannotAssignValueToConstantError", 
+                "Cannot assign value to constant \"" + name + "\"");
+        }
+        else throw new VariableDoesNotExistsException(name);
+//        Variables.set(name, value);
         return value;
     }
     

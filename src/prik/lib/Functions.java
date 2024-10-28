@@ -41,6 +41,23 @@ public final class Functions {
             return new BooleanValue(check);
         });
         
+        functions.put("toHexString", (Value... args) -> {
+            Arguments.check(1, args.length);
+            long value;
+            if (args[0].type() == Types.NUMBER) {
+                value = ((NumberValue) args[0]).asLong();
+            } else {
+                value = (long) args[0].asNumber();
+            }
+            return new StringValue(Long.toHexString(value));
+        });
+        
+//        functions.put("typeof", args -> NumberValue.of(args[0].type()));
+        functions.put("typeof", (Function) (Value... args) -> {
+            Arguments.check(1, args.length);
+            return new StringValue(Types.typeToString(args[0].type()));
+        });
+        
         functions.put("sprintf", (Value... args) -> {
             Arguments.checkAtLeast(1, args.length);
             

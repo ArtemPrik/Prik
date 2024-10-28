@@ -11,6 +11,7 @@ import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.swing.BoxLayout;
@@ -20,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import prik.lib.Arguments;
 import prik.lib.ArrayValue;
@@ -97,6 +99,31 @@ public final class Forms implements Module {
         border.set("SOUTH", new StringValue(BorderLayout.SOUTH));
         border.set("WEST", new StringValue(BorderLayout.WEST));
         Variables.define("BorderLayout", border);
+        
+        // ScrollPane constants
+        final MapValue scrollpane = new MapValue(13);
+        scrollpane.set("COLUMN_HEADER", new StringValue(ScrollPaneConstants.COLUMN_HEADER));
+        scrollpane.set("HORIZONTAL_SCROLLBAR", new StringValue(ScrollPaneConstants.HORIZONTAL_SCROLLBAR));
+        scrollpane.set("HORIZONTAL_SCROLLBAR_POLICY", new StringValue(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_POLICY));
+        scrollpane.set("LOWER_LEADING_CORNER", new StringValue(ScrollPaneConstants.LOWER_LEADING_CORNER));
+        scrollpane.set("LOWER_LEFT_CORNER", new StringValue(ScrollPaneConstants.LOWER_LEFT_CORNER));
+        scrollpane.set("LOWER_RIGHT_CORNER", new StringValue(ScrollPaneConstants.LOWER_RIGHT_CORNER));
+        scrollpane.set("LOWER_TRAILING_CORNER", new StringValue(ScrollPaneConstants.LOWER_TRAILING_CORNER));
+        scrollpane.set("ROW_HEADER", new StringValue(ScrollPaneConstants.ROW_HEADER));
+        scrollpane.set("UPPER_LEADING_CORNER", new StringValue(ScrollPaneConstants.UPPER_LEADING_CORNER));
+        scrollpane.set("UPPER_LEFT_CORNER", new StringValue(ScrollPaneConstants.UPPER_LEFT_CORNER));
+        scrollpane.set("UPPER_RIGHT_CORNER", new StringValue(ScrollPaneConstants.UPPER_RIGHT_CORNER));
+        scrollpane.set("UPPER_TRAILING_CORNER", new StringValue(ScrollPaneConstants.UPPER_TRAILING_CORNER));
+        scrollpane.set("VERTICAL_SCROLLBAR", new StringValue(ScrollPaneConstants.VERTICAL_SCROLLBAR));
+        scrollpane.set("VERTICAL_SCROLLBAR_POLICY", new StringValue(ScrollPaneConstants.VERTICAL_SCROLLBAR_POLICY));
+        scrollpane.set("VIEWPORT", new StringValue(ScrollPaneConstants.VIEWPORT));
+        scrollpane.set("HORIZONTAL_SCROLLBAR_ALWAYS", NumberValue.of(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS));
+        scrollpane.set("HORIZONTAL_SCROLLBAR_AS_NEEDED", NumberValue.of(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+        scrollpane.set("HORIZONTAL_SCROLLBAR_NEVER", NumberValue.of(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+        scrollpane.set("VERTICAL_SCROLLBAR_ALWAYS", NumberValue.of(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS));
+        scrollpane.set("VERTICAL_SCROLLBAR_AS_NEEDED", NumberValue.of(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED));
+        scrollpane.set("VERTICAL_SCROLLBAR_NEVER", NumberValue.of(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER));
+        Variables.define("ScrollPaneConstants", scrollpane);
 
         final MapValue box = new MapValue(4);
         box.set("LINE_AXIS", NumberValue.of(BoxLayout.LINE_AXIS));
@@ -104,6 +131,21 @@ public final class Forms implements Module {
         box.set("X_AXIS", NumberValue.of(BoxLayout.X_AXIS));
         box.set("Y_AXIS", NumberValue.of(BoxLayout.Y_AXIS));
         Variables.define("BoxLayout", box);
+        
+        final MapValue windowEvent = new MapValue(4);
+        windowEvent.set("WINDOW_FIRST", NumberValue.of(WindowEvent.WINDOW_FIRST));
+        windowEvent.set("WINDOW_OPENED", NumberValue.of(WindowEvent.WINDOW_OPENED));
+        windowEvent.set("WINDOW_CLOSING", NumberValue.of(WindowEvent.WINDOW_CLOSING));
+        windowEvent.set("WINDOW_CLOSED", NumberValue.of(WindowEvent.WINDOW_CLOSED));
+        windowEvent.set("WINDOW_ICONIFIED", NumberValue.of(WindowEvent.WINDOW_ICONIFIED));
+        windowEvent.set("WINDOW_DEICONIFIED", NumberValue.of(WindowEvent.WINDOW_DEICONIFIED));
+        windowEvent.set("WINDOW_ACTIVATED", NumberValue.of(WindowEvent.WINDOW_ACTIVATED));
+        windowEvent.set("WINDOW_DEACTIVATED", NumberValue.of(WindowEvent.WINDOW_DEACTIVATED));
+        windowEvent.set("WINDOW_GAINED_FOCUS", NumberValue.of(WindowEvent.WINDOW_GAINED_FOCUS));
+        windowEvent.set("WINDOW_LOST_FOCUS", NumberValue.of(WindowEvent.WINDOW_LOST_FOCUS));
+        windowEvent.set("WINDOW_STATE_CHANGED", NumberValue.of(WindowEvent.WINDOW_STATE_CHANGED));
+        windowEvent.set("WINDOW_LAST", NumberValue.of(WindowEvent.WINDOW_LAST));
+        Variables.define("WindowEvent", windowEvent);
     }
 
     @Override
