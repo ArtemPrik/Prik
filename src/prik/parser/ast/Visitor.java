@@ -36,7 +36,7 @@ public interface Visitor {
     void visit(ReturnStatement s);
     void visit(TernaryExpression s);
     void visit(UnaryExpression s);
-    void visit(UseStatement st);
+    void visit(UsingNamespaceStatement st);
     void visit(ValueExpression s);
     void visit(VariableExpression s);
     void visit(WhileStatement st);

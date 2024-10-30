@@ -41,7 +41,6 @@ public enum TokenType {
     
     ASSERT,
     
-    USE,
     USING,
     NAMESPACE,
     

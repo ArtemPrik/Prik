@@ -134,8 +134,8 @@ public class Parser {
         if (match(TokenType.RETURN)) {
             return new ReturnStatement(expression());
         }
-        if (match(TokenType.USE)) {
-            return new UseStatement(expression());
+        if (match(TokenType.USING)) {
+            return usingStatement();
         }
         if (match(TokenType.DEF)) {
             return functionDefine();
@@ -169,6 +169,12 @@ public class Parser {
         }
         
         return assignmentStatement();
+    }
+    
+    private Statement usingStatement() {
+        consume(TokenType.NAMESPACE);
+        String namespace = consume(TokenType.WORD).getText();
+        return new UsingNamespaceStatement(namespace);
     }
     
     private Statement assignmentStatement() {

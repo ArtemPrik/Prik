@@ -117,8 +117,6 @@ public final class Lexer {
         KEYWORDS.put("func", TokenType.DEF);
         KEYWORDS.put("return", TokenType.RETURN);
         KEYWORDS.put("null", TokenType.NULL);
-        KEYWORDS.put("use", TokenType.USE);
-        KEYWORDS.put("using", TokenType.USE);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
         
@@ -128,6 +126,8 @@ public final class Lexer {
         KEYWORDS.put("readln", TokenType.READLN);
         KEYWORDS.put("var", TokenType.VAR);
         KEYWORDS.put("const", TokenType.CONST);
+        KEYWORDS.put("using", TokenType.USING);
+        KEYWORDS.put("namespace", TokenType.NAMESPACE);
     }
     
     public static Set<String> getKeywords() {

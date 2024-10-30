@@ -41,7 +41,7 @@ public final class AssignValidator extends AbstractVisitor {
     }
 
     @Override
-    public void visit(UseStatement st) {
+    public void visit(UsingNamespaceStatement st) {
         super.visit(st);
         st.execute();
     }

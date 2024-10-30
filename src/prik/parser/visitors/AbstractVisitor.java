@@ -187,8 +187,7 @@ public abstract class AbstractVisitor implements Visitor {
     }
     
     @Override
-    public void visit(UseStatement s) {
-        if (s.expression != null) s.expression.accept(this);
+    public void visit(UsingNamespaceStatement s) {
     }
 
     @Override

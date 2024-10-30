@@ -13,6 +13,7 @@ import prik.lib.NumberValue;
 import prik.lib.Types;
 import prik.lib.Value;
 import prik.lib.modules.Module;
+import prik.lib.namespaces.Namespace;
 import prik.parser.Lexer;
 import prik.parser.ParseException;
 import prik.parser.Parser;
@@ -25,39 +26,21 @@ import prik.preprocessor.Preprocessor;
  *
  * @author Professional
  */
-public final class UseStatement extends InterruptableNode implements Statement {
-    public static final String PACKAGE = "prik.lib.modules.";
-    public final Expression expression;
-    
-    public UseStatement(Expression expression) {
-        this.expression = expression;
+public final class UsingNamespaceStatement extends InterruptableNode implements Statement {
+    public static final String PACKAGE = "prik.lib.namespaces.";
+    public final String namespace;
+
+    public UsingNamespaceStatement(String namespace) {
+        this.namespace = namespace;
     }
     
     @Override
     public void execute() {
-        final Value value = expression.eval();
-        switch (value.type()) {
-            case Types.ARRAY:
-                for (Value module : ((ArrayValue) value)) {
-                    try {
-                        load(module);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-                break;
-            case Types.STRING:
-            {
-                try {
-                    load(value);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-                break;
-
-            default:
-                throw typeException(value);
+        try {
+            Namespace module = (Namespace) Class.forName(PACKAGE + namespace).newInstance();
+            module.init();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
     
@@ -97,6 +80,6 @@ public final class UseStatement extends InterruptableNode implements Statement {
 
     @Override
     public String toString() {
-        return "use " + expression.eval();
+        return "using namespace " + namespace;
     }
 }

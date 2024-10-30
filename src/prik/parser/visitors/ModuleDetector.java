@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import prik.parser.ast.ArrayExpression;
 import prik.parser.ast.Expression;
+import prik.parser.ast.ImportStatement;
 import prik.parser.ast.Statement;
-import prik.parser.ast.UseStatement;
 import prik.parser.ast.ValueExpression;
 
 /**
@@ -25,7 +25,7 @@ public class ModuleDetector extends AbstractVisitor {
     }
 
     @Override
-    public void visit(UseStatement st) {
+    public void visit(ImportStatement st) {
         if (st.expression instanceof ArrayExpression) {
             ArrayExpression ae = (ArrayExpression) st.expression;
             for (Expression expr : ae.elements) {
