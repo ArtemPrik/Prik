@@ -8,7 +8,8 @@ public class Datatypes {
     public static enum Datatype {
         NUMBER("number"),
         STRING("string"),
-        BOOLEAN("boolean");
+        BOOLEAN("boolean"),
+        ANY("any");
         
         public final String name;
         

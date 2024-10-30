@@ -11,9 +11,8 @@ import prik.parser.ast.Statement;
  * @author Professional
  */
 public class UserDefinedFunction implements Function {
-//    private final List<String> arguments;
-    private final prik.parser.ast.Arguments arguments;
-    private final Statement body;
+    public final prik.parser.ast.Arguments arguments;
+    public final Statement body;
     
     public UserDefinedFunction(prik.parser.ast.Arguments argNames, Statement body) {
         this.arguments = argNames;

@@ -3,6 +3,8 @@ package prik.parser.ast;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import prik.Console;
 import prik.exceptions.TypeException;
 import prik.lib.ArrayValue;
@@ -17,6 +19,7 @@ import prik.parser.Parser;
 import prik.parser.SourceLoader;
 import prik.parser.Token;
 import prik.parser.visitors.FunctionAdder;
+import prik.preprocessor.Preprocessor;
 
 /**
  *
@@ -36,12 +39,23 @@ public final class UseStatement extends InterruptableNode implements Statement {
         switch (value.type()) {
             case Types.ARRAY:
                 for (Value module : ((ArrayValue) value)) {
-                    ModuleLoader.loadAndUse(module.asString());
+                    try {
+                        load(module);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
                 break;
             case Types.STRING:
-                ModuleLoader.loadAndUse(value.asString());
+            {
+                try {
+                    load(value);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
                 break;
+
             default:
                 throw typeException(value);
         }
@@ -56,12 +70,14 @@ public final class UseStatement extends InterruptableNode implements Statement {
     
     private Statement loadPrikFile(String path) throws IOException {
         String input = SourceLoader.readSource(path);
-        List<Token> tokens = Lexer.tokenize(input);
+        String preprocess = Preprocessor.preprocess(input);
+        List<Token> tokens = Lexer.tokenize(preprocess);
         Parser parser = new Parser(tokens);
         Statement program = parser.parse();
         if (parser.getParseErrors().hasErrors()) {
            throw new ParseException(parser.getParseErrors().toString());
         }
+        program.accept(new FunctionAdder());
         return program;
     }
         

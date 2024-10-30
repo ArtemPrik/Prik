@@ -102,6 +102,7 @@ public final class Lexer {
         KEYWORDS.put("number", TokenType.NUMBER_DATA);
         KEYWORDS.put("string", TokenType.STRING_DATA);
         KEYWORDS.put("boolean", TokenType.BOOLEAN_DATA);
+        KEYWORDS.put("any", TokenType.ANY_DATA);
         
         KEYWORDS.put("print", TokenType.PRINT);
         KEYWORDS.put("println", TokenType.PRINTLN);
@@ -120,8 +121,8 @@ public final class Lexer {
         KEYWORDS.put("using", TokenType.USE);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
-        KEYWORDS.put("import", TokenType.IMPORT);
         
+        KEYWORDS.put("import", TokenType.IMPORT);
         KEYWORDS.put("repeat", TokenType.REPEAT);
         KEYWORDS.put("assert", TokenType.ASSERT);
         KEYWORDS.put("readln", TokenType.READLN);
@@ -211,7 +212,6 @@ public final class Lexer {
     }
 
     private static boolean isHexNumber(char current) {
-//        return "abcdef".indexOf(Character.toLowerCase(current)) != -1;
         return Character.isDigit(current)
                 || ('a' <= current && current <= 'f')
                 || ('A' <= current && current <= 'F');

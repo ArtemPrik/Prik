@@ -17,8 +17,6 @@ public final class Variables {
         stack = new Stack<>();
         variables = new ConcurrentHashMap<>();
         constants = new ConcurrentHashMap<>();
-        variables.put("true", NumberValue.ONE);
-        variables.put("false", NumberValue.ZERO);
     }
     
     public static void push() {
@@ -61,5 +59,9 @@ public final class Variables {
     
     public static void remove(String key) {
         variables.remove(key);
+    }
+    
+    public static void clear() {
+        variables.clear();
     }
 }

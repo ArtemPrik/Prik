@@ -164,7 +164,8 @@ public class Parser {
         }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
-            return new ExprStatement(function());
+            return new ExprStatement(functionChain(
+                        new ValueExpression(consume(TokenType.WORD).getText())));
         }
         
         return assignmentStatement();
@@ -193,21 +194,21 @@ public class Parser {
     
     private Statement declareConst() {
         String name = consume(TokenType.WORD).getText();
-//        final Datatypes.Datatype type;
-//        consume(TokenType.COLON);
-//        if (match(TokenType.NUMBER_DATA)) {
-//            type = Datatypes.Datatype.NUMBER;
-//        }
-//        else if (match(TokenType.STRING_DATA)) {
-//            type = Datatypes.Datatype.STRING;
-//        }
-//        else if (match(TokenType.BOOLEAN_DATA)) {
-//            type = Datatypes.Datatype.BOOLEAN;
-//        } else {
-//            throw new ParseException("After COLON(:) doesn`t match type");
-//        }
+        final Datatypes.Datatype type;
+        consume(TokenType.COLON);
+        if (match(TokenType.NUMBER_DATA)) {
+            type = Datatypes.Datatype.NUMBER;
+        } else if (match(TokenType.STRING_DATA)) {
+            type = Datatypes.Datatype.STRING;
+        } else if (match(TokenType.BOOLEAN_DATA)) {
+            type = Datatypes.Datatype.BOOLEAN;
+        } else if (match(TokenType.ANY_DATA)) {
+            type = Datatypes.Datatype.ANY;
+        } else {
+            throw new ParseException("After COLON(:) doesn`t match type");
+        }
         consume(TokenType.EQ);
-        return new DeclareConstStatement(name, expression());
+        return new DeclareConstStatement(name, expression(), type);
     }
     
     private Statement repeatStatement() {
@@ -357,18 +358,6 @@ public class Parser {
         // function(arg1, arg2, ...)
         consume(TokenType.LPAREN);
         final FunctionalExpression function = new FunctionalExpression(qualifiedNameExpr);
-        while (!match(TokenType.RPAREN)) {
-            function.addArgument(expression());
-            match(TokenType.COMMA);
-        }
-        return function;
-    }
-    
-    private FunctionalExpression function() {
-        String name = consume(TokenType.WORD).getText();
-        consume(TokenType.LPAREN);
-        final FunctionalExpression function = new FunctionalExpression(
-                new ValueExpression(name));
         while (!match(TokenType.RPAREN)) {
             function.addArgument(expression());
             match(TokenType.COMMA);

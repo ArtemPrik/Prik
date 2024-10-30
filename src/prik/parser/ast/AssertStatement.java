@@ -25,9 +25,14 @@ public final class AssertStatement implements Statement {
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
+    
+    @Override
+    public <R, T> R accept(ResultVisitor<R, T> visitor, T input) {
+        return visitor.visit(this, input);
+    }
 
     @Override
     public String toString() {
-        return "assert ";
+        return "assert " + condition;
     }
 }

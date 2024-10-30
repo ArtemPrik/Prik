@@ -3,6 +3,7 @@ package prik.lib.modules.prik.util;
 import prik.lib.Arguments;
 import prik.lib.BooleanValue;
 import prik.lib.Function;
+import prik.lib.Functions;
 import prik.lib.MapValue;
 import prik.lib.NumberValue;
 import prik.lib.StringValue;
@@ -21,7 +22,7 @@ public final class Scanner implements Module {
         
         java.util.Scanner sc = new java.util.Scanner(System.in);
         
-        scanner.set("scanDouble", (Value... args) -> {
+        Functions.set("scanDouble", (Value... args) -> {
             Arguments.check(0, args.length);
             return new NumberValue(sc.nextDouble());
         });

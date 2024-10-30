@@ -16,6 +16,7 @@ public enum TokenType {
     NUMBER_DATA,
     STRING_DATA,
     BOOLEAN_DATA,
+    ANY_DATA,
     
     PRINT,
     PRINTLN,

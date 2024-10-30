@@ -31,7 +31,12 @@ public final class RepeatStatement implements Statement/*, Expression*/ {
     }
 
     @Override
+    public <R, T> R accept(ResultVisitor<R, T> visitor, T input) {
+        return visitor.visit(this, input);
+    }
+
+    @Override
     public String toString() {
-        return "repeat" + condition + "{\n" + body + "}";
+        return "repeat " + condition + " {\n" + body + "}";
     }
 }
