@@ -17,13 +17,23 @@ import prik.util.TimeMeasurement;
  */
 public final class Interpreter {
     public static void run(String file) throws java.io.IOException {
+        TimeMeasurement measurement = new TimeMeasurement();
+        
         final String input = new String(Files.readAllBytes(Paths.get(file)), "UTF-8");
+        
+        measurement.start("Preprocess and Beautify time");
         final String preprocess = Preprocessor.preprocess(input);
         Console.println(Beautifier.beautify(preprocess));
+        measurement.stop("Preprocess and Beautify time");
+        
+        measurement.start("Tokenization time");
         final List<Token> tokens = Lexer.tokenize(preprocess);
         /* for (int i = 0; i < tokens.size(); i++) {
             Console.println(i + " " + tokens.get(i));
         } */
+        measurement.stop("Tokenization time");
+        
+        measurement.start("Parsing time");
         final Statement program = Parser.parse(tokens);
 //        Console.println(input);
 //        Console.println(program.toString()); // Вывод команды в консоль
@@ -31,11 +41,12 @@ public final class Interpreter {
         program.accept(new AssignValidator());
         program.accept(new CodegenVisitor());
 //        program.accept(new VariablePrinter());
-        TimeMeasurement measurement = new TimeMeasurement();
+        measurement.stop("Parsing time");
+
         measurement.start("Execution time");
         program.execute();
         measurement.stop("Execution time");
-        Console.println("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
+        Console.print("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
         /*Functions.get("main").execute();*/
     }
 }

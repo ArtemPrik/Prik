@@ -17,6 +17,7 @@ public interface Visitor {
     void visit(ContinueStatement s);
     void visit(DeclareConstStatement s);
     void visit(DeclareVarStatement s);
+    void visit(DestructuringAssignmentStatement s);
     void visit(DoWhileStatement s);
     void visit(ExprStatement s);
     void visit(ForStatement s);

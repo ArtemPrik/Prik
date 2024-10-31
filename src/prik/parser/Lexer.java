@@ -119,6 +119,7 @@ public final class Lexer {
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
+        KEYWORDS.put("extract", TokenType.EXTRACT);
         
         KEYWORDS.put("import", TokenType.IMPORT);
         KEYWORDS.put("repeat", TokenType.REPEAT);

@@ -6,6 +6,6 @@ package prik.exceptions;
  */
 public final class UnknownException extends PrikException {
     public UnknownException(String unk, Object message) {
-        super("prik.errors.Unknown", unk, message);
+        super("prik.errors.Unknown", String.format("Unknown %s \"%s", unk, message));
     }
 }

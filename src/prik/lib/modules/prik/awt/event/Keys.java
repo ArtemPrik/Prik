@@ -28,13 +28,7 @@ public final class Keys implements Module {
         keys.set("CONTROL", NumberValue.of(KeyEvent.VK_CONTROL));
         keys.set("ENTER", NumberValue.of(KeyEvent.VK_ENTER));
         
-//        keys.set("=", NumberValue.of(KeyEvent.VK_EQUALS));
         keys.set("EQUALS", NumberValue.of(KeyEvent.VK_EQUALS));
-        
-//        Variables.define("UP", NumberValue.of(KeyEvent.VK_UP));
-//        Variables.define("DOWN", NumberValue.of(KeyEvent.VK_DOWN));
-//        Variables.define("LEFT", NumberValue.of(KeyEvent.VK_LEFT));
-//        Variables.define("RIGHT", NumberValue.of(KeyEvent.VK_RIGHT));
 
         keys.set("0", NumberValue.of(KeyEvent.VK_0));
         keys.set("1", NumberValue.of(KeyEvent.VK_1));

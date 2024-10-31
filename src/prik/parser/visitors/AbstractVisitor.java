@@ -72,6 +72,11 @@ public abstract class AbstractVisitor implements Visitor {
     public void visit(DeclareVarStatement s) {
         if (s.expression != null) s.expression.accept(this);
     }
+    
+    @Override
+    public void visit(DestructuringAssignmentStatement s) {
+        s.containerExpression.accept(this);
+    }
 
     @Override
     public void visit(DoWhileStatement s) {

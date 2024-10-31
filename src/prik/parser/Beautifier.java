@@ -65,6 +65,7 @@ public class Beautifier {
 
         OPERATORS.put("++", OperatorMode.AS_SOURCE);
         OPERATORS.put("--", OperatorMode.AS_SOURCE);
+        OPERATORS.put("??", OperatorMode.AS_SOURCE);
         
         OPERATORS.put("::", OperatorMode.AS_SOURCE);
         

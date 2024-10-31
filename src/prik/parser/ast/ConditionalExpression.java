@@ -19,7 +19,9 @@ public final class ConditionalExpression implements Expression {
         GTEQ(">="),
         
         AND("&&"),
-        OR("||");
+        OR("||"),
+        
+        NULL_COALESCE("??");
         
         private final String name;
 
@@ -49,6 +51,7 @@ public final class ConditionalExpression implements Expression {
                     (value1.asNumber() != 0) && (expr2.eval().asNumber() != 0) );
             case OR: return NumberValue.fromBoolean(
                     (value1.asNumber() != 0) || (expr2.eval().asNumber() != 0) );
+            case NULL_COALESCE: return nullCoalesce();
         }
         
         
@@ -76,9 +79,20 @@ public final class ConditionalExpression implements Expression {
             default:
                 throw new OperationIsNotSupportedException(operation);
         }
-//        return StringValue.fromBoolean(result);
-//        return NumberValue.fromBoolean(result);
         return new BooleanValue(result);
+    }
+    
+    private Value nullCoalesce() {
+        Value value1;
+        try {
+            value1 = expr1.eval();
+        } catch (NullPointerException npe) {
+            value1 = null;
+        }
+        if (value1 == null) {
+            return expr2.eval();
+        }
+        return value1;
     }
     
     @Override

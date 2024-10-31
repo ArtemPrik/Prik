@@ -31,6 +31,7 @@ public enum TokenType {
     RETURN,
     CLASS,
     NEW,
+    EXTRACT,
     IMPORT,
     
     NULL,

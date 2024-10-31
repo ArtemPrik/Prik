@@ -19,6 +19,7 @@ public interface ResultVisitor<R, T> {
     R visit(ContinueStatement s, T t);
     R visit(DeclareConstStatement s, T t);
     R visit(DeclareVarStatement s, T t);
+    R visit(DestructuringAssignmentStatement s, T t);
     R visit(DoWhileStatement s, T t);
     R visit(ExprStatement s, T t);
     R visit(ForStatement s, T t);

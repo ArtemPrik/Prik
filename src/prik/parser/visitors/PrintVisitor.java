@@ -153,7 +153,22 @@ public class PrintVisitor implements ResultVisitor<StringBuilder, StringBuilder>
         }
         return t;
     }
-    
+
+    @Override
+    public StringBuilder visit(DestructuringAssignmentStatement s, StringBuilder t) {
+        t.append("extract(");
+        final Iterator<String> it = s.variables.iterator();
+        if (it.hasNext()) {
+            visitNullableVariable(it.next(), t);
+            while (it.hasNext()) {
+                t.append(", ");
+                visitNullableVariable(it.next(), t);
+            }
+        }
+        t.append(") = ");
+        s.containerExpression.accept(this, t);
+        return t;
+    }
 
     @Override
     public StringBuilder visit(DoWhileStatement s, StringBuilder t) {

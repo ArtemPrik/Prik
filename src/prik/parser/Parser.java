@@ -183,11 +183,30 @@ public class Parser {
 //            return new ExprStatement(assignment);
 //        }
 //        throw new ParseException("Unknown statement: " + get(0));
+        if (match(TokenType.EXTRACT)) {
+            return destructuringAssignment();
+        }
         final Expression expression = expression();
         if (expression instanceof Statement) {
             return (Statement) expression;
         }
         throw new ParseException("Unknown statement: " + get(0));
+    }
+    
+    private DestructuringAssignmentStatement destructuringAssignment() {
+        // extract(var1, var2, ...) = ...
+        consume(TokenType.LPAREN);
+        final List<String> variables = new ArrayList<>();
+        while (!match(TokenType.RPAREN)) {
+            if (lookMatch(0, TokenType.WORD)) {
+                variables.add(consume(TokenType.WORD).getText());
+            } else {
+                variables.add(null);
+            }
+            match(TokenType.COMMA);
+        }
+        consume(TokenType.EQ);
+        return new DestructuringAssignmentStatement(variables, expression());
     }
     
     private Statement declareVar() {
@@ -381,6 +400,20 @@ public class Parser {
         return new ArrayExpression(elements);
     }
     
+    private MapExpression map() {
+        // {key1 : value1, key2 : value2, ...}
+        consume(TokenType.LBRACE);
+        final Map<Expression, Expression> elements = new HashMap<>();
+        while (!match(TokenType.RBRACE)) {
+            final Expression key = primary();
+            consume(TokenType.COLON);
+            final Expression value = expression();
+            elements.put(key, value);
+            match(TokenType.COMMA);
+        }
+        return new MapExpression(elements);
+    }
+    
     private Statement classDeclaration() {
         // class Name {
         //   x = 123
@@ -439,22 +472,10 @@ public class Parser {
         return new AssignmentExpression(op, (Accessible) targetExpr, expression);
     }
     
-    private MapExpression map() {
-        // {key1 : value1, key2 : value2, ...}
-        consume(TokenType.LBRACE);
-        final Map<Expression, Expression> elements = new HashMap<>();
-        while (!match(TokenType.RBRACE)) {
-            final Expression key = primary();
-            consume(TokenType.COLON);
-            final Expression value = expression();
-            elements.put(key, value);
-            match(TokenType.COMMA);
-        }
-        return new MapExpression(elements);
-    }
+    
     
     private Expression ternary() {
-        Expression result = logicalOr();
+        Expression result = nullCoalesce();
         
         if (match(TokenType.QUESTION)) {
             final Expression trueExpr = expression();
@@ -463,6 +484,20 @@ public class Parser {
             return new TernaryExpression(result, trueExpr, falseExpr);
         }
         
+        return result;
+    }
+    
+    private Expression nullCoalesce() {
+        Expression result = logicalOr();
+
+        while (true) {
+            if (match(TokenType.QUESTIONQUESTION)) {
+                result = new ConditionalExpression(ConditionalExpression.Operator.NULL_COALESCE, result, expression());
+                continue;
+            }
+            break;
+        }
+
         return result;
     }
     

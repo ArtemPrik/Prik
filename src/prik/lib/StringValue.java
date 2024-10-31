@@ -17,7 +17,9 @@ public final class StringValue implements Value {
     
     public Value access(Value propertyValue) {
         final String prop = propertyValue.asString();
-        switch (prop) {
+        switch (propertyValue.type()) {
+            case Types.STRING:
+                switch (prop) {
                     // Properties
                     case "length":
                         return NumberValue.of(length());
@@ -74,6 +76,9 @@ public final class StringValue implements Value {
                             });
                         }
                         break;
+                }
+            case Types.NUMBER:
+                return get(propertyValue.asInt());
         }
         throw new RuntimeException("Unkown property: " + prop);
     }
