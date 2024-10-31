@@ -3,6 +3,7 @@ package prik.lib.modules.prik.lang;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -21,72 +22,55 @@ import prik.lib.modules.Module;
 public final class Reflection implements Module {
     @Override
     public void init() {
-
-        Variables.define("boolean.class", new JavaClassValue(boolean.class));
-        Variables.define("boolean[].class", new JavaClassValue(boolean[].class));
-        Variables.define("boolean[][].class", new JavaClassValue(boolean[][].class));
-        Variables.define("byte.class", new JavaClassValue(byte.class));
-        Variables.define("byte[].class", new JavaClassValue(byte[].class));
-        Variables.define("byte[][].class", new JavaClassValue(byte[][].class));
-        Variables.define("short.class", new JavaClassValue(short.class));
-        Variables.define("short[].class", new JavaClassValue(short[].class));
-        Variables.define("short[][].class", new JavaClassValue(short[][].class));
-        Variables.define("char.class", new JavaClassValue(char.class));
-        Variables.define("char[].class", new JavaClassValue(char[].class));
-        Variables.define("char[][].class", new JavaClassValue(char[][].class));
-        Variables.define("int.class", new JavaClassValue(int.class));
-        Variables.define("int[].class", new JavaClassValue(int[].class));
-        Variables.define("int[][].class", new JavaClassValue(int[][].class));
-        Variables.define("long.class", new JavaClassValue(long.class));
-        Variables.define("long[].class", new JavaClassValue(long[].class));
-        Variables.define("long[][].class", new JavaClassValue(long[][].class));
-        Variables.define("float.class", new JavaClassValue(float.class));
-        Variables.define("float[].class", new JavaClassValue(float[].class));
-        Variables.define("float[][].class", new JavaClassValue(float[][].class));
-        Variables.define("double.class", new JavaClassValue(double.class));
-        Variables.define("double[].class", new JavaClassValue(double[].class));
-        Variables.define("double[][].class", new JavaClassValue(double[][].class));
-        Variables.define("String.class", new JavaClassValue(String.class));
-        Variables.define("String[].class", new JavaClassValue(String[].class));
-        Variables.define("String[][].class", new JavaClassValue(String[][].class));
-        Variables.define("Object.class", new JavaClassValue(Object.class));
-        Variables.define("Object[].class", new JavaClassValue(Object[].class));
-        Variables.define("Object[][].class", new JavaClassValue(Object[][].class));
+        Variables.define("boolean.class", new ClassValue(boolean.class));
+        Variables.define("boolean[].class", new ClassValue(boolean[].class));
+        Variables.define("boolean[][].class", new ClassValue(boolean[][].class));
+        Variables.define("byte.class", new ClassValue(byte.class));
+        Variables.define("byte[].class", new ClassValue(byte[].class));
+        Variables.define("byte[][].class", new ClassValue(byte[][].class));
+        Variables.define("short.class", new ClassValue(short.class));
+        Variables.define("short[].class", new ClassValue(short[].class));
+        Variables.define("short[][].class", new ClassValue(short[][].class));
+        Variables.define("char.class", new ClassValue(char.class));
+        Variables.define("char[].class", new ClassValue(char[].class));
+        Variables.define("char[][].class", new ClassValue(char[][].class));
+        Variables.define("int.class", new ClassValue(int.class));
+        Variables.define("int[].class", new ClassValue(int[].class));
+        Variables.define("int[][].class", new ClassValue(int[][].class));
+        Variables.define("long.class", new ClassValue(long.class));
+        Variables.define("long[].class", new ClassValue(long[].class));
+        Variables.define("long[][].class", new ClassValue(long[][].class));
+        Variables.define("float.class", new ClassValue(float.class));
+        Variables.define("float[].class", new ClassValue(float[].class));
+        Variables.define("float[][].class", new ClassValue(float[][].class));
+        Variables.define("double.class", new ClassValue(double.class));
+        Variables.define("double[].class", new ClassValue(double[].class));
+        Variables.define("double[][].class", new ClassValue(double[][].class));
+        Variables.define("String.class", new ClassValue(String.class));
+        Variables.define("String[].class", new ClassValue(String[].class));
+        Variables.define("String[][].class", new ClassValue(String[][].class));
+        Variables.define("Object.class", new ClassValue(Object.class));
+        Variables.define("Object[].class", new ClassValue(Object[].class));
+        Variables.define("Object[][].class", new ClassValue(Object[][].class));
 
         Functions.set("isNull", this::isNull);
-        Functions.set("JUpload", this::JUpload);
-        Functions.set("JClass", this::JClass);
-        Functions.set("JObject", this::JObject);
-        Functions.set("LzrValue", this::LZRValue);
+        Functions.set("newClass", this::newClass);
+        Functions.set("toObject", this::toObject);
+        Functions.set("toValue", this::toValue);
     }
 
-    private Value JUpload(Value[] args) {
-        java.lang.String path = args[0].asString();
-        java.lang.String addressLib = args[1].asString();
-        try {
-            URLClassLoader child = new URLClassLoader(
-                    new URL[] { new URL("file:" + path) },
-                    this.getClass().getClassLoader()
-            );
-            Module module = (Module) Class.forName(addressLib + ".invoker", true, child).newInstance();
-            module.init();
-        } catch (Exception e) {
-            throw new PrikException(e.getLocalizedMessage(), e.getMessage());
-        }
+    //<editor-fold defaultstate="collapsed" desc="Values">
 
-        return NumberValue.MINUS_ONE;
-    }
-
-    private static class JavaClassValue extends MapValue {
+    private static class ClassValue extends MapValue {
 
         public static Value classOrNull(Class<?> clazz) {
             if (clazz == null) return new NullValue();
-            return new JavaClassValue(clazz);
+            return new ClassValue(clazz);
         }
 
         private final Class<?> clazz;
 
-        public JavaClassValue(Class<?> clazz) {
+        public ClassValue(Class<?> clazz) {
             super(25);
             this.clazz = clazz;
             init(clazz);
@@ -114,7 +98,11 @@ public final class Reflection implements Module {
             set("getComponentType", new FunctionValue(v -> classOrNull(clazz.getComponentType()) ));
             set("getDeclaringClass", new FunctionValue(v -> classOrNull(clazz.getDeclaringClass()) ));
             set("getEnclosingClass", new FunctionValue(v -> classOrNull(clazz.getEnclosingClass()) ));
-            set("getSuperclass", new FunctionValue(v -> new JavaClassValue(clazz.getSuperclass()) ));
+            set("getSuperclass", new FunctionValue(v -> new ClassValue(clazz.getSuperclass()) ));
+
+            set("getClasses", new FunctionValue(v -> array(clazz.getClasses()) ));
+            set("getDeclaredClasses", new FunctionValue(v -> array(clazz.getDeclaredClasses()) ));
+            set("getInterfaces", new FunctionValue(v -> array(clazz.getInterfaces()) ));
 
             set("asSubclass", new FunctionValue(this::asSubclass));
             set("isAssignableFrom", new FunctionValue(this::isAssignableFrom));
@@ -122,21 +110,25 @@ public final class Reflection implements Module {
             set("cast", new FunctionValue(this::cast));
         }
 
-        private Value asSubclass(Value[] args) {
+        private Value asSubclass(Value... args) {
             Arguments.check(1, args.length);
-            return new JavaClassValue(clazz.asSubclass( ((JavaClassValue)args[0]).clazz ));
+            return new ClassValue(clazz.asSubclass( ((ClassValue)args[0]).clazz ));
         }
 
-        private Value isAssignableFrom(Value[] args) {
+        private Value isAssignableFrom(Value... args) {
             Arguments.check(1, args.length);
-            return NumberValue.fromBoolean(clazz.isAssignableFrom( ((JavaClassValue)args[0]).clazz ));
+            return NumberValue.fromBoolean(clazz.isAssignableFrom( ((ClassValue)args[0]).clazz ));
         }
 
-        public Value newInstance(Value[] args) {
-            return findConstructorAndInstantiate(args, clazz.getConstructors());
+        private Value newInstance(Value... args) {
+            try {
+                return new ObjectValue(clazz.newInstance());
+            } catch (InstantiationException | IllegalAccessException ex) {
+                return new NullValue();
+            }
         }
 
-        private Value cast(Value[] args) {
+        private Value cast(Value... args) {
             Arguments.check(1, args.length);
             return objectToValue(clazz, clazz.cast(((ObjectValue)args[0]).object));
         }
@@ -176,7 +168,7 @@ public final class Reflection implements Module {
 
         @Override
         public boolean containsKey(Value key) {
-            return get(key) != null;
+            return getValue(object.getClass(), object, key.asString()) != null;
         }
 
         @Override
@@ -194,8 +186,9 @@ public final class Reflection implements Module {
             return "ObjectValue " + asString();
         }
     }
+//</editor-fold>
 
-    private Value isNull(Value[] args) {
+    private Value isNull(Value... args) {
         Arguments.checkAtLeast(1, args.length);
         for (Value arg : args) {
             if (arg.raw() == null) return NumberValue.ONE;
@@ -203,40 +196,40 @@ public final class Reflection implements Module {
         return NumberValue.ZERO;
     }
 
-    private Value JClass(Value[] args) {
+    private Value newClass(Value... args) {
         Arguments.check(1, args.length);
 
         final java.lang.String className = args[0].asString();
         try {
-            return new JavaClassValue(Class.forName(className));
+            return new ClassValue(Class.forName(className));
         } catch (ClassNotFoundException ce) {
-            throw new RuntimeException("Class " + className + " not found.", ce);
+            return new NullValue();
         }
     }
 
-
-    private Value JObject(Value[] args) {
+    private Value toObject(Value... args) {
         Arguments.check(1, args.length);
-        if (Objects.equals(args[0], new NullValue())) return new NullValue();
+        if (args[0] == new NullValue()) return new NullValue();
         return new ObjectValue(valueToObject(args[0]));
     }
 
-    private Value LZRValue(Value[] args) {
+    private Value toValue(Value... args) {
         Arguments.check(1, args.length);
         if (args[0] instanceof ObjectValue) {
-            return objectToValue( ((ObjectValue) args[0]).object);
+            return objectToValue( ((ObjectValue) args[0]).object );
         }
         return new NullValue();
     }
 
 
-
+    //<editor-fold defaultstate="collapsed" desc="Helpers">
     private static Value getValue(Class<?> clazz, Object object, java.lang.String key) {
         // Trying to get field
         try {
             final Field field = clazz.getField(key);
             return objectToValue(field.getType(), field.get(object));
-        } catch (Exception ex) {
+        } catch (NoSuchFieldException | SecurityException |
+                IllegalArgumentException | IllegalAccessException ex) {
             // ignore and go to the next step
         }
 
@@ -260,67 +253,42 @@ public final class Reflection implements Module {
         return new NullValue();
     }
 
-    private static Value findConstructorAndInstantiate(Value[] args, Constructor<?>[] ctors) {
-        for (Constructor<?> ctor : ctors) {
-            if (ctor.getParameterCount() != args.length) continue;
-            if (isNotMatch(args, ctor.getParameterTypes())) continue;
-            try {
-                final Object result = ctor.newInstance(valuesToObjects(args));
-                return new ObjectValue(result);
-            } catch (Exception ex) {
-                // skip
-            }
-        }
-        throw new RuntimeException("Constructor for " + args.length + " arguments"
-                + " not found or non accessible");
-    }
-
     private static Function methodsToFunction(Object object, List<Method> methods) {
         return (args) -> {
             for (Method method : methods) {
                 if (method.getParameterCount() != args.length) continue;
-                if (isNotMatch(args, method.getParameterTypes())) continue;
+                if (!isMatch(args, method.getParameterTypes())) continue;
                 try {
                     final Object result = method.invoke(object, valuesToObjects(args));
                     if (method.getReturnType() != void.class) {
                         return objectToValue(result);
                     }
                     return NumberValue.ONE;
-                } catch (Exception ex) {
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     // skip
                 }
             }
-            final java.lang.String className = (object == null ? "null" : object.getClass().getName());
-            throw new RuntimeException("Method for " + args.length + " arguments"
-                    + " not found or non accessible in " + className);
+            return null;
         };
     }
 
-    private static boolean isNotMatch(Value[] args, Class<?>[] types) {
+    private static boolean isMatch(Value[] args, Class<?>[] types) {
         for (int i = 0; i < args.length; i++) {
             final Value arg = args[i];
             final Class<?> clazz = types[i];
 
-            if (Objects.equals(arg, new NullValue())) continue;
+            if (arg == new NullValue()) continue;
 
             final Class<?> unboxed = unboxed(clazz);
             boolean assignable = unboxed != null;
             final Object object = valueToObject(arg);
             assignable = assignable && (object != null);
-            if (assignable && unboxed.isArray() && object.getClass().isArray()) {
-                final Class<?> uComponentType = unboxed.getComponentType();
-                final Class<?> oComponentType = object.getClass().getComponentType();
-                assignable = assignable && (uComponentType != null);
-                assignable = assignable && (oComponentType != null);
-                assignable = assignable && (uComponentType.isAssignableFrom(oComponentType));
-            } else {
-                assignable = assignable && (unboxed.isAssignableFrom(object.getClass()));
-            }
+            assignable = assignable && (unboxed.isAssignableFrom(object.getClass()));
             if (assignable) continue;
 
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private static Class<?> unboxed(Class<?> clazz) {
@@ -339,13 +307,21 @@ public final class Reflection implements Module {
         return clazz;
     }
 
+    private static ArrayValue array(Class<?>[] classes) {
+        final ArrayValue result = new ArrayValue(classes.length);
+        for (int i = 0; i < classes.length; i++) {
+            result.set(i, ClassValue.classOrNull(classes[i]));
+        }
+        return result;
+    }
+
     private static Value objectToValue(Object o) {
         if (o == null) return new NullValue();
         return objectToValue(o.getClass(), o);
     }
 
     private static Value objectToValue(Class<?> clazz, Object o) {
-        if (o == null || o.equals(new NullValue())) return new NullValue();
+        if (o == null || o == new NullValue()) return new NullValue();
         if (clazz.isPrimitive()) {
             if (int.class.isAssignableFrom(clazz))
                 return NumberValue.of((int) o);
@@ -440,7 +416,7 @@ public final class Reflection implements Module {
     }
 
     private static Object valueToObject(Value value) {
-        if (Objects.equals(value, new NullValue())) return null;
+        if (value == new prik.lib.NullValue()) return null;
         switch (value.type()) {
             case Types.NUMBER:
                 return value.raw();
@@ -452,79 +428,19 @@ public final class Reflection implements Module {
         if (value instanceof ObjectValue) {
             return ((ObjectValue) value).object;
         }
-        if (value instanceof JavaClassValue) {
-            return ((JavaClassValue) value).clazz;
+        if (value instanceof ClassValue) {
+            return ((ClassValue) value).clazz;
         }
         return value.raw();
     }
 
     private static Object arrayToObject(ArrayValue value) {
         final int size = value.size();
-        final Object[] array = new Object[size];
-        if (size == 0) {
-            return array;
-        }
-
-        Class<?> elementsType = null;
+        final Object[] result = new Object[size];
         for (int i = 0; i < size; i++) {
-            array[i] = valueToObject(value.get(i));
-            if (i == 0) {
-                elementsType = array[0].getClass();
-            } else {
-                elementsType = mostCommonType(elementsType, array[i].getClass());
-            }
+            result[i] = valueToObject(value.get(i));
         }
-
-        if (elementsType.equals(Object[].class)) {
-            return array;
-        }
-        return typedArray(array, size, elementsType);
+        return result;
     }
-
-    private static <T, U> T[] typedArray(U[] elements, int newLength, Class<?> elementsType) {
-        @SuppressWarnings("unchecked")
-        T[] copy = (T[]) Array.newInstance(elementsType, newLength);
-        java.lang.System.arraycopy(elements, 0, copy, 0, java.lang.Math.min(elements.length, newLength));
-        return copy;
-    }
-
-    private static Class<?> mostCommonType(Class<?> c1, Class<?> c2) {
-        if (c1.equals(c2)) {
-            return c1;
-        } else if (c1.isAssignableFrom(c2)) {
-            return c1;
-        } else if (c2.isAssignableFrom(c1)) {
-            return c2;
-        }
-        final Class<?> s1 = c1.getSuperclass();
-        final Class<?> s2 = c2.getSuperclass();
-        if (s1 == null && s2 == null) {
-            final List<Class<?>> upperTypes = Arrays.asList(
-                    Object.class, void.class, boolean.class, char.class,
-                    byte.class, short.class, int.class, long.class,
-                    float.class, double.class);
-            for (Class<?> type : upperTypes) {
-                if (c1.equals(type) && c2.equals(type)) {
-                    return s1;
-                }
-            }
-            return Object.class;
-        } else if (s1 == null || s2 == null) {
-            if (c1.equals(c2)) {
-                return c1;
-            }
-            if (c1.isInterface() && c1.isAssignableFrom(c2)) {
-                return c1;
-            }
-            if (c2.isInterface() && c2.isAssignableFrom(c1)) {
-                return c2;
-            }
-        }
-
-        if (s1 != null) {
-            return mostCommonType(s1, c2);
-        } else {
-            return mostCommonType(c1, s2);
-        }
-    }
+//</editor-fold>
 }
