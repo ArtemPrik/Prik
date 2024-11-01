@@ -238,7 +238,7 @@ public class PrintVisitor implements ResultVisitor<StringBuilder, StringBuilder>
 
     @Override
     public StringBuilder visit(FunctionDefineStatement s, StringBuilder t) {
-        t.append("def ");
+        t.append("func ");
         visitVariable(s.name, t);
         t.append(s.arguments);
         return visitFunctionBody(s.body, t);

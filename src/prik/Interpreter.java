@@ -24,7 +24,7 @@ public final class Interpreter {
         
         measurement.start("Preprocess and Beautify time");
         final String preprocess = Preprocessor.preprocess(input);
-        Console.println(Beautifier.beautify(preprocess));
+//        Console.println(Beautifier.beautify(preprocess));
         measurement.stop("Preprocess and Beautify time");
         
         measurement.start("Tokenization time");
@@ -47,7 +47,9 @@ public final class Interpreter {
         measurement.start("Execution time");
         program.execute();
         measurement.stop("Execution time");
-        Console.print("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
+        
+        Console.println("\n");
+//        Console.print("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
         /*Functions.get("main").execute();*/
     }
     

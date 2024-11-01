@@ -34,11 +34,16 @@ public enum TokenType {
     EXTRACT,
     IMPORT,
     
+    TRY,
+    CATCH,
+    THROW,
+    
     NULL,
     REPEAT,
     READLN,
     VAR,
     CONST,
+    MACRO,
     
     ASSERT,
     

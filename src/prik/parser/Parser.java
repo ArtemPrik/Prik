@@ -23,6 +23,8 @@ public class Parser {
     
     private static final Token EOF = new Token(TokenType.EOF, "", -1, -1);
     
+    private final Map<String, Integer> macros;
+    
     private static final Map<TokenType, BinaryExpression.Operator> assignOperator;
     static {
         assignOperator = new HashMap<>(BinaryExpression.Operator.values().length + 1);
@@ -52,6 +54,7 @@ public class Parser {
         this.tokens = tokens;
         size = tokens.size();
         parseErrors = new ParseErrors();
+        macros = new HashMap<>();
     }
     
     public ParseErrors getParseErrors() {
@@ -162,13 +165,63 @@ public class Parser {
         if (match(TokenType.CONST)) {
             return declareConst();
         }
+        if (match(TokenType.THROW)) {
+            return throwStatement();
+        }
+        if (match(TokenType.TRY)) {
+            return tryCatch();
+        }
+        if (match(TokenType.MACRO)) {
+            return macro();
+        }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return new ExprStatement(functionChain(
                         new ValueExpression(consume(TokenType.WORD).getText())));
         }
         
+        if (lookMatch(0, TokenType.WORD) && macros.containsKey(get(0).getText())) {
+            return macroUsage();
+        }
+        
         return assignmentStatement();
+    }
+    
+    private Statement macro() {
+        String name = consume(TokenType.WORD).getText();
+        Arguments args = arguments();
+        Statement block = statementOrBlock();
+        macros.put(name, args.size());
+        return new FunctionDefineStatement(name, args, block);
+    }
+    
+    private Statement macroUsage() {
+        String name = consume(TokenType.WORD).getText();
+        ArrayList<Expression> exprs = new ArrayList<>();
+
+        for (int i = 0; i < macros.get(name); i++)
+            exprs.add(expression());
+
+        return new FunctionalExpression(new VariableExpression(name), exprs);
+    }
+    
+    private Statement tryCatch() {
+        final Statement tryStatement = statementOrBlock();
+        final Statement catchStatement;
+        if (match(TokenType.CATCH)) {
+            catchStatement = statementOrBlock();
+        } else {
+            throw new PrikException("CatchBlockError", "the catch block was not found");
+        }
+        return new TryCatchStatement(tryStatement, catchStatement);
+    }
+    
+    private Statement throwStatement() {
+        String type = consume(TokenType.WORD).getText();
+        consume(TokenType.LPAREN);
+        Expression expr = expression();
+        consume(TokenType.RPAREN);
+        return new ThrowStatement(type, expr);
     }
     
     private Statement usingStatement() {
@@ -769,7 +822,22 @@ public class Parser {
     }
     
     private Expression variable() {
-        final Token current = get(0);
+        final Expression qualifiedNameExpr = qualifiedName();
+        if (qualifiedNameExpr != null) {
+            if (lookMatch(0, TokenType.LPAREN)) {
+                return functionChain(qualifiedNameExpr);
+            }
+
+            if (match(TokenType.PLUSPLUS)) {
+                return new UnaryExpression(UnaryExpression.Operator.INCREMENT_POSTFIX, qualifiedNameExpr);
+            }
+
+            if (match(TokenType.MINUSMINUS)) {
+                return new UnaryExpression(UnaryExpression.Operator.DECREMENT_POSTFIX, qualifiedNameExpr);
+            }
+
+            return qualifiedNameExpr;
+        }
         if (lookMatch(0, TokenType.LBRACKET)) {
             return array();
         }
@@ -777,36 +845,6 @@ public class Parser {
             return map();
         }
         return value();
-    }
-    
-    private Expression value() {
-        final Token current = get(0);
-        if (match(TokenType.NUMBER)) {
-            return new ValueExpression(Double.parseDouble(current.getText()));
-        }
-        if (match(TokenType.HEX_NUMBER)) {
-            return new ValueExpression(Long.parseLong(current.getText(), 16));
-        }
-        if (match(TokenType.TEXT)) {
-            final ValueExpression strExpr = new ValueExpression(current.getText());
-            // "text".property || "text".func()
-            if (lookMatch(0, TokenType.DOT)) {
-                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
-                    match(TokenType.DOT);
-                    return functionChain(new ContainerAccessExpression(
-                            strExpr, Collections.singletonList(
-                                    new ValueExpression(consume(TokenType.WORD).getText())
-                    )));
-                }
-                final List<Expression> indices = variableSuffix();
-                if (indices == null || indices.isEmpty()) {
-                    return strExpr;
-                }
-                return new ContainerAccessExpression(strExpr, indices);
-            }
-            return strExpr;
-        }
-        throw new ParseException("Unknown expression: " + current);
     }
     
     private Expression qualifiedName() {
@@ -838,6 +876,36 @@ public class Parser {
             }
         }
         return indices;
+    }
+    
+    private Expression value() {
+        final Token current = get(0);
+        if (match(TokenType.NUMBER)) {
+            return new ValueExpression(Double.parseDouble(current.getText()));
+        }
+        if (match(TokenType.HEX_NUMBER)) {
+            return new ValueExpression(Long.parseLong(current.getText(), 16));
+        }
+        if (match(TokenType.TEXT)) {
+            final ValueExpression strExpr = new ValueExpression(current.getText());
+            // "text".property || "text".func()
+            if (lookMatch(0, TokenType.DOT)) {
+                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
+                    match(TokenType.DOT);
+                    return functionChain(new ContainerAccessExpression(
+                            strExpr, Collections.singletonList(
+                                    new ValueExpression(consume(TokenType.WORD).getText())
+                    )));
+                }
+                final List<Expression> indices = variableSuffix();
+                if (indices == null || indices.isEmpty()) {
+                    return strExpr;
+                }
+                return new ContainerAccessExpression(strExpr, indices);
+            }
+            return strExpr;
+        }
+        throw new ParseException("Unknown expression: " + current);
     }
     
     private Token consume(TokenType type) {

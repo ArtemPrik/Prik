@@ -92,9 +92,6 @@ public final class Lexer {
     private static final Map<String, TokenType> KEYWORDS;
     static {
         KEYWORDS = new HashMap<>();
-        
-        KEYWORDS.put("and", TokenType.AMPAMP);
-        KEYWORDS.put("or", TokenType.BARBAR);
 
         KEYWORDS.put("true", TokenType.TRUE);
         KEYWORDS.put("false", TokenType.FALSE);
@@ -113,7 +110,6 @@ public final class Lexer {
         KEYWORDS.put("do", TokenType.DO);
         KEYWORDS.put("break", TokenType.BREAK);
         KEYWORDS.put("continue", TokenType.CONTINUE);
-        KEYWORDS.put("def", TokenType.DEF);
         KEYWORDS.put("func", TokenType.DEF);
         KEYWORDS.put("return", TokenType.RETURN);
         KEYWORDS.put("null", TokenType.NULL);
@@ -127,8 +123,14 @@ public final class Lexer {
         KEYWORDS.put("readln", TokenType.READLN);
         KEYWORDS.put("var", TokenType.VAR);
         KEYWORDS.put("const", TokenType.CONST);
+        KEYWORDS.put("macro", TokenType.MACRO);
+        
         KEYWORDS.put("using", TokenType.USING);
         KEYWORDS.put("namespace", TokenType.NAMESPACE);
+        
+        KEYWORDS.put("throw", TokenType.THROW);
+        KEYWORDS.put("try", TokenType.TRY);
+        KEYWORDS.put("catch", TokenType.CATCH);
     }
     
     public static Set<String> getKeywords() {

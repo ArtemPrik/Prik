@@ -1,4 +1,4 @@
-package prik.lib.namespaces;
+package prik.namespaces;
 
 import prik.lib.Function;
 import prik.lib.Functions;

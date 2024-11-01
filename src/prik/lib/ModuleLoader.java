@@ -18,7 +18,7 @@ public final class ModuleLoader {
                     .getDeclaredConstructor()
                     .newInstance();
         } catch (Exception ex) {
-            throw new PrikException("prik.errors.ModuleError", "Unable to load module \"" + name + "\"\n\n", ex);
+            throw new RuntimeException("Unable to load module \"" + name + "\"\n\n", ex);
         }
     }
 

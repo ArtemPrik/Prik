@@ -1,5 +1,6 @@
 package prik.parser.ast;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import prik.exceptions.TypeException;
@@ -57,10 +58,16 @@ public final class ImportStatement extends InterruptableNode implements Statemen
     }
     
     private void load(Value path) throws IOException {
-        if (path.asString().contains("prik.") || path.asString().contains("org.")) {
+//        try {
+//            ModuleLoader.loadAndUse(path.asString());
+//        } catch (Exception ex) {
+//            loadPrikFile(path.asString());
+//        }
+        try {
+            loadPrikFile(path.asString());
+        } catch (FileNotFoundException e) {
             ModuleLoader.loadAndUse(path.asString());
         }
-        else loadPrikFile(path.asString());
     }
     
     public Statement loadPrikFile(String path) throws IOException {
