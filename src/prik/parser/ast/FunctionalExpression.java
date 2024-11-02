@@ -40,7 +40,6 @@ public final class FunctionalExpression implements Expression, Statement {
             values[i] = arguments.get(i).eval();
         }
         
-//        final Function function = Functions.get(name);
         final Function function = getFunction(name);
         if (function instanceof UserDefinedFunction) {
             final UserDefinedFunction userFunction = (UserDefinedFunction) function;

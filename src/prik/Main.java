@@ -16,7 +16,7 @@ public final class Main {
     
     public static void main(String[] args) throws IOException {
         Interpreter.run(file);
-//        Compiler.compile(new String(Files.readAllBytes(Paths.get(file))));
+        Compiler.compile(new String(Files.readAllBytes(Paths.get(file))));
 //        Interpreter.compile(file);
 //        ConsoleExecutor.Start();
 //        Executor.execute();

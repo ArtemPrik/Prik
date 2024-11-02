@@ -147,7 +147,7 @@ public class Parser {
             return classDeclaration();
         }
         if (match(TokenType.IMPORT)) {
-            return new ImportStatement(expression());
+            return new ImportStatement(consume(TokenType.WORD).getText());
         }
         
         if (match(TokenType.REPEAT)) {
@@ -264,6 +264,20 @@ public class Parser {
     
     private Statement declareVar() {
         String name = consume(TokenType.WORD).getText();
+        if (match(TokenType.COLON)) {
+            final Datatypes.Datatype type;
+            if (match(TokenType.NUMBER_DATA)) {
+                type = Datatypes.Datatype.NUMBER;
+            } else if (match(TokenType.STRING_DATA)) {
+                type = Datatypes.Datatype.STRING;
+            } else if (match(TokenType.BOOLEAN_DATA)) {
+                type = Datatypes.Datatype.BOOLEAN;
+            } else if (match(TokenType.ANY_DATA)) {
+                type = Datatypes.Datatype.ANY;
+            } else {
+                throw new ParseException("After COLON(:) doesn`t match type");
+            }
+        }
         if (match(TokenType.EQ)) {
             return new DeclareVarStatement(name, expression());
         }
@@ -822,22 +836,7 @@ public class Parser {
     }
     
     private Expression variable() {
-        final Expression qualifiedNameExpr = qualifiedName();
-        if (qualifiedNameExpr != null) {
-            if (lookMatch(0, TokenType.LPAREN)) {
-                return functionChain(qualifiedNameExpr);
-            }
-
-            if (match(TokenType.PLUSPLUS)) {
-                return new UnaryExpression(UnaryExpression.Operator.INCREMENT_POSTFIX, qualifiedNameExpr);
-            }
-
-            if (match(TokenType.MINUSMINUS)) {
-                return new UnaryExpression(UnaryExpression.Operator.DECREMENT_POSTFIX, qualifiedNameExpr);
-            }
-
-            return qualifiedNameExpr;
-        }
+        final Token current = get(0);
         if (lookMatch(0, TokenType.LBRACKET)) {
             return array();
         }
@@ -845,6 +844,36 @@ public class Parser {
             return map();
         }
         return value();
+    }
+    
+    private Expression value() {
+        final Token current = get(0);
+        if (match(TokenType.NUMBER)) {
+            return new ValueExpression(Double.parseDouble(current.getText()));
+        }
+        if (match(TokenType.HEX_NUMBER)) {
+            return new ValueExpression(Long.parseLong(current.getText(), 16));
+        }
+        if (match(TokenType.TEXT)) {
+            final ValueExpression strExpr = new ValueExpression(current.getText());
+            // "text".property || "text".func()
+            if (lookMatch(0, TokenType.DOT)) {
+                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
+                    match(TokenType.DOT);
+                    return functionChain(new ContainerAccessExpression(
+                            strExpr, Collections.singletonList(
+                                    new ValueExpression(consume(TokenType.WORD).getText())
+                    )));
+                }
+                final List<Expression> indices = variableSuffix();
+                if (indices == null || indices.isEmpty()) {
+                    return strExpr;
+                }
+                return new ContainerAccessExpression(strExpr, indices);
+            }
+            return strExpr;
+        }
+        throw new ParseException("Unknown expression: " + current);
     }
     
     private Expression qualifiedName() {
@@ -876,36 +905,6 @@ public class Parser {
             }
         }
         return indices;
-    }
-    
-    private Expression value() {
-        final Token current = get(0);
-        if (match(TokenType.NUMBER)) {
-            return new ValueExpression(Double.parseDouble(current.getText()));
-        }
-        if (match(TokenType.HEX_NUMBER)) {
-            return new ValueExpression(Long.parseLong(current.getText(), 16));
-        }
-        if (match(TokenType.TEXT)) {
-            final ValueExpression strExpr = new ValueExpression(current.getText());
-            // "text".property || "text".func()
-            if (lookMatch(0, TokenType.DOT)) {
-                if (lookMatch(1, TokenType.WORD) && lookMatch(2, TokenType.LPAREN)) {
-                    match(TokenType.DOT);
-                    return functionChain(new ContainerAccessExpression(
-                            strExpr, Collections.singletonList(
-                                    new ValueExpression(consume(TokenType.WORD).getText())
-                    )));
-                }
-                final List<Expression> indices = variableSuffix();
-                if (indices == null || indices.isEmpty()) {
-                    return strExpr;
-                }
-                return new ContainerAccessExpression(strExpr, indices);
-            }
-            return strExpr;
-        }
-        throw new ParseException("Unknown expression: " + current);
     }
     
     private Token consume(TokenType type) {

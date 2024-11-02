@@ -13,7 +13,7 @@ public class Compiler {
             File output = new File("output.asclii");
             PrintWriter pw = new PrintWriter(output);
             for (int ch : input.toCharArray()) {
-                pw.print(ch + " ");
+                pw.println(ch + " ");
             }
             pw.close();
         } catch (Exception e) {

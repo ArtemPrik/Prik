@@ -33,11 +33,13 @@ public class ThrowStatement implements Statement {
 
     @Override
     public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T input) {
-        return null;
+//        return visitor.visit(this, input);
+        throw new RuntimeException("Not supported yet");
     }
 
     @Override

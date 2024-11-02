@@ -38,6 +38,8 @@ public interface ResultVisitor<R, T> {
     R visit(RepeatStatement s, T t);
     R visit(ReturnStatement s, T t);
     R visit(TernaryExpression s, T t);
+    R visit(ThrowStatement s, T t);
+    R visit(TryCatchStatement s, T t);
     R visit(UnaryExpression s, T t);
     R visit(UsingNamespaceStatement s, T t);
     R visit(ValueExpression s, T t);

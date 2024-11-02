@@ -9,7 +9,6 @@ import prik.lib.Variables;
  * @author Professional
  */
 public final class AssignmentExpression implements Expression, Statement {
-//    public final String variable;
     public final Accessible target;
     public final BinaryExpression.Operator operation;
     public final Expression expression;
@@ -27,9 +26,6 @@ public final class AssignmentExpression implements Expression, Statement {
     
     @Override
     public Value eval() {
-//        if (Variables.isExists(variable)) {
-//            Variables.set(variable, result);
-//        } else throw new VariableDoesNotExistsException(variable);
         if (operation == null) {
             // Simple assignment
             return target.set(expression.eval());
@@ -44,6 +40,7 @@ public final class AssignmentExpression implements Expression, Statement {
         visitor.visit(this);
     }
     
+    @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
     }

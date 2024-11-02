@@ -29,6 +29,10 @@ public final class ImportStatement extends InterruptableNode implements Statemen
         this.expression = expression;
     }
     
+    public ImportStatement(String name) {
+        this.expression = new ValueExpression(name);
+    }
+    
     @Override
     public void execute() {
         final Value value = expression.eval();

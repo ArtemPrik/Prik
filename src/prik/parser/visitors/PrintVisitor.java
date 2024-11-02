@@ -368,6 +368,20 @@ public class PrintVisitor implements ResultVisitor<StringBuilder, StringBuilder>
     }
 
     @Override
+    public StringBuilder visit(ThrowStatement s, StringBuilder t) {
+        t.append("throw");
+        t.append(s.type).append("(");
+        s.expr.accept(this, t);
+        t.append(")");
+        return t;
+    }
+
+    @Override
+    public StringBuilder visit(TryCatchStatement s, StringBuilder t) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
     public StringBuilder visit(UnaryExpression s, StringBuilder t) {
         switch (s.operation) {
             case INCREMENT_POSTFIX:

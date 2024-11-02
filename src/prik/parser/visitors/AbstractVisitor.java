@@ -185,6 +185,17 @@ public abstract class AbstractVisitor implements Visitor {
         s.trueExpr.accept(this);
         s.falseExpr.accept(this);
     }
+
+    @Override
+    public void visit(ThrowStatement s) {
+        s.expr.accept(this);
+    }
+
+    @Override
+    public void visit(TryCatchStatement s) {
+        s.tryStatement.accept(this);
+        s.catchStatement.accept(this);
+    }
     
     @Override
     public void visit(UnaryExpression s) {

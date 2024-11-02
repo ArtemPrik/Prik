@@ -11,6 +11,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Variables {
     private static final Stack<Map<String, Value>> stack;
     private static Map<String, Value> variables;
+    private static Map<String, StringValue> stringVariables;
+    private static Map<String, NumberValue> numberVariables;
+    private static Map<String, BooleanValue> booleanVariables;
     private static Map<String, Value> constants;
     
     static {

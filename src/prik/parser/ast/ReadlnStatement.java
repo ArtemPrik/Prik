@@ -29,7 +29,8 @@ public final class ReadlnStatement implements Statement, Expression {
     
     @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T input) {
-        return visitor.visit(this, input);
+//        return visitor.visit(this, input);
+        throw new RuntimeException("Not supported yet");
     }
 
     @Override

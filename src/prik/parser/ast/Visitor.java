@@ -36,6 +36,8 @@ public interface Visitor {
     void visit(RepeatStatement s);
     void visit(ReturnStatement s);
     void visit(TernaryExpression s);
+    void visit(ThrowStatement s);
+    void visit(TryCatchStatement s);
     void visit(UnaryExpression s);
     void visit(UsingNamespaceStatement st);
     void visit(ValueExpression s);

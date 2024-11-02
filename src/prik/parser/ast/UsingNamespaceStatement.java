@@ -50,7 +50,8 @@ public final class UsingNamespaceStatement extends InterruptableNode implements 
     }
     
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
-        return visitor.visit(this, t);
+//        return visitor.visit(this, t);
+        throw new RuntimeException("Not supported yet");
     }
 
     @Override
