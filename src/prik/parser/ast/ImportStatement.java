@@ -22,7 +22,7 @@ import prik.preprocessor.Preprocessor;
  * @author Professional
  */
 public final class ImportStatement extends InterruptableNode implements Statement {
-    public static final String PACKAGE = "prik.lib.modules.";
+    public static final String PACKAGE = "prik.modules.";
     public final Expression expression;
     
     public ImportStatement(Expression expression) {

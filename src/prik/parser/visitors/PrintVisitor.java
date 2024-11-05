@@ -397,13 +397,6 @@ public class PrintVisitor implements ResultVisitor<StringBuilder, StringBuilder>
     }
 
     @Override
-    public StringBuilder visit(UsingNamespaceStatement s, StringBuilder t) {
-        t.append("using namespace ");
-        t.append(s.namespace);
-        return t;
-    }
-
-    @Override
     public StringBuilder visit(ValueExpression s, StringBuilder t) {
         switch (s.value.type()) {
             case Types.STRING:

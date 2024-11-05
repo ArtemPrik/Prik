@@ -41,7 +41,6 @@ public interface ResultVisitor<R, T> {
     R visit(ThrowStatement s, T t);
     R visit(TryCatchStatement s, T t);
     R visit(UnaryExpression s, T t);
-    R visit(UsingNamespaceStatement s, T t);
     R visit(ValueExpression s, T t);
     R visit(VariableExpression s, T t);
     R visit(WhileStatement s, T t);

@@ -1,6 +1,12 @@
 package prik.parser.ast;
 
+import prik.exceptions.TypeException;
+import prik.lib.BooleanValue;
 import prik.lib.NullValue;
+import prik.lib.NumberValue;
+import prik.lib.StringValue;
+import prik.lib.Types;
+import prik.lib.Value;
 import prik.lib.Variables;
 
 
@@ -23,6 +29,12 @@ public final class DeclareVarStatement implements Statement {
         this.expression = expression;
     }
 
+    public DeclareVarStatement(String name, Datatypes.Datatype type) {
+        this.name = name;
+        this.expression = null;
+        this.type = type;
+    }
+    
     public DeclareVarStatement(String name, Expression expression, 
                                 Datatypes.Datatype type) {
         this.name = name;

@@ -42,6 +42,19 @@ public class Parser {
         assignOperator.put(TokenType.GTGTEQ, BinaryExpression.Operator.RSHIFT);
         assignOperator.put(TokenType.GTGTGTEQ, BinaryExpression.Operator.URSHIFT);
     }
+    
+    private static final EnumSet<TokenType> NUMBER_TOKEN_TYPES = EnumSet.of(
+            TokenType.NUMBER,
+            TokenType.LONG_NUMBER,
+            TokenType.DOUBLE_NUMBER,
+            TokenType.INT_NUMBER,
+            TokenType.FLOAT_NUMBER,
+            TokenType.BYTE_NUMBER,
+            TokenType.SHORT_NUMBER,
+            TokenType.DECIMAL_NUMBER,
+            TokenType.HEX_NUMBER,
+            TokenType.HEX_LONG_NUMBER
+    );
 
     private final List<Token> tokens;
     private final int size;
@@ -137,9 +150,6 @@ public class Parser {
         if (match(TokenType.RETURN)) {
             return new ReturnStatement(expression());
         }
-        if (match(TokenType.USING)) {
-            return usingStatement();
-        }
         if (match(TokenType.DEF)) {
             return functionDefine();
         }
@@ -147,7 +157,21 @@ public class Parser {
             return classDeclaration();
         }
         if (match(TokenType.IMPORT)) {
-            return new ImportStatement(consume(TokenType.WORD).getText());
+            return importStatement();
+        }
+        
+        if (match(TokenType.PRIVATE)) {
+            return privateModifier();
+        }
+        if (match(TokenType.PUBLIC)) {
+            return publicModifier();
+        }
+        
+        if (match(TokenType.LIB)) {
+            return libDeclaration();
+        }
+        if (match(TokenType.USING)) {
+            return usingStatement();
         }
         
         if (match(TokenType.REPEAT)) {
@@ -187,6 +211,54 @@ public class Parser {
         return assignmentStatement();
     }
     
+    private Statement usingStatement() {
+        return new UsingStatement(consume(TokenType.WORD).getText());
+    }
+    
+    private Statement libDeclaration() {
+        String name = consume(TokenType.WORD).getText();
+        BlockStatement block = new BlockStatement();
+        consume(TokenType.LBRACE);
+        while (!match(TokenType.RBRACE)) {
+            if (match(TokenType.DEF)) {
+                block.add(functionDefine());
+            } else if (match(TokenType.VAR)) {
+                block.add(declareVar());
+            } else if (match(TokenType.CONST)) {
+                block.add(declareConst());
+            } else throw new ParseException(get(0).getType() + " cannot match `var`,"
+                    + " `const` or `func`");
+        }
+        return new LibDeclarationStatement(name, block);
+    }
+    
+    private Statement privateModifier() {
+        if (match(TokenType.VAR)) {
+            return declareVar();
+        } else if (match(TokenType.DEF)) {
+            return functionDefine();
+        }
+        throw new ParseException("Private null");
+    }
+    
+    private Statement publicModifier() {
+        if (match(TokenType.VAR)) {
+            return declareVar();
+        } else if (match(TokenType.DEF)) {
+            return functionDefine();
+        }
+        throw new ParseException("Public null");
+    }
+    
+    private Statement importStatement() {
+//        String module = consume(TokenType.WORD).getText();
+//        if (match(TokenType.AS) || match(TokenType.COLON)) {
+//            String newName = consume(TokenType.WORD).getText();
+//        }
+//        return new ImportStatement(module);
+        return new ImportStatement(expression());
+    }
+    
     private Statement macro() {
         String name = consume(TokenType.WORD).getText();
         Arguments args = arguments();
@@ -224,12 +296,6 @@ public class Parser {
         return new ThrowStatement(type, expr);
     }
     
-    private Statement usingStatement() {
-        consume(TokenType.NAMESPACE);
-        String namespace = consume(TokenType.WORD).getText();
-        return new UsingNamespaceStatement(namespace);
-    }
-    
     private Statement assignmentStatement() {
 //        final Expression assignment = assignmentStrict();
 //        if (assignment != null) {
@@ -262,7 +328,7 @@ public class Parser {
         return new DestructuringAssignmentStatement(variables, expression());
     }
     
-    private Statement declareVar() {
+    private DeclareVarStatement declareVar() {
         String name = consume(TokenType.WORD).getText();
         if (match(TokenType.COLON)) {
             final Datatypes.Datatype type;
@@ -277,6 +343,9 @@ public class Parser {
             } else {
                 throw new ParseException("After COLON(:) doesn`t match type");
             }
+            if (match(TokenType.EQ)) {
+                return new DeclareVarStatement(name, expression(), type);
+            } else return new DeclareVarStatement(name, type);
         }
         if (match(TokenType.EQ)) {
             return new DeclareVarStatement(name, expression());
@@ -284,7 +353,7 @@ public class Parser {
         return new DeclareVarStatement(name);
     }
     
-    private Statement declareConst() {
+    private DeclareConstStatement declareConst() {
         String name = consume(TokenType.WORD).getText();
         final Datatypes.Datatype type;
         consume(TokenType.COLON);
@@ -538,8 +607,6 @@ public class Parser {
 
         return new AssignmentExpression(op, (Accessible) targetExpr, expression);
     }
-    
-    
     
     private Expression ternary() {
         Expression result = nullCoalesce();
@@ -848,11 +915,8 @@ public class Parser {
     
     private Expression value() {
         final Token current = get(0);
-        if (match(TokenType.NUMBER)) {
-            return new ValueExpression(Double.parseDouble(current.getText()));
-        }
-        if (match(TokenType.HEX_NUMBER)) {
-            return new ValueExpression(Long.parseLong(current.getText(), 16));
+        if (isNumberToken(current.getType())) {
+            return new ValueExpression(getAsNumber(current));
         }
         if (match(TokenType.TEXT)) {
             final ValueExpression strExpr = new ValueExpression(current.getText());
@@ -874,6 +938,49 @@ public class Parser {
             return strExpr;
         }
         throw new ParseException("Unknown expression: " + current);
+    }
+    
+    private boolean isNumberToken(TokenType type) {
+        return NUMBER_TOKEN_TYPES.contains(type);
+    }
+
+    private Number getAsNumber(Token current) {
+        if (match(TokenType.NUMBER)) {
+            return createNumber(current.getText(), 10);
+        }
+        if (match(TokenType.FLOAT_NUMBER)) {
+            return Float.parseFloat(current.getText());
+        }
+        if (match(TokenType.DOUBLE_NUMBER)) {
+            return Double.parseDouble(current.getText());
+        }
+        if (match(TokenType.INT_NUMBER)) {
+            return Integer.parseInt(current.getText(), 10);
+        }
+        if (match(TokenType.BYTE_NUMBER)) {
+            return Byte.parseByte(current.getText(), 10);
+        }
+        if (match(TokenType.SHORT_NUMBER)) {
+            return Short.parseShort(current.getText(), 10);
+        }
+        if (match(TokenType.LONG_NUMBER)) {
+            return Long.parseLong(current.getText(), 10);
+        }
+        if (match(TokenType.HEX_NUMBER)) {
+            return createNumber(current.getText(), 16);
+        }
+        if (match(TokenType.HEX_LONG_NUMBER)) {
+            return Long.parseLong(current.getText(), 16);
+        }
+        throw new ParseException("Unknown number expression: " + current);
+    }
+
+    private Number createNumber(String text, int radix) {
+        try {
+            return Integer.parseInt(text, radix);
+        } catch (NumberFormatException nfe) {
+            return Double.parseDouble(text);
+        }
     }
     
     private Expression qualifiedName() {

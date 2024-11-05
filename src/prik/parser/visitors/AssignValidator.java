@@ -4,7 +4,7 @@ import prik.Console;
 import prik.exceptions.CannotAssignValueToConstantException;
 import prik.exceptions.PrikException;
 import prik.lib.Variables;
-import prik.lib.modules.Module;
+import prik.modules.Module;
 import prik.parser.ast.*;
 import prik.parser.visitors.AbstractVisitor;
 
@@ -28,12 +28,6 @@ public final class AssignValidator extends AbstractVisitor {
 
     @Override
     public void visit(ImportStatement st) {
-        super.visit(st);
-        st.execute();
-    }
-
-    @Override
-    public void visit(UsingNamespaceStatement st) {
         super.visit(st);
         st.execute();
     }

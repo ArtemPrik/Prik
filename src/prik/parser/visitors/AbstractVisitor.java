@@ -138,6 +138,11 @@ public abstract class AbstractVisitor implements Visitor {
     public void visit(ImportStatement s) {
         s.expression.accept(this);
     }
+
+    @Override
+    public void visit(LibDeclarationStatement s) {
+        s.statement.accept(this);
+    }
     
     @Override
     public void visit(MapExpression s) {
@@ -201,9 +206,9 @@ public abstract class AbstractVisitor implements Visitor {
     public void visit(UnaryExpression s) {
         s.expr1.accept(this);
     }
-    
+
     @Override
-    public void visit(UsingNamespaceStatement s) {
+    public void visit(UsingStatement st) {
     }
 
     @Override

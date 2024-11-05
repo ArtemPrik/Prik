@@ -1,5 +1,6 @@
 package prik.parser.ast;
 
+import prik.exceptions.TypeException;
 import prik.lib.Types;
 
 
@@ -22,7 +23,8 @@ public final class RepeatStatement implements Statement/*, Expression*/ {
             for (int i = 0; i < condition.eval().asNumber(); i++) {
                 body.execute();
             }
-        }
+        } else throw new TypeException(Types.typeToString(condition.eval().type()) +
+                            " cannot match number");
     }
 
     @Override

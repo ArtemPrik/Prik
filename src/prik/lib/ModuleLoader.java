@@ -1,14 +1,14 @@
 package prik.lib;
 
 import prik.exceptions.PrikException;
-import prik.lib.modules.Module;
+import prik.modules.Module;
 
 /**
  *
  * @author Professional
  */
 public final class ModuleLoader {
-    private static final String PACKAGE = "prik.lib.modules.%s";
+    private static final String PACKAGE = "prik.modules.%s";
 
     private ModuleLoader() { }
 

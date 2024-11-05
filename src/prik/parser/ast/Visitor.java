@@ -28,6 +28,7 @@ public interface Visitor {
     void visit(FunctionalExpression s);
     void visit(IfStatement s);
     void visit(ImportStatement s);
+    void visit(LibDeclarationStatement s);
     void visit(MapExpression s);
     void visit(ObjectCreationExpression s);
     void visit(PrintStatement s);
@@ -39,7 +40,7 @@ public interface Visitor {
     void visit(ThrowStatement s);
     void visit(TryCatchStatement s);
     void visit(UnaryExpression s);
-    void visit(UsingNamespaceStatement st);
+    void visit(UsingStatement st);
     void visit(ValueExpression s);
     void visit(VariableExpression s);
     void visit(WhileStatement st);

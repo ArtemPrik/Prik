@@ -29,16 +29,7 @@ public final class Preprocessor {
                 if (parts.length == 2) {
                     processedCode.append("import ").append(parts[1]).append("\n");
                 }
-            } /*else if (trimmedLine.startsWith("#jInclude")) {
-                String[] parts = trimmedLine.split("\\s+", 2);
-                if (parts.length == 2) {
-                    String[] partsOfPackage = parts[1].split("\\.");
-                    String template = "%s = JClass(%s)";
-                    processedCode.append("using \"lzr.lang.reflection\"; ");
-                    processedCode.append(String.format(template, partsOfPackage[partsOfPackage.length - 1].replace("\"", ""), parts[1]));
-                    processedCode.append("\n");
-                }
-            } */ else {
+            } else {
                 String lastLine = line;
                 for (Map.Entry<String, String> entry : macros.entrySet()) {
                     lastLine = lastLine.replace(entry.getKey(), entry.getValue());

@@ -10,13 +10,28 @@ public enum TokenType {
     WORD,
     TEXT,
     
+    LONG_NUMBER,
+    HEX_LONG_NUMBER,
+    INT_NUMBER,
+    DOUBLE_NUMBER,
+    FLOAT_NUMBER,
+    BYTE_NUMBER,
+    SHORT_NUMBER,
+    DECIMAL_NUMBER,
+    
     TRUE,
     FALSE,
     
+    INTEGER_DATA,
+    DOUBLE_DATA,
+    FLOAT_DATA,
     NUMBER_DATA,
     STRING_DATA,
     BOOLEAN_DATA,
     ANY_DATA,
+    
+    PRIVATE,
+    PUBLIC,
     
     PRINT,
     PRINTLN,
@@ -32,7 +47,10 @@ public enum TokenType {
     CLASS,
     NEW,
     EXTRACT,
+    
     IMPORT,
+    AS,
+    USING,
     
     TRY,
     CATCH,
@@ -44,11 +62,9 @@ public enum TokenType {
     VAR,
     CONST,
     MACRO,
+    LIB,
     
     ASSERT,
-    
-    USING,
-    NAMESPACE,
     
     PLUS,
     MINUS, 

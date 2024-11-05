@@ -97,9 +97,16 @@ public final class Lexer {
         KEYWORDS.put("false", TokenType.FALSE);
         
         KEYWORDS.put("number", TokenType.NUMBER_DATA);
-        KEYWORDS.put("string", TokenType.STRING_DATA);
-        KEYWORDS.put("boolean", TokenType.BOOLEAN_DATA);
+        KEYWORDS.put("Double", TokenType.NUMBER_DATA);
+        KEYWORDS.put("Integer", TokenType.NUMBER_DATA);
+        KEYWORDS.put("Int", TokenType.NUMBER_DATA);
+        KEYWORDS.put("Float", TokenType.NUMBER_DATA);
+        KEYWORDS.put("String", TokenType.STRING_DATA);
+        KEYWORDS.put("Boolean", TokenType.BOOLEAN_DATA);
         KEYWORDS.put("any", TokenType.ANY_DATA);
+        
+        KEYWORDS.put("private", TokenType.PRIVATE);
+        KEYWORDS.put("public", TokenType.PUBLIC);
         
         KEYWORDS.put("print", TokenType.PRINT);
         KEYWORDS.put("println", TokenType.PRINTLN);
@@ -115,18 +122,20 @@ public final class Lexer {
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
-        KEYWORDS.put("extract", TokenType.EXTRACT);
+        KEYWORDS.put("destruct", TokenType.EXTRACT);
         
         KEYWORDS.put("import", TokenType.IMPORT);
+        KEYWORDS.put("as", TokenType.AS);
+        KEYWORDS.put("using", TokenType.USING);
+        
         KEYWORDS.put("repeat", TokenType.REPEAT);
         KEYWORDS.put("assert", TokenType.ASSERT);
         KEYWORDS.put("readln", TokenType.READLN);
         KEYWORDS.put("var", TokenType.VAR);
         KEYWORDS.put("const", TokenType.CONST);
         KEYWORDS.put("macro", TokenType.MACRO);
-        
-        KEYWORDS.put("using", TokenType.USING);
-        KEYWORDS.put("namespace", TokenType.NAMESPACE);
+//        KEYWORDS.put("module", TokenType.MODULE);
+        KEYWORDS.put("lib", TokenType.LIB);
         
         KEYWORDS.put("throw", TokenType.THROW);
         KEYWORDS.put("try", TokenType.TRY);
@@ -163,13 +172,16 @@ public final class Lexer {
         typesModule();
     }
     
+    public static List<Token> tokenize(String input) {
+        return new Lexer(input).tokenize();
+    }
+    
     public List<Token> tokenize() {
         while (pos < length) {
             final char current = peek(0);
             if (Character.isDigit(current)) tokenizeNumber();
             else if (Character.isLetter(current)) tokenizeWord();
             else if (current == '`') tokenizeExtendedWord();
-            else if (current == '\'') tokenizeMiniText();
             else if (current == '"') tokenizeText();
             else if (current == '#') {
                 next();
@@ -184,34 +196,101 @@ public final class Lexer {
         return tokens;
     }
     
-    
-    public static List<Token> tokenize(String input) {
-        return new Lexer(input).tokenize();
-    }
-    
     private void tokenizeNumber() {
         final StringBuilder buffer = new StringBuilder();
         char current = peek(0);
+        if (current == '0' && (peek(1) == 'x' || (peek(1) == 'X'))) {
+            next();
+            next();
+            tokenizeHexNumber();
+            return;
+        }
+        boolean decimal = false;
         while (true) {
+            if (current == '_') {
+                current = next();
+                continue;
+            }
             if (current == '.') {
                 if (buffer.indexOf(".") != -1) throw error("Invalid float number");
-            } else if (!Character.isDigit(current)) {
+            } else if (current == 'e' || current == 'E') {
+                decimal = true;
+                int exp = subTokenizeScientificNumber();
+                buffer.append(current).append(exp);
+                current = next();
                 break;
-            }
+            } else if (!Character.isDigit(current)) break;
             buffer.append(current);
             current = next();
         }
-        addToken(TokenType.NUMBER, buffer.toString());
+        if (current == 'f' || current == 'F') {
+            next();
+            addToken(TokenType.FLOAT_NUMBER, buffer.toString());
+        } else if (current == 'b' || current == 'B') {
+            next();
+            addToken(TokenType.BYTE_NUMBER, buffer.toString());
+        } else if (current == 'l' || current == 'L') {
+            next();
+            addToken(TokenType.LONG_NUMBER, buffer.toString());
+        } else if (current == 'i' || current == 'I') {
+            next();
+            addToken(TokenType.INT_NUMBER, buffer.toString());
+        } else if ((current == 'd' || current == 'D') || decimal) {
+            next();
+            addToken(TokenType.DOUBLE_NUMBER, buffer.toString());
+        } else if (current == 's' || current == 'S') {
+            next();
+            addToken(TokenType.SHORT_NUMBER, buffer.toString());
+        } else {
+            addToken(TokenType.NUMBER, buffer.toString());
+        }
+    }
+    
+    private int subTokenizeScientificNumber() {
+        int sign = switch (next()) {
+            case '-' -> { skip(); yield -1; }
+            case '+' -> { skip(); yield 1; }
+            default -> 1;
+        };
+
+        boolean hasValue = false;
+        char current = peek(0);
+        while (current == '0') {
+            hasValue = true;
+            current = next();
+        }
+        int result = 0;
+        int position = 0;
+        while (Character.isDigit(current)) {
+            result = result * 10 + (current - '0');
+            current = next();
+            position++;
+        }
+        if (position == 0 && !hasValue) throw error("Empty floating point exponent");
+        if (position >= 4) {
+            if (sign > 0) throw error("Float number too large");
+            else throw error("Float number too small");
+        }
+        return sign * result;
     }
     
     private void tokenizeHexNumber() {
         final StringBuilder buffer = new StringBuilder();
         char current = peek(0);
-        while (Character.isDigit(current) || isHexNumber(current)) {
-            buffer.append(current);
+        while (isHexNumber(current) || current == '_') {
+            if (current != '_') {
+                buffer.append(current);
+            }
             current = next();
         }
-        addToken(TokenType.HEX_NUMBER, buffer.toString());
+        if (buffer.isEmpty()) throw error("Empty HEX value");
+        if (peek(-1) == '_') throw error("HEX value cannot end with _");
+        if (current == 'L') {
+            skip();
+            addToken(TokenType.HEX_LONG_NUMBER, buffer.toString());
+        } else {
+            addToken(TokenType.HEX_NUMBER, buffer.toString());
+        }
     }
 
     private static boolean isHexNumber(char current) {
@@ -330,55 +409,6 @@ public final class Lexer {
         addToken(TokenType.TEXT, buffer.toString());
     }
     
-    private void tokenizeMiniText() {
-        next();// skip "
-        final StringBuilder buffer = new StringBuilder();
-        char current = peek(0);
-        while (true) {
-            if (current == '\0') throw error("Reached end of file while parsing text string.");
-            if (current == '\\') {
-                current = next();
-                switch (current) {
-                    case '\'': current = next(); buffer.append('\''); continue;
-                    case 'n': current = next(); buffer.append('\n'); continue;
-                    case 't': current = next(); buffer.append('\t'); continue;
-                    case 'b': current = next(); buffer.append('\b'); continue;
-                    case 'f': current = next(); buffer.append('\f'); continue;
-                    case 'r': current = next(); buffer.append('\r'); continue;
-                    case 's': current = next(); buffer.append('\s'); continue;
-                    case 'u': // http://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.3
-                        int rollbackPosition = pos;
-                        while (current == 'u') current = next();
-                        int escapedValue = 0;
-                        for (int i = 12; i >= 0 && escapedValue != -1; i -= 4) {
-                            if (isHexNumber(current)) {
-                                escapedValue |= (Character.digit(current, 16) << i);
-                            } else {
-                                escapedValue = -1;
-                            }
-                            current = next();
-                        }
-                        if (escapedValue >= 0) {
-                            buffer.append((char) escapedValue);
-                        } else {
-                            // rollback
-                            buffer.append("\\u");
-                            pos = rollbackPosition;
-                        }
-                        continue;
-                }
-                buffer.append('\\');
-                continue;
-            }
-            if (current == '\'') break;
-            buffer.append(current);
-            current = next();
-        }
-        next(); // skip closing "
-        
-        addToken(TokenType.TEXT, buffer.toString());
-    }
-    
     private void tokenizeComment() {
         char current = peek(0);
         while ("\r\n\0".indexOf(current) == -1) {
@@ -397,14 +427,19 @@ public final class Lexer {
         next(); // /
     }
     
-    private char next() {
-        pos++;
-        final char result = peek(0);
+    private void skip() {
+        if (pos >= length) return;
+        final char result = input.charAt(pos);
         if (result == '\n') {
             row++;
             col = 1;
         } else col++;
-        return result;
+        pos++;
+    }
+    
+    private char next() {
+        skip();
+        return peek(0);
     }
     
     private char peek(int relativePosition) {
