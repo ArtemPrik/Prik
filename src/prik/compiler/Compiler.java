@@ -1,6 +1,7 @@
 package prik.compiler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 /**
@@ -9,15 +10,17 @@ import java.io.PrintWriter;
  */
 public class Compiler {
     public static void compile(String input) {
+        PrintWriter pw = null;
         try {
             File output = new File("output.asclii");
-            PrintWriter pw = new PrintWriter(output);
-            for (int ch : input.toCharArray()) {
-                pw.println(ch + " ");
+            pw = new PrintWriter(output);
+            for (String s : input.split("\\ ")) {
+                pw.println(s);
             }
+        } catch (FileNotFoundException ex) {
+            System.err.println(ex);
+        } finally {
             pw.close();
-        } catch (Exception e) {
-            System.err.println(e);
         }
     }
 }

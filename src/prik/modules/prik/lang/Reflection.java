@@ -20,8 +20,11 @@ import prik.modules.Module;
  * @author Professional
  */
 public final class Reflection implements Module {
+    private static final Value NULL = new NullValue();
+
     @Override
     public void init() {
+        Variables.define("null", NULL);
         Variables.define("boolean.class", new ClassValue(boolean.class));
         Variables.define("boolean[].class", new ClassValue(boolean[].class));
         Variables.define("boolean[][].class", new ClassValue(boolean[][].class));
@@ -61,10 +64,10 @@ public final class Reflection implements Module {
 
     //<editor-fold defaultstate="collapsed" desc="Values">
 
-    private static class ClassValue extends MapValue {
+    private static class ClassValue extends MapValue implements Instantiable {
 
         public static Value classOrNull(Class<?> clazz) {
-            if (clazz == null) return new NullValue();
+            if (clazz == null) return NULL;
             return new ClassValue(clazz);
         }
 
@@ -77,15 +80,15 @@ public final class Reflection implements Module {
         }
 
         private void init(Class<?> clazz) {
-            set("isAnnotation", NumberValue.fromBoolean(clazz.isAnnotation()));
-            set("isAnonymousClass", NumberValue.fromBoolean(clazz.isAnonymousClass()));
-            set("isArray", NumberValue.fromBoolean(clazz.isArray()));
-            set("isEnum", NumberValue.fromBoolean(clazz.isEnum()));
-            set("isInterface", NumberValue.fromBoolean(clazz.isInterface()));
-            set("isLocalClass", NumberValue.fromBoolean(clazz.isLocalClass()));
-            set("isMemberClass", NumberValue.fromBoolean(clazz.isMemberClass()));
-            set("isPrimitive", NumberValue.fromBoolean(clazz.isPrimitive()));
-            set("isSynthetic", NumberValue.fromBoolean(clazz.isSynthetic()));
+            set("isAnnotation", new BooleanValue(clazz.isAnnotation()));
+            set("isAnonymousClass", new BooleanValue(clazz.isAnonymousClass()));
+            set("isArray", new BooleanValue(clazz.isArray()));
+            set("isEnum", new BooleanValue(clazz.isEnum()));
+            set("isInterface", new BooleanValue(clazz.isInterface()));
+            set("isLocalClass", new BooleanValue(clazz.isLocalClass()));
+            set("isMemberClass", new BooleanValue(clazz.isMemberClass()));
+            set("isPrimitive", new BooleanValue(clazz.isPrimitive()));
+            set("isSynthetic", new BooleanValue(clazz.isSynthetic()));
 
             set("modifiers", NumberValue.of(clazz.getModifiers()));
 
@@ -115,17 +118,14 @@ public final class Reflection implements Module {
             return new ClassValue(clazz.asSubclass( ((ClassValue)args[0]).clazz ));
         }
 
-        private Value isAssignableFrom(Value... args) {
+        private Value isAssignableFrom(Value[] args) {
             Arguments.check(1, args.length);
             return NumberValue.fromBoolean(clazz.isAssignableFrom( ((ClassValue)args[0]).clazz ));
         }
 
-        private Value newInstance(Value... args) {
-            try {
-                return new ObjectValue(clazz.newInstance());
-            } catch (InstantiationException | IllegalAccessException ex) {
-                return new NullValue();
-            }
+        @Override
+        public Value newInstance(Value[] args) {
+            return findConstructorAndInstantiate(args, clazz.getConstructors());
         }
 
         private Value cast(Value... args) {
@@ -155,7 +155,7 @@ public final class Reflection implements Module {
     private static class ObjectValue extends MapValue {
 
         public static Value objectOrNull(Object object) {
-            if (object == null) return new NullValue();
+            if (object == null) return NULL;
             return new ObjectValue(object);
         }
 
@@ -203,13 +203,13 @@ public final class Reflection implements Module {
         try {
             return new ClassValue(Class.forName(className));
         } catch (ClassNotFoundException ce) {
-            return new NullValue();
+            return NULL;
         }
     }
 
     private Value toObject(Value... args) {
         Arguments.check(1, args.length);
-        if (args[0] == new NullValue()) return new NullValue();
+        if (args[0] == NULL) return NULL;
         return new ObjectValue(valueToObject(args[0]));
     }
 
@@ -218,7 +218,7 @@ public final class Reflection implements Module {
         if (args[0] instanceof ObjectValue) {
             return objectToValue( ((ObjectValue) args[0]).object );
         }
-        return new NullValue();
+        return NULL;
     }
 
 
@@ -250,7 +250,22 @@ public final class Reflection implements Module {
             // ignore and go to the next step
         }
 
-        return new NullValue();
+        return NULL;
+    }
+    
+    private static Value findConstructorAndInstantiate(Value[] args, Constructor<?>[] ctors) {
+        for (Constructor<?> ctor : ctors) {
+            if (ctor.getParameterCount() != args.length) continue;
+            if (!isMatch(args, ctor.getParameterTypes())) continue;
+            try {
+                final Object result = ctor.newInstance(valuesToObjects(args));
+                return new ObjectValue(result);
+            } catch (InstantiationException | IllegalAccessException
+                    | IllegalArgumentException | InvocationTargetException ex) {
+                // skip
+            }
+        }
+        return null;
     }
 
     private static Function methodsToFunction(Object object, List<Method> methods) {
@@ -271,13 +286,13 @@ public final class Reflection implements Module {
             return null;
         };
     }
-
+    
     private static boolean isMatch(Value[] args, Class<?>[] types) {
         for (int i = 0; i < args.length; i++) {
             final Value arg = args[i];
             final Class<?> clazz = types[i];
 
-            if (arg == new NullValue()) continue;
+            if (arg == NULL) continue;
 
             final Class<?> unboxed = unboxed(clazz);
             boolean assignable = unboxed != null;
@@ -316,12 +331,12 @@ public final class Reflection implements Module {
     }
 
     private static Value objectToValue(Object o) {
-        if (o == null) return new NullValue();
+        if (o == null) return NULL;
         return objectToValue(o.getClass(), o);
     }
 
     private static Value objectToValue(Class<?> clazz, Object o) {
-        if (o == null || o == new NullValue()) return new NullValue();
+        if (o == null || o == NULL) return NULL;
         if (clazz.isPrimitive()) {
             if (int.class.isAssignableFrom(clazz))
                 return NumberValue.of((int) o);
@@ -341,7 +356,7 @@ public final class Reflection implements Module {
                 return NumberValue.of((short) o);
         }
         if (Number.class.isAssignableFrom(clazz)) {
-            return NumberValue.of((java.lang.Number) o);
+            return NumberValue.of((Number) o);
         }
         if (String.class.isAssignableFrom(clazz)) {
             return new StringValue((java.lang.String) o);
@@ -416,7 +431,7 @@ public final class Reflection implements Module {
     }
 
     private static Object valueToObject(Value value) {
-        if (value == new prik.lib.NullValue()) return null;
+        if (value == NULL) return null;
         switch (value.type()) {
             case Types.NUMBER:
                 return value.raw();

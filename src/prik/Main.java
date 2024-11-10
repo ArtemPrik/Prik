@@ -3,10 +3,10 @@ package prik;
 import java.io.File;
 import java.io.IOException;
 import prik.compiler.Compiler;
-import prik.compiler.asclii.ASCLII;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import prik.parser.Lexer;
 
 /**
  * @author Professional
@@ -16,7 +16,7 @@ public final class Main {
     
     public static void main(String[] args) throws IOException {
         Interpreter.run(file);
-        Compiler.compile(new String(Files.readAllBytes(Paths.get(file))));
+//        Compiler.compile(new String(Files.readAllBytes(Paths.get(file))));
 //        Interpreter.compile(file);
 //        ConsoleExecutor.Start();
 //        Executor.execute();

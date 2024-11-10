@@ -39,30 +39,28 @@ public final class FunctionalExpression implements Expression, Statement {
         for (int i = 0; i < size; i++) {
             values[i] = arguments.get(i).eval();
         }
-        
-        final Function function = getFunction(name);
-        if (function instanceof UserDefinedFunction) {
-            final UserDefinedFunction userFunction = (UserDefinedFunction) function;
-//            if (size != userFunction.getArgsCount()) throw new RuntimeException("Args count mismatch");
-            
-            Variables.push();
-            for (int i = 0; i < size; i++) {
-                Variables.set(userFunction.getArgsName(i), values[i]);
-            }
-            final Value result = userFunction.execute(values);
-            Variables.pop();
-            return result;
-        }
-        return function.execute(values);
+        final Function f = consumeFunction(name);
+        CallStack.enter(name.toString(), f);
+        final Value result = f.execute(values);
+        CallStack.exit();
+        return result;
     }
     
-    private Function getFunction(Expression key) {
-        if (Functions.isExists(key.eval().asString())) return Functions.get(key.eval().asString());
-        if (Variables.isExists(key.eval().asString())) {
-            final Value variable = Variables.get(key.eval().asString());
+    private Function consumeFunction(Expression expr) {
+        final Value value = expr.eval();
+        if (value.type() == Types.FUNCTION) {
+            return ((FunctionValue) value).getValue();
+        }
+        return getFunction(value.asString());
+    }
+    
+    private Function getFunction(String key) {
+        if (Functions.isExists(key)) return Functions.get(key);
+        if (Variables.isExists(key)) {
+            final Value variable = Variables.get(key);
             if (variable.type() == Types.FUNCTION) return ((FunctionValue)variable).getValue();
         }
-        throw new UnknownFunctionException(key.eval().asString());
+        throw new UnknownFunctionException(key);
     }
     
     @Override

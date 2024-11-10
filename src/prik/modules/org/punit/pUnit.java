@@ -24,7 +24,7 @@ public final class pUnit implements Module {
     public void init() {
         MapValue punit = new MapValue(6);
         
-        punit.set("assertEquals", new assertEquals());
+        Functions.set("assertEquals", new assertEquals());
         punit.set("assertNotEquals", new assertNotEquals());
         punit.set("assertSameType", new assertSameType());
         punit.set("assertTrue", new assertTrue());

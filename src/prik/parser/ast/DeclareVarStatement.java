@@ -17,7 +17,7 @@ import prik.lib.Variables;
 public final class DeclareVarStatement implements Statement {
     public final String name;
     public final Expression expression;
-    public Datatypes.Datatype type;
+    public prik.lib.Datatypes type;
 
     public DeclareVarStatement(String name) {
         this.name = name;
@@ -29,14 +29,14 @@ public final class DeclareVarStatement implements Statement {
         this.expression = expression;
     }
 
-    public DeclareVarStatement(String name, Datatypes.Datatype type) {
+    public DeclareVarStatement(String name, prik.lib.Datatypes type) {
         this.name = name;
         this.expression = null;
         this.type = type;
     }
     
     public DeclareVarStatement(String name, Expression expression, 
-                                Datatypes.Datatype type) {
+                                prik.lib.Datatypes type) {
         this.name = name;
         this.expression = expression;
         this.type = type;

@@ -18,16 +18,16 @@ public final class Colors implements Module {
     public void init() {
         MapValue map = new MapValue(5);
         
-        Variables.set("reset", new StringValue("\\u001b[10m"));
-        Variables.set("red", new StringValue("\\u001b[31m"));
-        Variables.set("green", new StringValue("\\u001b[32m"));
-        Variables.set("blue", new StringValue("\\u001b[34m"));
-        Variables.set("while", new StringValue("\\u001b[37m"));
-        Variables.set("black", new StringValue("\\u001b[40m"));
-        Variables.set("purple", new StringValue("\\u001b[35m"));
-        Variables.set("yellow", new StringValue("\\u001b[33m"));
-        Variables.set("cyan", new StringValue("\\u001b[36m"));
-        Functions.set("clear", (Value... args) -> {
+        map.set("reset", new StringValue("\\u001b[10m"));
+        map.set("red", new StringValue("\\u001b[31m"));
+        map.set("green", new StringValue("\\u001b[32m"));
+        map.set("blue", new StringValue("\\u001b[34m"));
+        map.set("while", new StringValue("\\u001b[37m"));
+        map.set("black", new StringValue("\\u001b[40m"));
+        map.set("purple", new StringValue("\\u001b[35m"));
+        map.set("yellow", new StringValue("\\u001b[33m"));
+        map.set("cyan", new StringValue("\\u001b[36m"));
+        map.set("clear", (Value... args) -> {
             System.out.print("\u001b[H\u001b[2J");
             System.out.flush();
             return NumberValue.ZERO;

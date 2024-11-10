@@ -74,7 +74,7 @@ public final class UnaryExpression implements Expression, Statement {
                 return new NumberValue(value.asNumber() - 1);
             }
             case NEGATE: return new NumberValue(-value.asNumber());
-            case COMPLEMENT: return new NumberValue(~(int)value.asNumber());
+            case COMPLEMENT: return new NumberValue(~value.asInt());
             case NOT: return new NumberValue(value.asNumber() != 0 ? 0 : 1);
             default:
                 throw new OperationIsNotSupportedException(operation.name);

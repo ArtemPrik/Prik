@@ -62,11 +62,6 @@ public final class ImportStatement extends InterruptableNode implements Statemen
     }
     
     private void load(Value path) throws IOException {
-//        try {
-//            ModuleLoader.loadAndUse(path.asString());
-//        } catch (Exception ex) {
-//            loadPrikFile(path.asString());
-//        }
         try {
             loadPrikFile(path.asString());
         } catch (FileNotFoundException e) {

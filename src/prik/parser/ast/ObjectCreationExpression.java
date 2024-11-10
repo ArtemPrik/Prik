@@ -2,10 +2,13 @@ package prik.parser.ast;
 
 import java.util.Iterator;
 import java.util.List;
+import prik.exceptions.UnknownException;
 import prik.lib.ClassDeclarations;
 import prik.lib.ClassInstanceValue;
 import prik.lib.ClassMethod;
+import prik.lib.Instantiable;
 import prik.lib.Value;
+import prik.lib.Variables;
 
 
 /**
@@ -24,6 +27,16 @@ public final class ObjectCreationExpression implements Expression {
     @Override
     public Value eval() {
         final ClassDeclarationStatement cd = ClassDeclarations.get(className);
+        if (cd == null) {
+            // Is Instantiable?
+            if (Variables.isExists(className)) {
+                final Value variable = Variables.get(className);
+                if (variable instanceof Instantiable) {
+                    return ((Instantiable) variable).newInstance(ctorArgs());
+                }
+            }
+            throw new UnknownException("class", className);
+        }
         
         // Create an instance and put evaluated fields with method declarations
         final ClassInstanceValue instance = new ClassInstanceValue(className) {};
@@ -37,14 +50,17 @@ public final class ObjectCreationExpression implements Expression {
         }
         
         // Call a constructor
+        instance.callConstructor(ctorArgs());
+        return instance;
+    }
+    
+    private Value[] ctorArgs() {
         final int argsSize = constructorArguments.size();
         final Value[] ctorArgs = new Value[argsSize];
         for (int i = 0; i < argsSize; i++) {
             ctorArgs[i] = constructorArguments.get(i).eval();
         }
-        instance.callConstructor(ctorArgs);
-        
-        return instance;
+        return ctorArgs;
     }
     
     @Override

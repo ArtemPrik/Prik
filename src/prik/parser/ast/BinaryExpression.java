@@ -4,6 +4,7 @@ import prik.Console;
 import prik.exceptions.OperationIsNotSupportedException;
 import prik.exceptions.TypeException;
 import prik.lib.*;
+import prik.lib.functions.Range;
 
 
 /**
@@ -82,6 +83,10 @@ public final class BinaryExpression implements Expression {
             case LSHIFT: return lshift(value1, value2);
             case RSHIFT: return rshift(value1, value2);
             case URSHIFT: return urshift(value1, value2);
+            
+            case RANGE: return range(value1, value2);
+            case POWER: return power(value1, value2);
+            case ELVIS: return elvis(value1, value2);
             default:
                 throw new OperationIsNotSupportedException(operation);
         }
@@ -465,6 +470,22 @@ public final class BinaryExpression implements Expression {
             return NumberValue.of(number1.longValue() >>> value2.asInt());
         }
         return NumberValue.of(number1.intValue() >>> value2.asInt());
+    }
+    
+    private Value range(Value value1, Value value2) {
+        if (value1.type() == Types.NUMBER && value2.type() == Types.NUMBER)
+            return new Range().execute(value1, value2);
+        else throw new RuntimeException("Range is Active");
+    }
+    
+    private Value power(Value value1, Value value2) {
+        if (value1.type() == Types.NUMBER && value2.type() == Types.NUMBER)
+            return new NumberValue(Math.pow(value1.asNumber(), value2.asNumber()));
+        else throw new RuntimeException("Power is Active");
+    }
+    
+    private Value elvis(Value value1, Value value2) {
+        return value1.asNumber() != 0 ? value1 : value2;
     }
     
     @Override

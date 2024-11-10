@@ -17,6 +17,10 @@ public final class Variables {
         stack = new Stack<>();
         variables = new ConcurrentHashMap<>();
         constants = new ConcurrentHashMap<>();
+        variables.put("lox", new FunctionValue((Value... args) -> {
+            System.out.println("TI LOX!");
+            return NumberValue.ZERO;
+        }));
     }
     
     public static void push() {

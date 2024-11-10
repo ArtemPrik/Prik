@@ -18,7 +18,8 @@ import prik.modules.Module;
 public final class System implements Module {
     @Override
     public void init() {
-        MapValue system = new MapValue(10);
+        MapValue system = new MapValue(11);
+        system.set("time", NumberValue.of((double)java.lang.System.currentTimeMillis()));
 
         system.set("currentTimeMillis", args -> {
             Arguments.check(0, args.length);

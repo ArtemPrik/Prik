@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import prik.lib.BooleanValue;
+import prik.lib.Function;
+import prik.lib.FunctionValue;
 import prik.lib.Functions;
 import prik.lib.MapValue;
 import prik.lib.NumberValue;
@@ -87,6 +89,9 @@ public final class Lexer {
         OPERATORS.put("^^", TokenType.CARETCARET);
         OPERATORS.put("?:", TokenType.QUESTIONCOLON);
         OPERATORS.put("??", TokenType.QUESTIONQUESTION);
+        
+        OPERATORS.put("->", TokenType.ARROW);
+        OPERATORS.put("=>", TokenType.ARROW);
     }
     
     private static final Map<String, TokenType> KEYWORDS;
@@ -97,16 +102,9 @@ public final class Lexer {
         KEYWORDS.put("false", TokenType.FALSE);
         
         KEYWORDS.put("number", TokenType.NUMBER_DATA);
-        KEYWORDS.put("Double", TokenType.NUMBER_DATA);
-        KEYWORDS.put("Integer", TokenType.NUMBER_DATA);
-        KEYWORDS.put("Int", TokenType.NUMBER_DATA);
-        KEYWORDS.put("Float", TokenType.NUMBER_DATA);
-        KEYWORDS.put("String", TokenType.STRING_DATA);
-        KEYWORDS.put("Boolean", TokenType.BOOLEAN_DATA);
+        KEYWORDS.put("string", TokenType.STRING_DATA);
+        KEYWORDS.put("boolean", TokenType.BOOLEAN_DATA);
         KEYWORDS.put("any", TokenType.ANY_DATA);
-        
-        KEYWORDS.put("private", TokenType.PRIVATE);
-        KEYWORDS.put("public", TokenType.PUBLIC);
         
         KEYWORDS.put("print", TokenType.PRINT);
         KEYWORDS.put("println", TokenType.PRINTLN);
@@ -117,7 +115,7 @@ public final class Lexer {
         KEYWORDS.put("do", TokenType.DO);
         KEYWORDS.put("break", TokenType.BREAK);
         KEYWORDS.put("continue", TokenType.CONTINUE);
-        KEYWORDS.put("func", TokenType.DEF);
+        KEYWORDS.put("def", TokenType.DEF);
         KEYWORDS.put("return", TokenType.RETURN);
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("class", TokenType.CLASS);
@@ -134,7 +132,6 @@ public final class Lexer {
         KEYWORDS.put("var", TokenType.VAR);
         KEYWORDS.put("const", TokenType.CONST);
         KEYWORDS.put("macro", TokenType.MACRO);
-//        KEYWORDS.put("module", TokenType.MODULE);
         KEYWORDS.put("lib", TokenType.LIB);
         
         KEYWORDS.put("throw", TokenType.THROW);

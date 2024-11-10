@@ -30,9 +30,6 @@ public enum TokenType {
     BOOLEAN_DATA,
     ANY_DATA,
     
-    PRIVATE,
-    PUBLIC,
-    
     PRINT,
     PRINTLN,
     IF,
@@ -63,6 +60,7 @@ public enum TokenType {
     CONST,
     MACRO,
     LIB,
+    ARROW,
     
     ASSERT,
     
@@ -115,7 +113,7 @@ public enum TokenType {
     AMP,
     AMPAMP,
     
-    QUESTION, 
+    QUESTION,
     COLON,
     COLONCOLON,
     SEMICOLON,

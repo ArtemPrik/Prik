@@ -2,6 +2,7 @@ package prik.parser;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.io.ByteArrayInputStream;
 import prik.exceptions.PrikException;
 import prik.lib.NullValue;
 import prik.lib.UserDefinedFunction;
@@ -160,18 +161,11 @@ public class Parser {
             return importStatement();
         }
         
-        if (match(TokenType.PRIVATE)) {
-            return privateModifier();
-        }
-        if (match(TokenType.PUBLIC)) {
-            return publicModifier();
-        }
-        
         if (match(TokenType.LIB)) {
             return libDeclaration();
         }
         if (match(TokenType.USING)) {
-            return usingStatement();
+            return new UsingStatement(consume(TokenType.WORD).getText());
         }
         
         if (match(TokenType.REPEAT)) {
@@ -211,54 +205,6 @@ public class Parser {
         return assignmentStatement();
     }
     
-    private Statement usingStatement() {
-        return new UsingStatement(consume(TokenType.WORD).getText());
-    }
-    
-    private Statement libDeclaration() {
-        String name = consume(TokenType.WORD).getText();
-        BlockStatement block = new BlockStatement();
-        consume(TokenType.LBRACE);
-        while (!match(TokenType.RBRACE)) {
-            if (match(TokenType.DEF)) {
-                block.add(functionDefine());
-            } else if (match(TokenType.VAR)) {
-                block.add(declareVar());
-            } else if (match(TokenType.CONST)) {
-                block.add(declareConst());
-            } else throw new ParseException(get(0).getType() + " cannot match `var`,"
-                    + " `const` or `func`");
-        }
-        return new LibDeclarationStatement(name, block);
-    }
-    
-    private Statement privateModifier() {
-        if (match(TokenType.VAR)) {
-            return declareVar();
-        } else if (match(TokenType.DEF)) {
-            return functionDefine();
-        }
-        throw new ParseException("Private null");
-    }
-    
-    private Statement publicModifier() {
-        if (match(TokenType.VAR)) {
-            return declareVar();
-        } else if (match(TokenType.DEF)) {
-            return functionDefine();
-        }
-        throw new ParseException("Public null");
-    }
-    
-    private Statement importStatement() {
-//        String module = consume(TokenType.WORD).getText();
-//        if (match(TokenType.AS) || match(TokenType.COLON)) {
-//            String newName = consume(TokenType.WORD).getText();
-//        }
-//        return new ImportStatement(module);
-        return new ImportStatement(expression());
-    }
-    
     private Statement macro() {
         String name = consume(TokenType.WORD).getText();
         Arguments args = arguments();
@@ -275,25 +221,6 @@ public class Parser {
             exprs.add(expression());
 
         return new FunctionalExpression(new VariableExpression(name), exprs);
-    }
-    
-    private Statement tryCatch() {
-        final Statement tryStatement = statementOrBlock();
-        final Statement catchStatement;
-        if (match(TokenType.CATCH)) {
-            catchStatement = statementOrBlock();
-        } else {
-            throw new PrikException("CatchBlockError", "the catch block was not found");
-        }
-        return new TryCatchStatement(tryStatement, catchStatement);
-    }
-    
-    private Statement throwStatement() {
-        String type = consume(TokenType.WORD).getText();
-        consume(TokenType.LPAREN);
-        Expression expr = expression();
-        consume(TokenType.RPAREN);
-        return new ThrowStatement(type, expr);
     }
     
     private Statement assignmentStatement() {
@@ -330,22 +257,29 @@ public class Parser {
     
     private DeclareVarStatement declareVar() {
         String name = consume(TokenType.WORD).getText();
+        boolean canEmpty = false;
         if (match(TokenType.COLON)) {
-            final Datatypes.Datatype type;
+            final prik.lib.Datatypes type;
             if (match(TokenType.NUMBER_DATA)) {
-                type = Datatypes.Datatype.NUMBER;
+                type = prik.lib.Datatypes.NUMBER;
             } else if (match(TokenType.STRING_DATA)) {
-                type = Datatypes.Datatype.STRING;
+                type = prik.lib.Datatypes.STRING;
             } else if (match(TokenType.BOOLEAN_DATA)) {
-                type = Datatypes.Datatype.BOOLEAN;
+                type = prik.lib.Datatypes.BOOLEAN;
             } else if (match(TokenType.ANY_DATA)) {
-                type = Datatypes.Datatype.ANY;
+                type = prik.lib.Datatypes.ANY;
             } else {
                 throw new ParseException("After COLON(:) doesn`t match type");
+            }
+            if (match(TokenType.QUESTION)) {
+                canEmpty = true;
             }
             if (match(TokenType.EQ)) {
                 return new DeclareVarStatement(name, expression(), type);
             } else return new DeclareVarStatement(name, type);
+        }
+        if (match(TokenType.QUESTION)) {
+            canEmpty = true;
         }
         if (match(TokenType.EQ)) {
             return new DeclareVarStatement(name, expression());
@@ -355,16 +289,20 @@ public class Parser {
     
     private DeclareConstStatement declareConst() {
         String name = consume(TokenType.WORD).getText();
-        final Datatypes.Datatype type;
+        final prik.lib.Datatypes type;
         consume(TokenType.COLON);
         if (match(TokenType.NUMBER_DATA)) {
-            type = Datatypes.Datatype.NUMBER;
+            if (match(TokenType.LBRACKET)) {
+                consume(TokenType.RBRACKET);
+                type = prik.lib.Datatypes.NUMBER_ARRAY;
+            }
+            else type = prik.lib.Datatypes.NUMBER;
         } else if (match(TokenType.STRING_DATA)) {
-            type = Datatypes.Datatype.STRING;
+            type = prik.lib.Datatypes.STRING;
         } else if (match(TokenType.BOOLEAN_DATA)) {
-            type = Datatypes.Datatype.BOOLEAN;
+            type = prik.lib.Datatypes.BOOLEAN;
         } else if (match(TokenType.ANY_DATA)) {
-            type = Datatypes.Datatype.ANY;
+            type = prik.lib.Datatypes.ANY;
         } else {
             throw new ParseException("After COLON(:) doesn`t match type");
         }
@@ -378,6 +316,51 @@ public class Parser {
         if (openParen) consume(TokenType.RPAREN);
         final Statement body = statementOrBlock();
         return new RepeatStatement(condition, body);
+    }
+    
+    private Statement tryCatch() {
+        final Statement tryStatement = statementOrBlock();
+        final Statement catchStatement;
+        if (match(TokenType.CATCH)) {
+            catchStatement = statementOrBlock();
+        } else {
+            throw new PrikException("CatchBlockError", "the catch block was not found");
+        }
+        return new TryCatchStatement(tryStatement, catchStatement);
+    }
+    
+    private Statement throwStatement() {
+        String type = consume(TokenType.WORD).getText();
+        consume(TokenType.LPAREN);
+        Expression expr = expression();
+        consume(TokenType.RPAREN);
+        return new ThrowStatement(type, expr);
+    }
+    
+    private Statement importStatement() {
+//        String module = consume(TokenType.WORD).getText();
+//        if (match(TokenType.AS) || match(TokenType.COLON)) {
+//            String newName = consume(TokenType.WORD).getText();
+//        }
+//        return new ImportStatement(module);
+        return new ImportStatement(expression());
+    }
+    
+    private Statement libDeclaration() {
+        String name = consume(TokenType.WORD).getText();
+        BlockStatement block = new BlockStatement();
+        consume(TokenType.LBRACE);
+        while (!match(TokenType.RBRACE)) {
+            if (match(TokenType.DEF)) {
+                block.add(functionDefine());
+            } else if (match(TokenType.VAR)) {
+                block.add(declareVar());
+            } else if (match(TokenType.CONST)) {
+                block.add(declareConst());
+            } else throw new ParseException(get(0).getType() + " cannot match `var`,"
+                    + " `const` or `func`");
+        }
+        return new LibDeclarationStatement(name, block);
     }
     
     private Statement ifElse() {
@@ -487,7 +470,7 @@ public class Parser {
     }
     
     private Statement statementBody() {
-        if (match(TokenType.EQ)) {
+        if (match(TokenType.EQ) || match(TokenType.ARROW)) {
             return new ReturnStatement(expression());
         }
         return statementOrBlock();
@@ -616,6 +599,9 @@ public class Parser {
             consume(TokenType.COLON);
             final Expression falseExpr = expression();
             return new TernaryExpression(result, trueExpr, falseExpr);
+        }
+        if (match(TokenType.QUESTIONCOLON)) {
+            return new BinaryExpression(BinaryExpression.Operator.ELVIS, result, expression());
         }
         
         return result;

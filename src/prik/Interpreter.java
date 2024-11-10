@@ -24,7 +24,7 @@ public final class Interpreter {
         
         measurement.start("Preprocess and Beautify time");
         final String preprocess = Preprocessor.preprocess(input);
-//        Console.println(Beautifier.beautify(preprocess));
+        Console.println(Beautifier.beautify(preprocess));
         measurement.stop("Preprocess and Beautify time");
         
         measurement.start("Tokenization time");
@@ -46,11 +46,11 @@ public final class Interpreter {
 
         measurement.start("Execution time");
         program.execute();
+//        Console.println(createHeader());
         measurement.stop("Execution time");
         
         Console.println("\n");
-//        Console.print("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
-        /*Functions.get("main").execute();*/
+        Console.print("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
     }
     
     public static void compile(String file) throws java.io.IOException {
@@ -69,6 +69,14 @@ public final class Interpreter {
         
         Console.print("\n\n\n" + measurement.summary(TimeUnit.MILLISECONDS, true));
         /*Functions.get("main").execute();*/
+    }
+    
+    private static String createHeader() {
+        String version = "-------" + "beta_0.01" + "-------";
+        String title = "Prik Console";
+        int maxLength = Math.max(version.length(), title.length());
+        String divider = "-".repeat(maxLength);
+        return "\n\t" + version + "\n\t" + title + "\n\t" + divider;
     }
 }
    

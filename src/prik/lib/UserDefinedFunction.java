@@ -31,24 +31,18 @@ public class UserDefinedFunction implements Function {
     @Override
     public Value execute(Value... args) {
         final int size = args.length;
-        final int requiredArgsCount = arguments.getRequiredArgumentsCount();
-        if (size < requiredArgsCount) {
-            throw new ArgumentsMismatchException(String.format("Arguments count mismatch. %d < %d", size, requiredArgsCount));
-        }
-        final int totalArgsCount = getArgsCount();
-        if (size > totalArgsCount) {
-            throw new ArgumentsMismatchException(String.format("Arguments count mismatch. %d > %d", size, totalArgsCount));
-        }
-        
+        if (size != getArgsCount()) throw new RuntimeException("Args count mismatch");
         try {
-            for (int i = size; i < totalArgsCount; i++) {
-                final Argument arg = arguments.get(i);
-                Variables.set(arg.getName(), arg.getValueExpr().eval());
+            Variables.push();
+            for (int i = 0; i < size; i++) {
+                Variables.set(getArgsName(i), args[i]);
             }
             body.execute();
             return NumberValue.ZERO;
         } catch (ReturnStatement rt) {
             return rt.getResult();
+        } finally {
+            Variables.pop();
         }
     }
 

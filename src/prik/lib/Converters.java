@@ -258,7 +258,7 @@ public final class Converters {
     public static FunctionValue stringToBoolean(Predicate<String> f) {
         return new FunctionValue(args -> {
             Arguments.check(1, args.length);
-            return NumberValue.fromBoolean(f.test(args[0].asString()));
+            return new BooleanValue(f.test(args[0].asString()));
         });
     }
 }

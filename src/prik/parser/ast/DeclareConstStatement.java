@@ -15,10 +15,10 @@ import prik.lib.Variables;
 public final class DeclareConstStatement implements Statement {
     public final String name;
     public final Expression expression;
-    public Datatypes.Datatype type;
+    public prik.lib.Datatypes type;
 
     public DeclareConstStatement(String name, Expression expression, 
-                                Datatypes.Datatype type) {
+                                prik.lib.Datatypes type) {
         this.name = name;
         this.expression = expression;
         this.type = type;
@@ -46,7 +46,7 @@ public final class DeclareConstStatement implements Statement {
                     Variables.setConstant(name,
                             new BooleanValue(Boolean.TRUE || Boolean.FALSE));
                 } else throw new TypeException(
-                        Types.typeToString(expression.eval().type()) + " doesnt match number");
+                        Types.typeToString(expression.eval().type()) + " doesnt match boolean");
                 break;
             case ANY:
                 Variables.setConstant(name, expression.eval());

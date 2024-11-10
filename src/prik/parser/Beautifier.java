@@ -75,6 +75,16 @@ public class Beautifier {
         OPERATORS.put("<<", OperatorMode.SPACES);
         OPERATORS.put(">>", OperatorMode.SPACES);
         OPERATORS.put(">>>", OperatorMode.SPACES);
+        
+        OPERATORS.put("@", OperatorMode.SPACES);
+        OPERATORS.put("..", OperatorMode.SPACES);
+        OPERATORS.put("**", OperatorMode.SPACES);
+        OPERATORS.put("^^", OperatorMode.SPACES);
+        OPERATORS.put("?:", OperatorMode.SPACES);
+        OPERATORS.put("??", OperatorMode.SPACES);
+        
+        OPERATORS.put("->", OperatorMode.AS_SOURCE);
+        OPERATORS.put("=>", OperatorMode.AS_SOURCE);
     }
     
     private final String input;

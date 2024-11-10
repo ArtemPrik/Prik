@@ -1,10 +1,10 @@
-package prik.compiler.asclii;
+package prik.compiler.ascii;
 
 /**
  *
  * @author Professional
  */
-public class ASCLII {
+public class ASCII {
     public static final int
             SPACE = 32,
             EXCLAMATION = 33, // esc

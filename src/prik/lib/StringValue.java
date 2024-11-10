@@ -1,6 +1,7 @@
 package prik.lib;
 
 import java.util.Locale;
+import java.util.Objects;
 import prik.exceptions.UnknownException;
 
 /**
@@ -41,7 +42,7 @@ public final class StringValue implements Value {
                         return new FunctionValue((Value... args) -> {
                             Arguments.check(1, args.length);
                             StringBuilder buffer = new StringBuilder();
-                            for (int i = 1; i < args[0].asInt(); i++) {
+                            for (int i = 1; i < args[0].asInt() +1; i++) {
                                 buffer.append(value);
                             }
                             return new StringValue(buffer.toString());
@@ -111,7 +112,11 @@ public final class StringValue implements Value {
     
     @Override
     public int asInt() {
-        return Integer.parseInt(value);
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
     
     @Override
@@ -130,6 +135,22 @@ public final class StringValue implements Value {
             return value.compareTo(((StringValue) o).value);
         }
         return asString().compareTo(o.asString());
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.value);
+        return hash;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final StringValue other = (StringValue) obj;
+        return Objects.equals(this.value, other.value);
     }
     
     @Override

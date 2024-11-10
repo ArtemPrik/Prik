@@ -6,28 +6,25 @@ package prik.lib;
  * @author Professional
  */
 public final class BooleanValue implements Value {
-    private final boolean bool_value;
+    private final boolean value;
 
-    public BooleanValue(boolean bool_value) {
-        this.bool_value = bool_value;
+    public BooleanValue(boolean value) {
+        this.value = value;
     }
     
     @Override
     public double asNumber() {
-        if (bool_value == true) return 1;
-        else return 0;
+        return (value == true) ? 1 : 0;
     }
 
     @Override
     public String asString() {
-        if (bool_value == true) return "true";
-        else return "false";
+        return (value == true) ? "true" : "false";
     }
 
     @Override
     public int asInt() {
-        if (bool_value == true) return 1;
-        else return 0;
+        return (value == true) ? 1 : 0;
     }
 
     @Override
@@ -37,7 +34,7 @@ public final class BooleanValue implements Value {
 
     @Override
     public Object raw() {
-        return bool_value;
+        return value;
     }
 
     @Override

@@ -47,9 +47,9 @@ public final class ConditionalExpression implements Expression {
     public Value eval() {
         final Value value1 = expr1.eval();
         switch (operation) {
-            case AND: return NumberValue.fromBoolean(
+            case AND: return new BooleanValue(
                     (value1.asNumber() != 0) && (expr2.eval().asNumber() != 0) );
-            case OR: return NumberValue.fromBoolean(
+            case OR: return new BooleanValue(
                     (value1.asNumber() != 0) || (expr2.eval().asNumber() != 0) );
             case NULL_COALESCE: return nullCoalesce();
         }

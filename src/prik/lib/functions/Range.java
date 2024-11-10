@@ -9,7 +9,7 @@ import prik.lib.*;
  */
 public final class Range implements Function {
     @Override
-    public Value execute(Value[] args) {
+    public Value execute(Value... args) {
         Arguments.checkRange(1, 3, args.length);
         return switch (args.length) {
             case 2 -> RangeValue.of(getLong(args[0]), getLong(args[1]), 1);
@@ -206,10 +206,7 @@ public final class Range implements Function {
 
         @Override
         public String toString() {
-            if (step == 1) {
-                return String.format("range(%d, %d)", from, to);
-            }
-            return String.format("range(%d, %d, %d)", from, to, step);
+            return asString();
         }
     }
 }

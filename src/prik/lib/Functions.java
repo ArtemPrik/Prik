@@ -52,7 +52,6 @@ public final class Functions {
             return new StringValue(Long.toHexString(value));
         });
         
-//        functions.put("typeof", args -> NumberValue.of(args[0].type()));
         functions.put("typeof", (Function) (Value... args) -> {
             Arguments.check(1, args.length);
             return new StringValue(Types.typeToString(args[0].type()));

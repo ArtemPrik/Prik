@@ -1,0 +1,49 @@
+import "prik.awt.Colors"
+import "prik.util.Random"
+import "prik.lang.Thread"
+
+patterns = [
+  "\u001b[10m",
+  "\u001b[31m",
+  "\u001b[32m",
+  "\u001b[34m",
+  "\u001b[37m",
+  "\u001b[40m",
+  "\u001b[35m",
+  "\u001b[33m",
+  "\u001b[36m"
+]
+
+func drawTree() {
+    println(sprintf(green))
+
+    for (i = 1, i < 15, i += 2) {
+        spaces = ""
+
+        for (j = 0, j < (14 - i) / 2, j+=1) {
+            spaces += " "
+        }
+
+        stars = ""
+        for (j = 0, j < i, j+=1) {
+            stars += "*"
+        }
+
+        println(spaces + stars)
+    }
+}
+
+func HappyNewYear() {
+    pattern = patterns[rand(0, patterns.length)]
+
+    print(sprintf(pattern))
+    println("Happy new year")
+
+    sleep(500)
+    clear()
+}
+
+while(true) {
+    drawTree()
+    HappyNewYear()
+}
