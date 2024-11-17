@@ -16,7 +16,7 @@ public final class Keys implements Module {
         MapValue keys = new MapValue(60);
         
         keys.set("DOWN", NumberValue.of(KeyEvent.VK_DOWN));
-        keys.set("UP", NumberValue.of(KeyEvent.VK_DOWN));
+        keys.set("UP", NumberValue.of(KeyEvent.VK_UP));
         keys.set("LEFT", NumberValue.of(KeyEvent.VK_LEFT));
         keys.set("RIGHT", NumberValue.of(KeyEvent.VK_RIGHT));
         keys.set("FIRE", NumberValue.of(KeyEvent.VK_ENTER));
@@ -27,6 +27,7 @@ public final class Keys implements Module {
         keys.set("CAPS_LOCK", NumberValue.of(KeyEvent.VK_CAPS_LOCK));
         keys.set("CONTROL", NumberValue.of(KeyEvent.VK_CONTROL));
         keys.set("ENTER", NumberValue.of(KeyEvent.VK_ENTER));
+        keys.set("ESCAPE", NumberValue.of(KeyEvent.VK_ESCAPE));
         
         keys.set("EQUALS", NumberValue.of(KeyEvent.VK_EQUALS));
         Variables.set("=", NumberValue.of(KeyEvent.VK_EQUALS));

@@ -21,15 +21,12 @@ public final class Math implements Module {
 
     @Override
     public void init() {
-        MapValue math = new MapValue(3);
+        MapValue math = new MapValue(4);
         math.set("PI", new NumberValue(java.lang.Math.PI));
         math.set("TAU", new NumberValue(java.lang.Math.TAU));
         math.set("E", new NumberValue(java.lang.Math.E));
+        math.set("pow", biFunctionConvert(java.lang.Math::pow));
         Variables.define("Math", math);
-        
-        Variables.set("PI", new NumberValue(java.lang.Math.PI));
-        Variables.set("TAU", new NumberValue(java.lang.Math.TAU));
-        Variables.set("E", new NumberValue(java.lang.Math.E));
         
         Functions.set("abs", functionConvert(java.lang.Math::abs));
         Functions.set("acos", functionConvert(java.lang.Math::acos));

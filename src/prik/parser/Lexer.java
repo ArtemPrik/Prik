@@ -358,46 +358,49 @@ public final class Lexer {
     }
     
     private void tokenizeText() {
-        next();// skip "
+        skip();// skip "
         final StringBuilder buffer = new StringBuilder();
         char current = peek(0);
         while (true) {
-            if (current == '\0') throw error("Reached end of file while parsing text string.");
             if (current == '\\') {
                 current = next();
-                switch (current) {
-                    case '"': current = next(); buffer.append('"'); continue;
-                    case 'n': current = next(); buffer.append('\n'); continue;
-                    case 't': current = next(); buffer.append('\t'); continue;
-                    case 'b': current = next(); buffer.append('\b'); continue;
-                    case 'f': current = next(); buffer.append('\f'); continue;
-                    case 'r': current = next(); buffer.append('\r'); continue;
-                    case 's': current = next(); buffer.append('\s'); continue;
-                    case 'u': // http://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.3
-                        int rollbackPosition = pos;
-                        while (current == 'u') current = next();
-                        int escapedValue = 0;
-                        for (int i = 12; i >= 0 && escapedValue != -1; i -= 4) {
-                            if (isHexNumber(current)) {
-                                escapedValue |= (Character.digit(current, 16) << i);
-                            } else {
-                                escapedValue = -1;
-                            }
-                            current = next();
-                        }
-                        if (escapedValue >= 0) {
-                            buffer.append((char) escapedValue);
+                if ("\r\n\0".indexOf(current) != -1) {
+                    throw error("Reached end of line while parsing text");
+                }
+
+                int idx = "\\0\"bfnrt".indexOf(current);
+                if (idx != -1) {
+                    current = next();
+                    buffer.append("\\\0\"\b\f\n\r\t".charAt(idx));
+                    continue;
+                }
+                if (current == 'u') {
+                    // http://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-3.3
+                    int rollbackPosition = pos;
+                    while (current == 'u') current = next();
+                    int escapedValue = 0;
+                    for (int i = 12; i >= 0 && escapedValue != -1; i -= 4) {
+                        if (isHexNumber(current)) {
+                            escapedValue |= (Character.digit(current, 16) << i);
                         } else {
-                            // rollback
-                            buffer.append("\\u");
-                            pos = rollbackPosition;
+                            escapedValue = -1;
                         }
-                        continue;
+                        current = next();
+                    }
+                    if (escapedValue >= 0) {
+                        buffer.append((char) escapedValue);
+                    } else {
+                        // rollback
+                        buffer.append("\\u");
+                        pos = rollbackPosition;
+                    }
+                    continue;
                 }
                 buffer.append('\\');
                 continue;
             }
             if (current == '"') break;
+            if (current == '\0') throw error("Reached end of file while parsing text string.");
             buffer.append(current);
             current = next();
         }

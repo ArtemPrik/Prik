@@ -24,7 +24,6 @@ public final class Reflection implements Module {
 
     @Override
     public void init() {
-        Variables.define("null", NULL);
         Variables.define("boolean.class", new ClassValue(boolean.class));
         Variables.define("boolean[].class", new ClassValue(boolean[].class));
         Variables.define("boolean[][].class", new ClassValue(boolean[][].class));

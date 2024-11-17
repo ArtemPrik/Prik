@@ -1,5 +1,7 @@
 package prik.lib;
 
+import java.util.Objects;
+
 /**
  *
  * @author Professional
@@ -97,6 +99,22 @@ public final class NumberValue implements Value {
             return Integer.compare(value.intValue(), other.intValue());
         }
         return asString().compareTo(o.asString());
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.value);
+        return hash;
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final NumberValue other = (NumberValue) obj;
+        return Objects.equals(this.value, other.value);
     }
     
     @Override

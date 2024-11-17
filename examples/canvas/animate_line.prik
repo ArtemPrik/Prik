@@ -1,23 +1,24 @@
-use "canvas"
-use "std"
+import "prik.ui.Canvas"
+import "prik.lang.Thread"
+import "prik.util.Random"
 
-w = 800  h = 600
+var w = 800  var h = 600
 window("Animate line", w, h)
 
 // Крайние точки линии
-x1 = rand(w)  y1 = rand(h)
-x2 = rand(w)  y2 = rand(h)
+var x1 = rand(w)  var y1 = rand(h)
+var x2 = rand(w)  var y2 = rand(h)
 
 // Направление движения
-d1x = rand()  d1y = -rand()
-d2x = rand()  d2y = rand()
+var d1x = rand()  var d1y = -rand()
+var d2x = rand()  var d2y = rand()
 
 // Очищаем экран
 color(rand(#FFFFFF))
 frect(0,0,w,h)
 
-hue = 0
-run = 1
+var hue = 0
+var run = 1
 while run {
     if checkhoriz(x1) d1x = -d1x
     if checkhoriz(x2) d2x = -d2x
@@ -42,9 +43,9 @@ def checkvert(py)  return (py >= h || py < 0)
 def floor(v) return v - v % 1
 
 def sethsbcolor(h1) {
-    qr = h1 * 6 // временно для расчёта
-    hueindex = floor(qr) % 6
-    f = qr - floor(qr)
+    var qr = h1 * 6 // временно для расчёта
+    var hueindex = floor(qr) % 6
+    var f = qr - floor(qr)
 
     if hueindex == 0  color(255, f*255, 0)
     else if hueindex == 1  color(255 - f*255, 255, 0)

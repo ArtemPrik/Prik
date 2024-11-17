@@ -6,7 +6,6 @@ import prik.compiler.Compiler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import prik.parser.Lexer;
 
 /**
  * @author Professional

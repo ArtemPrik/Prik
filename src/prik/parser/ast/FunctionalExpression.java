@@ -1,6 +1,7 @@
 package prik.parser.ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import prik.exceptions.UnknownFunctionException;
 import prik.lib.*;
@@ -9,12 +10,12 @@ import prik.lib.*;
  *
  * @author Professional
  */
-public final class FunctionalExpression implements Expression, Statement {
+public final class FunctionalExpression extends InterruptableNode implements Expression, Statement {
     public final Expression name;
     public final List<Expression> arguments;
     
-    public FunctionalExpression(Expression name) {
-        this.name = name;
+    public FunctionalExpression(Expression functionExpr) {
+        this.name = functionExpr;
         arguments = new ArrayList<>();
     }
     
@@ -26,7 +27,7 @@ public final class FunctionalExpression implements Expression, Statement {
     public void addArgument(Expression arg) {
         arguments.add(arg);
     }
-
+    
     @Override
     public void execute() {
         eval();
@@ -34,6 +35,7 @@ public final class FunctionalExpression implements Expression, Statement {
     
     @Override
     public Value eval() {
+        super.interruptionCheck();
         final int size = arguments.size();
         final Value[] values = new Value[size];
         for (int i = 0; i < size; i++) {
@@ -55,10 +57,14 @@ public final class FunctionalExpression implements Expression, Statement {
     }
     
     private Function getFunction(String key) {
-        if (Functions.isExists(key)) return Functions.get(key);
+        if (Functions.isExists(key)) {
+            return Functions.get(key);
+        }
         if (Variables.isExists(key)) {
             final Value variable = Variables.get(key);
-            if (variable.type() == Types.FUNCTION) return ((FunctionValue)variable).getValue();
+            if (variable.type() == Types.FUNCTION) {
+                return ((FunctionValue)variable).getValue();
+            }
         }
         throw new UnknownFunctionException(key);
     }
@@ -67,13 +73,28 @@ public final class FunctionalExpression implements Expression, Statement {
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
-    
+
+    @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
     }
 
     @Override
     public String toString() {
-        return name + "(" + arguments.toString() + ")";
+        final StringBuilder sb = new StringBuilder();
+        if (name instanceof ValueExpression valueExpr && (valueExpr.value.type() == Types.STRING)) {
+            sb.append(valueExpr.value.asString()).append('(');
+        } else {
+            sb.append(name).append('(');
+        }
+        final Iterator<Expression> it = arguments.iterator();
+        if (it.hasNext()) {
+            sb.append(it.next());
+            while (it.hasNext()) {
+                sb.append(", ").append(it.next());
+            }
+        }
+        sb.append(')');
+        return sb.toString();
     }
 }

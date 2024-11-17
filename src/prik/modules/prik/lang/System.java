@@ -1,5 +1,7 @@
 package prik.modules.prik.lang;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.Objects;
 import prik.lib.Arguments;
 import prik.lib.Function;
@@ -18,9 +20,7 @@ import prik.modules.Module;
 public final class System implements Module {
     @Override
     public void init() {
-        MapValue system = new MapValue(11);
-        system.set("time", NumberValue.of((double)java.lang.System.currentTimeMillis()));
-
+        MapValue system = new MapValue(10);
         system.set("currentTimeMillis", args -> {
             Arguments.check(0, args.length);
             return NumberValue.of((double)java.lang.System.currentTimeMillis());
@@ -47,6 +47,15 @@ public final class System implements Module {
                 return new StringValue("beta_001");
             }
             return new StringValue(java.lang.System.getProperty(args[0].asString()));
+        });
+        
+        Functions.set("getScreenResolution", args -> {
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Dimension dim = toolkit.getScreenSize();
+            MapValue map = new MapValue(2);
+            map.set("width", new NumberValue(dim.getWidth()));
+            map.set("height", new NumberValue(dim.getHeight()));
+            return map;
         });
         
         system.set("getUsedMemory", (Value... args) -> {

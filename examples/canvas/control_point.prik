@@ -1,19 +1,21 @@
-use "canvas"
-use "std"
+import "prik.ui.Canvas"
+import "prik.lang.Thread"
+import "prik.util.Random"
+import "prik.awt.event.Keys"
 
-w = 640 h = 480
+var w = 640  var h = 480
 window("Управление точкой", w, h)
 
-x = rand(w) y = rand(h)
+var x = rand(w) var y = rand(h)
 
-run = 1
+var run = 1
 while run {
-    key = keypressed()
-    if (key == canvas_VK_LEFT  && x > 0) x = x - 1
-    else if (key == canvas_VK_RIGHT && x < w) x = x + 1
-    else if (key == canvas_VK_UP    && y > 0) y = y - 1
-    else if (key == canvas_VK_DOWN  && y < h) y = y + 1
-    else if key == canvas_VK_ESCAPE run = 0
+    var key = keypressed()
+    if (key == Keys.LEFT  && x > 0) x = x - 1
+    else if (key == Keys.RIGHT && x < w) x = x + 1
+    else if (key == Keys.UP && y > 0) y = y - 1
+    else if (key == Keys.DOWN  && y < h) y = y + 1
+    else if key == Keys.ESCAPE run = 0
 
     color(255,255,255)
     frect(0,0,w,h)

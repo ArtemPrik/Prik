@@ -1,9 +1,8 @@
-use "std"
-use "system"
+import "prik.lang.System"
 
-var f_num = double(readln())
-var oper = readln()
-var s_num = double(readln())
+var f_num = double(readln)
+var oper = readln
+var s_num = double(readln)
 
 var result
 

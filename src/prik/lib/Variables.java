@@ -30,6 +30,10 @@ public final class Variables {
     public static void pop() {
         variables = stack.pop();
     }
+
+    public static Map<String, Value> variables() {
+        return variables;
+    }
     
     public static boolean isExists(String key) {
         return variables.containsKey(key) || constants.containsKey(key);

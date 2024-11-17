@@ -1,21 +1,24 @@
-use "canvas"
-use "math"
-use "std"
+import "prik.ui.Canvas"
+import "prik.lang.Math"
+import "prik.lang.Thread"
+import "prik.util.Arrays"
+import "prik.util.Random"
 
-w = 800 h = 600
-w2 = w/2 h2 = h/2
+var w = 800  var h = 600
+var w2 = w/2  var h2 = h/2
 window("agar.io prik clone", w, h)
 
 // поле
-fieldWidth = 5000
-fieldHeight = 3000
-fieldX = rand(fieldWidth) - w2
-fieldY = rand(fieldHeight) - h2
+var fieldWidth = 5000
+var fieldHeight = 3000
+var fieldX = rand(fieldWidth) - w2
+var fieldY = rand(fieldHeight) - h2
 
 // еда
-NUM_FOOD = 350
-food = newArray(4, NUM_FOOD)
+var NUM_FOOD = 350
+var food = newArray(4, NUM_FOOD)
 
+var i = 0
 for i = 0, i < NUM_FOOD, i = i + 1 {
     food[0][i] = rand(fieldWidth)
     food[1][i] = rand(fieldHeight)
@@ -24,15 +27,16 @@ for i = 0, i < NUM_FOOD, i = i + 1 {
 }
 
 // игрок
-playerSize = 8
-playerColor = rand(#ffffff)
+var playerSize = 8
+var playerColor = rand(#ffffff)
+println playerColor
 
-run = 1
+var run = 1
 while run {
-    mouse = mousehover()
-    angle = atan2(mouse[1] - h2, mouse[0] - w2)
-    fieldX = fieldX + cos(angle) * 50/playerSize
-    fieldY = fieldY + sin(angle) * 50/playerSize
+    var mouse = mousehover()
+    var angle = atan2(mouse[1] - h2, mouse[0] - w2)
+    var fieldX = fieldX + cos(angle) * 50/playerSize
+    var fieldY = fieldY + sin(angle) * 50/playerSize
     if (fieldX < -w2) fieldX = -w2
     else if (fieldX > fieldWidth - w2 - 1) fieldX = fieldWidth - w2 - 1
     if (fieldY < -h2) fieldY = -h2
@@ -46,9 +50,9 @@ while run {
     rect(-fieldX, -fieldY, fieldWidth, fieldHeight)
     
     for i = 0, i < NUM_FOOD, i = i + 1 {
-        dx = food[0][i] - fieldX - w2
-        dy = food[1][i] - fieldY - h2
-        rad = food[2][i] + playerSize
+        var dx = food[0][i] - fieldX - w2
+        var dy = food[1][i] - fieldY - h2
+        var rad = food[2][i] + playerSize
         if ( (dx*dx + dy*dy) < (rad*rad) ) {
             // есть столкновение
             playerSize = playerSize + 1
@@ -71,6 +75,5 @@ while run {
     repaint()
     sleep(20)
 }
-
 
 def circle(cx, cy, rad) foval(cx-rad, cy-rad, 2*rad, 2*rad)

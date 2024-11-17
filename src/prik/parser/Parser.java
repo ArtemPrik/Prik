@@ -125,10 +125,10 @@ public class Parser {
     
     private Statement statement() {
         if (match(TokenType.PRINT)) {
-            return new PrintStatement(expression());
+            return printStatement();
         }
         if (match(TokenType.PRINTLN)) {
-            return new PrintlnStatement(expression());
+            return printlnStatement();
         }
         if (match(TokenType.IF)) {
             return ifElse();
@@ -253,6 +253,20 @@ public class Parser {
         }
         consume(TokenType.EQ);
         return new DestructuringAssignmentStatement(variables, expression());
+    }
+    
+    private PrintStatement printStatement() {
+        consume(TokenType.LPAREN);
+        Expression expression = expression();
+        consume(TokenType.RPAREN);
+        return new PrintStatement(expression);
+    }
+    
+    private PrintlnStatement printlnStatement() {
+        consume(TokenType.LPAREN);
+        Expression expression = expression();
+        consume(TokenType.RPAREN);
+        return new PrintlnStatement(expression);
     }
     
     private DeclareVarStatement declareVar() {
