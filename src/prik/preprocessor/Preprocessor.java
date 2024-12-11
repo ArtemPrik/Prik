@@ -29,6 +29,15 @@ public final class Preprocessor {
                 if (parts.length == 2) {
                     processedCode.append("import ").append(parts[1]).append("\n");
                 }
+            } else if (trimmedLine.startsWith("#jInclude")) {
+                String[] parts = line.trim().split("\\s+", 2);
+                if (parts.length == 2) {
+                    String[] partsOfPkg = parts[1].split("\\.");
+                    final String template = "const %s: any = JavaClass(%s)";
+                    processedCode.append("import \"prik.lang.Reflection\"; ");
+                    processedCode.append(String.format(template, partsOfPkg[2].replaceAll("\"", ""), parts[1]));
+                    processedCode.append("\n");
+                }
             } else {
                 String lastLine = line;
                 for (Map.Entry<String, String> entry : macros.entrySet()) {

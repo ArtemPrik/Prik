@@ -11,7 +11,7 @@ import prik.lib.ClassDeclarations;
 public final class ClassDeclarationStatement implements Statement {
     public final String name;
     public final List<FunctionDefineStatement> methods;
-    public final List<AssignmentExpression> fields;
+    public final List<Statement> fields;
     
     public ClassDeclarationStatement(String name) {
         this.name = name;
@@ -19,7 +19,7 @@ public final class ClassDeclarationStatement implements Statement {
         fields = new ArrayList<>();
     }
     
-    public void addField(AssignmentExpression expr) {
+    public void addField(Statement expr) {
         fields.add(expr);
     }
 
@@ -37,12 +37,13 @@ public final class ClassDeclarationStatement implements Statement {
         visitor.visit(this);
     }
 
+    @Override
     public <R, T> R accept(ResultVisitor<R, T> visitor, T t) {
         return visitor.visit(this, t);
     }
 
     @Override
     public String toString() {
-        return String.format("class %s {\n  %s  %s}", name, fields, methods);
+        return String.format("class %s {%s  %s}", name, fields, methods);
     }
 }

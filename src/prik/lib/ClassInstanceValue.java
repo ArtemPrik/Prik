@@ -8,7 +8,7 @@ import prik.exceptions.TypeException;
  *
  * @author Professional
  */
-public abstract class ClassInstanceValue implements Value {
+public class ClassInstanceValue implements Value {
     private final String className;
     private final MapValue thisMap;
     private ClassMethod constructor;

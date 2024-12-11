@@ -54,13 +54,6 @@ public final class Canvas implements Module {
         Functions.set("color", new SetColor());
         Functions.set("repaint", new Repaint());
         
-        Variables.set("VK_UP", new NumberValue(KeyEvent.VK_UP));
-        Variables.set("VK_DOWN", new NumberValue(KeyEvent.VK_DOWN));
-        Variables.set("VK_LEFT", new NumberValue(KeyEvent.VK_LEFT));
-        Variables.set("VK_RIGHT", new NumberValue(KeyEvent.VK_RIGHT));
-        Variables.set("VK_FIRE", new NumberValue(KeyEvent.VK_ENTER));
-        Variables.set("VK_ESCAPE", new NumberValue(KeyEvent.VK_ESCAPE));
-        
         lastKey = MINUS_ONE;
         mouseHover = new ArrayValue(new Value[] { NumberValue.ZERO, NumberValue.ZERO });
     }

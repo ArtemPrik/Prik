@@ -14,7 +14,7 @@ import prik.lib.Variables;
  *
  * @author Professional
  */
-public final class DeclareVarStatement implements Statement {
+public final class DeclareVarStatement implements Statement, Expression {
     public final String name;
     public final Expression expression;
     public prik.lib.Datatypes type;
@@ -44,8 +44,18 @@ public final class DeclareVarStatement implements Statement {
     
     @Override
     public void execute() {
-        if (expression != null) Variables.set(name, expression.eval());
-        else Variables.set(name, new NullValue());
+        eval();
+    }
+
+    @Override
+    public Value eval() {
+        if (expression != null) {
+            Variables.set(name, expression.eval());
+            return expression.eval();
+        } else {
+            Variables.set(name, new NullValue());
+            return new NullValue();
+        }
     }
 
     @Override

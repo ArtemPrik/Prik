@@ -8,26 +8,26 @@ import java.util.Map;
  * @author Professional
  */
 public class UserLibraries {
-    private static final Map<String, prik.parser.ast.Statement> functions;
+    private static final Map<String, prik.parser.ast.Statement> libraries;
     static {
-        functions = new HashMap<>();
+        libraries = new HashMap<>();
     }
     
     public static void clear() {
-        functions.clear();
+        libraries.clear();
     }
 
     
     public static boolean isExists(String key) {
-        return functions.containsKey(key);
+        return libraries.containsKey(key);
     }
 
     public static prik.parser.ast.Statement get(String name) {
-        return (prik.parser.ast.Statement) functions.get(name);
+        return (prik.parser.ast.Statement) libraries.get(name);
     }
     
     
     public static void set(String key, prik.parser.ast.Statement statement) {
-        functions.put(key, statement);
+        libraries.put(key, statement);
     }
 }

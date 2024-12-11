@@ -1,4 +1,4 @@
-func fir() {
+def fir() {
     for (i = 0, i < 12, i = i + 2) {
         spaces = ""
         for (j = 0, j < (11 - i) / 2, j = j + 1) {
@@ -13,7 +13,7 @@ func fir() {
     println "\n\t make with \"prik\""
 }
 
-func fir_new(stars) {
+def fir_new(stars) {
     for (i = 0, i < 12, i = i + 2) {
         spaces = ""
         for (j = 0, j < (11 - i) / 2, j = j + 1) {

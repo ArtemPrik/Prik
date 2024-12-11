@@ -3,6 +3,7 @@ package prik.parser.ast;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import prik.exceptions.TypeException;
 import prik.lib.ArrayValue;
 import prik.lib.MapValue;
 import prik.lib.Types;
@@ -33,6 +34,8 @@ public class DestructuringAssignmentStatement extends InterruptableNode implemen
             case Types.MAP:
                 execute((MapValue) container);
                 break;
+            default:
+                execute(container);
         }
     }
     
@@ -45,6 +48,17 @@ public class DestructuringAssignmentStatement extends InterruptableNode implemen
             }
         }
     }
+    
+    private void execute(Value value) {
+        final int size = variables.size();
+        for (int i = 0; i < size; i++) {
+            final String variable = variables.get(i);
+            if (variable != null) {
+                Variables.define(variable, value);
+            }
+        }
+    }
+    
     private void execute(MapValue map) {
         int i = 0;
         for (Map.Entry<Value, Value> entry : map) {

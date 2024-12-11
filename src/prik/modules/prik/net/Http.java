@@ -1,19 +1,24 @@
-package prik.modules.org.http;
+package prik.modules.prik.net;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
-import okhttp3.*;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import okhttp3.internal.http.HttpMethod;
 import prik.exceptions.ArgumentsMismatchException;
 import prik.exceptions.TypeException;
 import prik.lib.Arguments;
 import prik.lib.ArrayValue;
+import prik.lib.BooleanValue;
 import prik.lib.Function;
 import prik.lib.FunctionValue;
-import prik.lib.Functions;
 import prik.lib.MapValue;
 import prik.lib.NumberValue;
 import prik.lib.StringValue;
@@ -141,9 +146,9 @@ public class Http implements Module {
 
                 final Response response = client.newCall(builder.build()).execute();
                 callback.execute(getResult(response, options));
-                return NumberValue.fromBoolean(response.isSuccessful());
+                return new BooleanValue(response.isSuccessful());
             } catch (IOException ex) {
-                return NumberValue.fromBoolean(false);
+                return new BooleanValue(false);
             }
         }
 

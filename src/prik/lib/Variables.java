@@ -12,15 +12,14 @@ public final class Variables {
     private static final Stack<Map<String, Value>> stack;
     private static Map<String, Value> variables;
     private static Map<String, Value> constants;
+    private static Map<String, StringValue> stringVariables;
+    private static Map<String, NumberValue> numberVariables;
+    private static Map<String, BooleanValue> booleanVariables;
     
     static {
         stack = new Stack<>();
         variables = new ConcurrentHashMap<>();
         constants = new ConcurrentHashMap<>();
-        variables.put("lox", new FunctionValue((Value... args) -> {
-            System.out.println("TI LOX!");
-            return NumberValue.ZERO;
-        }));
     }
     
     public static void push() {
@@ -50,6 +49,18 @@ public final class Variables {
     
     public static void set(String key, Value value) {
         variables.put(key, value);
+    }
+    
+    public static void setString(String key, String value) {
+        stringVariables.put(key, new StringValue(value));
+    }
+    
+    public static void setNumber(String key, Number value) {
+        numberVariables.put(key, new NumberValue(value));
+    }
+    
+    public static void setBoolean(String key, boolean value) {
+        booleanVariables.put(key, new BooleanValue(value));
     }
     
     public static Value getConstant(String key) {

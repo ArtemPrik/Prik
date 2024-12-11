@@ -91,7 +91,6 @@ public final class Lexer {
         OPERATORS.put("??", TokenType.QUESTIONQUESTION);
         
         OPERATORS.put("->", TokenType.ARROW);
-        OPERATORS.put("=>", TokenType.ARROW);
     }
     
     private static final Map<String, TokenType> KEYWORDS;
@@ -101,9 +100,13 @@ public final class Lexer {
         KEYWORDS.put("true", TokenType.TRUE);
         KEYWORDS.put("false", TokenType.FALSE);
         
+        KEYWORDS.put("array", TokenType.ARRAY_DATA);
+        KEYWORDS.put("boolean", TokenType.BOOLEAN_DATA);
+        KEYWORDS.put("char", TokenType.CHAR_DATA);
+        KEYWORDS.put("function", TokenType.ANONIMOUS_FN_DATA);
+        KEYWORDS.put("map", TokenType.MAP_DATA);
         KEYWORDS.put("number", TokenType.NUMBER_DATA);
         KEYWORDS.put("string", TokenType.STRING_DATA);
-        KEYWORDS.put("boolean", TokenType.BOOLEAN_DATA);
         KEYWORDS.put("any", TokenType.ANY_DATA);
         
         KEYWORDS.put("print", TokenType.PRINT);
@@ -120,7 +123,7 @@ public final class Lexer {
         KEYWORDS.put("null", TokenType.NULL);
         KEYWORDS.put("class", TokenType.CLASS);
         KEYWORDS.put("new", TokenType.NEW);
-        KEYWORDS.put("destruct", TokenType.EXTRACT);
+        KEYWORDS.put("extract", TokenType.EXTRACT);
         
         KEYWORDS.put("import", TokenType.IMPORT);
         KEYWORDS.put("as", TokenType.AS);
@@ -133,6 +136,7 @@ public final class Lexer {
         KEYWORDS.put("const", TokenType.CONST);
         KEYWORDS.put("macro", TokenType.MACRO);
         KEYWORDS.put("lib", TokenType.LIB);
+        KEYWORDS.put("enum", TokenType.ENUM);
         
         KEYWORDS.put("throw", TokenType.THROW);
         KEYWORDS.put("try", TokenType.TRY);
@@ -180,6 +184,7 @@ public final class Lexer {
             else if (Character.isLetter(current)) tokenizeWord();
             else if (current == '`') tokenizeExtendedWord();
             else if (current == '"') tokenizeText();
+            else if (current == '\'') tokenizeChar();
             else if (current == '#') {
                 next();
                 tokenizeHexNumber();
@@ -368,10 +373,10 @@ public final class Lexer {
                     throw error("Reached end of line while parsing text");
                 }
 
-                int idx = "\\0\"bfnrt".indexOf(current);
+                int idx = "\\0\"bfnrts".indexOf(current);
                 if (idx != -1) {
                     current = next();
-                    buffer.append("\\\0\"\b\f\n\r\t".charAt(idx));
+                    buffer.append("\\\0\"\b\f\n\r\t\s".charAt(idx));
                     continue;
                 }
                 if (current == 'u') {
@@ -407,6 +412,36 @@ public final class Lexer {
         next(); // skip closing "
         
         addToken(TokenType.TEXT, buffer.toString());
+    }
+    
+    private void tokenizeChar() {
+        skip();// skip '
+        final StringBuilder buffer = new StringBuilder();
+        char current = peek(0);
+        while (true) {
+            if (current == '\\') {
+                current = next();
+                if ("\r\n\0".indexOf(current) != -1) {
+                    throw error("Reached end of line while parsing character");
+                }
+
+                int idx = "\\0\"bfnrts".indexOf(current);
+                if (idx != -1) {
+                    current = next();
+                    buffer.append("\\\0\"\b\f\n\r\t\s".charAt(idx));
+                    continue;
+                }
+                buffer.append('\\');
+                continue;
+            }
+            if (current == '\'') break;
+            if (current == '\0') throw error("Reached end of file while parsing character.");
+            buffer.append(current);
+            current = next();
+        }
+        next(); // skip closing '
+        if (buffer.length() != 1) throw error("Length of character doesn`t correct");
+        addToken(TokenType.CHAR, buffer.toString());
     }
     
     private void tokenizeComment() {

@@ -1,12 +1,9 @@
 package prik.parser.visitors;
 
-import prik.Console;
 import prik.exceptions.CannotAssignValueToConstantException;
 import prik.exceptions.PrikException;
 import prik.lib.Variables;
-import prik.modules.Module;
 import prik.parser.ast.*;
-import prik.parser.visitors.AbstractVisitor;
 
 /**
  *
@@ -20,8 +17,14 @@ public final class AssignValidator extends AbstractVisitor {
         if (s.target instanceof VariableExpression) {
             final String variable = ((VariableExpression) s.target).name;
             if (Variables.isExists(variable)) {
-//                throw new RuntimeException(String.format("Warning: variable \"%s\" overrides constant", variable));
                 throw new CannotAssignValueToConstantException(variable);
+            }
+        }
+        if (s.target instanceof ContainerAccessExpression) {
+            final Expression variable = ((ContainerAccessExpression) s.target).root;
+            if (Variables.isExists(variable.toString())) {
+                throw new CannotAssignValueToConstantException(variable.toString() + 
+                        ((ContainerAccessExpression) s.target).indices);
             }
         }
     }

@@ -7,17 +7,17 @@ import prik.exceptions.PrikException;
  *
  * @author Professional
  */
-public final class LexerException extends RuntimeException {
+public final class LexerException extends PrikException {
     public LexerException() {
         super();
     }
     
     public LexerException(String message) {
-        super(message);
+        super("LexerException", message);
     }
     
     public LexerException(int row, int col, String message) {
-        super("["+row+" : "+col+"] " + message);
+        super("LexerException", "["+row+" : "+col+"] " + message);
     }
     
 //    public LexerException(int row, int col, String message) {

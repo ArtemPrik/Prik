@@ -10,10 +10,6 @@ import prik.lib.*;
 public final class ValueExpression implements Expression {
     public final Value value;
     
-    public ValueExpression(double value) {
-        this.value = new NumberValue(value);
-    }
-    
     public ValueExpression(Number value) {
         this.value = NumberValue.of(value);
     }
@@ -28,6 +24,10 @@ public final class ValueExpression implements Expression {
     
     public ValueExpression(boolean value) {
         this.value = new BooleanValue(value);
+    }
+    
+    public ValueExpression(char value) {
+        this.value = new CharacterValue(value);
     }
     
     public ValueExpression(Value value) {

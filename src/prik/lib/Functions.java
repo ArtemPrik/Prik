@@ -57,7 +57,7 @@ public final class Functions {
             return new StringValue(Types.typeToString(args[0].type()));
         });
         
-        functions.put("sprintf", (Value... args) -> {
+        functions.put("printf", (Value... args) -> {
             Arguments.checkAtLeast(1, args.length);
             
             final String format = args[0].asString();

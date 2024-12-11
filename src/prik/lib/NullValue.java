@@ -23,8 +23,7 @@ public final class NullValue implements Value {
 
     @Override
     public String asString() {
-//        return "null";
-        return "";
+        return "null";
     }
 
     @Override

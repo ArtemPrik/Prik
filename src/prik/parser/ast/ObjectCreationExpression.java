@@ -30,7 +30,7 @@ public final class ObjectCreationExpression implements Expression {
         if (cd == null) {
             // Is Instantiable?
             if (Variables.isExists(className)) {
-                final Value variable = Variables.get(className);
+                final Value variable = Variables.getConstant(className);
                 if (variable instanceof Instantiable) {
                     return ((Instantiable) variable).newInstance(ctorArgs());
                 }
@@ -39,11 +39,16 @@ public final class ObjectCreationExpression implements Expression {
         }
         
         // Create an instance and put evaluated fields with method declarations
-        final ClassInstanceValue instance = new ClassInstanceValue(className) {};
-        for (AssignmentExpression f : cd.fields) {
+        final ClassInstanceValue instance = new ClassInstanceValue(className);
+        for (Statement f : cd.fields) {
             // TODO check only variable assignments
-            final String fieldName = ((VariableExpression) f.target).name;
-            instance.addField(fieldName, f.eval());
+            if (f instanceof DeclareVarStatement dvs) {
+                final String fieldName = dvs.name;
+                instance.addField(fieldName, dvs.eval());
+            } else if (f instanceof AssignmentExpression ae) {
+                final String fieldName = ((VariableExpression) ae.target).name;
+                instance.addField(fieldName, ae.eval());
+            }
         }
         for (FunctionDefineStatement m : cd.methods) {
             instance.addMethod(m.name, new ClassMethod(m.arguments, m.body, instance));
@@ -75,7 +80,7 @@ public final class ObjectCreationExpression implements Expression {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("new ").append(className).append(' ');
+        sb.append("new ").append(className).append('(');
         final Iterator<Expression> it = constructorArguments.iterator();
         if (it.hasNext()) {
             sb.append(it.next());

@@ -9,9 +9,6 @@ import prik.exceptions.PrikException;
  * @author Professional
  */
 public class ThrowStatement implements Statement {
-    public Map<String, String> throwsList = Map.of(
-                    "RuntimeException", "RuntimeException",
-                    "ArithmeticException", "ArithmeticException");
     public final String type;
     public final Expression expr;
 
@@ -22,7 +19,6 @@ public class ThrowStatement implements Statement {
     
     @Override
     public void execute() {
-        //throw new PrikException((throwsList.get(type) != null ? throwsList.get(type) : "Unknown"), expr.eval().asString());
         switch (type) {
             case "RuntimeException": throw new RuntimeException(expr.eval().asString());
             case "ArithmeticException": throw new ArithmeticException(expr.eval().asString());

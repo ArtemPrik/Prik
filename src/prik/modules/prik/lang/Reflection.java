@@ -56,7 +56,7 @@ public final class Reflection implements Module {
         Variables.define("Object[][].class", new ClassValue(Object[][].class));
 
         Functions.set("isNull", this::isNull);
-        Functions.set("newClass", this::newClass);
+        Functions.set("JavaClass", this::newClass);
         Functions.set("toObject", this::toObject);
         Functions.set("toValue", this::toValue);
     }

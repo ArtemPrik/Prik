@@ -13,12 +13,14 @@ public final class Types {
             MAP = 4,
             FUNCTION = 5,
             CLASS = 6,
-            BOOLEAN = 7;
+            BOOLEAN = 7,
+            CHARACTER = 8,
+            ENUM = 9;
     
     private static final int FIRST = OBJECT;
-    private static final int LAST = BOOLEAN;
+    private static final int LAST = CHARACTER;
     private static final String[] NAMES = {
-        "object", "number", "string", "array", "map", "function", "class", "boolean"
+        "object", "number", "string", "array", "map", "function", "class", "boolean", "character", "enum"
     };
     
     public static String typeToString(int type) {

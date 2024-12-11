@@ -4,7 +4,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.io.ByteArrayInputStream;
 import prik.exceptions.PrikException;
+import prik.lib.MapValue;
 import prik.lib.NullValue;
+import prik.lib.StringValue;
 import prik.lib.UserDefinedFunction;
 import prik.parser.ast.*;
 
@@ -76,6 +78,7 @@ public class Parser {
     }
     
     public Statement parse() {
+        parseErrors.clear();
         final BlockStatement result = new BlockStatement();
         while (!match(TokenType.EOF)) {
             try {
@@ -125,10 +128,10 @@ public class Parser {
     
     private Statement statement() {
         if (match(TokenType.PRINT)) {
-            return printStatement();
+            return new PrintStatement(expression());
         }
         if (match(TokenType.PRINTLN)) {
-            return printlnStatement();
+            return new PrintlnStatement(expression());
         }
         if (match(TokenType.IF)) {
             return ifElse();
@@ -192,6 +195,9 @@ public class Parser {
         if (match(TokenType.MACRO)) {
             return macro();
         }
+        if (match(TokenType.ENUM)) {
+            return enumDeclaration();
+        }
         
         if (lookMatch(0, TokenType.WORD) && lookMatch(1, TokenType.LPAREN)) {
             return new ExprStatement(functionChain(
@@ -224,11 +230,6 @@ public class Parser {
     }
     
     private Statement assignmentStatement() {
-//        final Expression assignment = assignmentStrict();
-//        if (assignment != null) {
-//            return new ExprStatement(assignment);
-//        }
-//        throw new ParseException("Unknown statement: " + get(0));
         if (match(TokenType.EXTRACT)) {
             return destructuringAssignment();
         }
@@ -255,45 +256,32 @@ public class Parser {
         return new DestructuringAssignmentStatement(variables, expression());
     }
     
-    private PrintStatement printStatement() {
-        consume(TokenType.LPAREN);
-        Expression expression = expression();
-        consume(TokenType.RPAREN);
-        return new PrintStatement(expression);
-    }
-    
-    private PrintlnStatement printlnStatement() {
-        consume(TokenType.LPAREN);
-        Expression expression = expression();
-        consume(TokenType.RPAREN);
-        return new PrintlnStatement(expression);
-    }
-    
     private DeclareVarStatement declareVar() {
         String name = consume(TokenType.WORD).getText();
-        boolean canEmpty = false;
         if (match(TokenType.COLON)) {
             final prik.lib.Datatypes type;
-            if (match(TokenType.NUMBER_DATA)) {
+            if (match(TokenType.ARRAY_DATA)) {
+                type = prik.lib.Datatypes.ARRAY;
+            } else if (match(TokenType.BOOLEAN_DATA)) {
+                type = prik.lib.Datatypes.BOOLEAN;
+            } else if (match(TokenType.CHAR_DATA)) {
+                type = prik.lib.Datatypes.CHAR;
+            } else if (match(TokenType.ANONIMOUS_FN_DATA)) {
+                type = prik.lib.Datatypes.FUNCTION;
+            } else if (match(TokenType.MAP_DATA)) {
+                type = prik.lib.Datatypes.MAP;
+            } else if (match(TokenType.NUMBER_DATA)) {
                 type = prik.lib.Datatypes.NUMBER;
             } else if (match(TokenType.STRING_DATA)) {
                 type = prik.lib.Datatypes.STRING;
-            } else if (match(TokenType.BOOLEAN_DATA)) {
-                type = prik.lib.Datatypes.BOOLEAN;
             } else if (match(TokenType.ANY_DATA)) {
                 type = prik.lib.Datatypes.ANY;
             } else {
                 throw new ParseException("After COLON(:) doesn`t match type");
             }
-            if (match(TokenType.QUESTION)) {
-                canEmpty = true;
-            }
             if (match(TokenType.EQ)) {
                 return new DeclareVarStatement(name, expression(), type);
             } else return new DeclareVarStatement(name, type);
-        }
-        if (match(TokenType.QUESTION)) {
-            canEmpty = true;
         }
         if (match(TokenType.EQ)) {
             return new DeclareVarStatement(name, expression());
@@ -305,16 +293,16 @@ public class Parser {
         String name = consume(TokenType.WORD).getText();
         final prik.lib.Datatypes type;
         consume(TokenType.COLON);
-        if (match(TokenType.NUMBER_DATA)) {
-            if (match(TokenType.LBRACKET)) {
-                consume(TokenType.RBRACKET);
-                type = prik.lib.Datatypes.NUMBER_ARRAY;
-            }
-            else type = prik.lib.Datatypes.NUMBER;
+        if (match(TokenType.ANONIMOUS_FN_DATA)) {
+            type = prik.lib.Datatypes.FUNCTION;
+        }else if (match(TokenType.NUMBER_DATA)) {
+            type = prik.lib.Datatypes.NUMBER;
         } else if (match(TokenType.STRING_DATA)) {
             type = prik.lib.Datatypes.STRING;
         } else if (match(TokenType.BOOLEAN_DATA)) {
             type = prik.lib.Datatypes.BOOLEAN;
+        } else if (match(TokenType.CHAR_DATA)) {
+            type = prik.lib.Datatypes.CHAR;
         } else if (match(TokenType.ANY_DATA)) {
             type = prik.lib.Datatypes.ANY;
         } else {
@@ -322,6 +310,18 @@ public class Parser {
         }
         consume(TokenType.EQ);
         return new DeclareConstStatement(name, expression(), type);
+    }
+    
+    private Statement enumDeclaration() {
+        String name = consume(TokenType.WORD).getText();
+        MapValue enumMap = new MapValue(1);
+        consume(TokenType.LBRACE);
+        while (!(match(TokenType.RBRACE))) {
+            String en = consume(TokenType.WORD).getText();
+            match(TokenType.COMMA);
+            enumMap.set(en, new StringValue(en));
+        }
+        return new EnumDeclarationStatement(name, enumMap);
     }
     
     private Statement repeatStatement() {
@@ -352,12 +352,14 @@ public class Parser {
     }
     
     private Statement importStatement() {
-//        String module = consume(TokenType.WORD).getText();
-//        if (match(TokenType.AS) || match(TokenType.COLON)) {
-//            String newName = consume(TokenType.WORD).getText();
-//        }
-//        return new ImportStatement(module);
-        return new ImportStatement(expression());
+        Expression expression = expression();
+        boolean rename = false;
+        String newName = "";
+        if (match(TokenType.AS) || match(TokenType.COLON)) {
+            rename = true;
+            newName = consume(TokenType.WORD).getText();
+        }
+        return new ImportStatement(expression, rename, newName);
     }
     
     private Statement libDeclaration() {
@@ -372,7 +374,7 @@ public class Parser {
             } else if (match(TokenType.CONST)) {
                 block.add(declareConst());
             } else throw new ParseException(get(0).getType() + " cannot match `var`,"
-                    + " `const` or `func`");
+                    + " `const` or `def`");
         }
         return new LibDeclarationStatement(name, block);
     }
@@ -419,6 +421,10 @@ public class Parser {
         
         boolean openParen = match(TokenType.LPAREN); // необязательные скобки
         final Statement initialization = assignmentStatement();
+//        consume(TokenType.VAR);
+//        String name = consume(TokenType.WORD).getText();
+//        consume(TokenType.EQ);
+//        Expression expression = expression();
         consume(TokenType.COMMA);
         final Expression termination = expression();
         consume(TokenType.COMMA);
@@ -484,7 +490,7 @@ public class Parser {
     }
     
     private Statement statementBody() {
-        if (match(TokenType.EQ) || match(TokenType.ARROW)) {
+        if (match(TokenType.ARROW)) {
             return new ReturnStatement(expression());
         }
         return statementOrBlock();
@@ -549,8 +555,8 @@ public class Parser {
     
     private Statement classDeclaration() {
         // class Name {
-        //   x = 123
-        //   str = ""
+        //   var x = 123
+        //   var str = ""
         //   def method() = str
         // }
         final String name = consume(TokenType.WORD).getText();
@@ -559,6 +565,13 @@ public class Parser {
         do {
             if (match(TokenType.DEF)) {
                 classDeclaration.addMethod(functionDefine());
+            } else if (match(TokenType.VAR)) {
+                final DeclareVarStatement fieldDeclaration = declareVar();
+                if (fieldDeclaration != null) {
+                    classDeclaration.addField(fieldDeclaration);
+                } else {
+                    throw new ParseException("Class can contain only assignments and function declarations");
+                }
             } else {
                 final AssignmentExpression fieldDeclaration = assignmentStrict();
                 if (fieldDeclaration != null) {
@@ -903,7 +916,6 @@ public class Parser {
     }
     
     private Expression variable() {
-        final Token current = get(0);
         if (lookMatch(0, TokenType.LBRACKET)) {
             return array();
         }
@@ -917,6 +929,9 @@ public class Parser {
         final Token current = get(0);
         if (isNumberToken(current.getType())) {
             return new ValueExpression(getAsNumber(current));
+        }
+        if (match(TokenType.CHAR)) {
+            return new ValueExpression(current.getText().charAt(0));
         }
         if (match(TokenType.TEXT)) {
             final ValueExpression strExpr = new ValueExpression(current.getText());
@@ -997,7 +1012,7 @@ public class Parser {
     private List<Expression> variableSuffix() {
         // .key1.arr1[expr1][expr2].key2
         if (!lookMatch(0, TokenType.DOT) && !lookMatch(0, TokenType.LBRACKET)) {
-            return null;
+            return Collections.emptyList();
         }
         final List<Expression> indices = new ArrayList<>();
         while (lookMatch(0, TokenType.DOT) || lookMatch(0, TokenType.LBRACKET)) {

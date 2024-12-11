@@ -16,11 +16,6 @@ public final class ClassDeclarations {
     private static final Map<String, ClassDeclarationStatement> declarations;
     static {
         declarations = new ConcurrentHashMap<>();
-        
-        ClassDeclarationStatement clas = new ClassDeclarationStatement("Integer");
-        clas.addField(new AssignmentExpression(null, new VariableExpression("MAX_VALUE"), new ValueExpression(Integer.MAX_VALUE)));
-        
-        declarations.put("Integer", clas);
     }
 
     private ClassDeclarations() { }

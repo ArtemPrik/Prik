@@ -1,10 +1,9 @@
 package prik.parser.ast;
 
 import prik.exceptions.TypeException;
-import prik.lib.BooleanValue;
-import prik.lib.NumberValue;
-import prik.lib.StringValue;
+import prik.lib.CharacterValue;
 import prik.lib.Types;
+import prik.lib.Value;
 import prik.lib.Variables;
 
 
@@ -12,10 +11,10 @@ import prik.lib.Variables;
  *
  * @author Professional
  */
-public final class DeclareConstStatement implements Statement {
+public final class DeclareConstStatement implements Statement, Expression {
     public final String name;
     public final Expression expression;
-    public prik.lib.Datatypes type;
+    public final prik.lib.Datatypes type;
 
     public DeclareConstStatement(String name, Expression expression, 
                                 prik.lib.Datatypes type) {
@@ -26,35 +25,64 @@ public final class DeclareConstStatement implements Statement {
     
     @Override
     public void execute() {
+        eval();
+    }
+
+    @Override
+    public Value eval() {
+        final Value value = expression.eval();
         switch (type) {
-            case STRING:
-                if (expression.eval().type() == Types.STRING) {
-                    Variables.setConstant(name,
-                            new StringValue(expression.eval().asString()));
+            case ARRAY:
+                if (value.type() == Types.ARRAY) {
+                    Variables.setConstant(name, value);
                 } else throw new TypeException(
-                        Types.typeToString(expression.eval().type()) + " doesnt match string");
-                break;
-            case NUMBER:
-                if (expression.eval().type() == Types.NUMBER) {
-                    Variables.setConstant(name,
-                            new NumberValue(expression.eval().asNumber()));
-                } else throw new TypeException(
-                        Types.typeToString(expression.eval().type()) + " doesnt match number");
+                        Types.typeToString(value.type()) + " doesnt match array");
                 break;
             case BOOLEAN:
-                if (expression.eval().type() == Types.BOOLEAN) {
-                    Variables.setConstant(name,
-                            new BooleanValue(Boolean.TRUE || Boolean.FALSE));
+                if (value.type() == Types.BOOLEAN) {
+                    Variables.setConstant(name, value);
                 } else throw new TypeException(
-                        Types.typeToString(expression.eval().type()) + " doesnt match boolean");
+                        Types.typeToString(value.type()) + " doesnt match boolean");
+                break;
+            case CHAR:
+                if (value.type() == Types.CHARACTER) {
+                    Variables.setConstant(name,
+                            new CharacterValue(value.asString().charAt(0)));
+                } else throw new TypeException(
+                        Types.typeToString(value.type()) + " doesnt match character");
+                break;
+            case FUNCTION:
+                if (value.type() == Types.FUNCTION) {
+                    Variables.setConstant(name, value);
+                } else throw new TypeException(
+                        Types.typeToString(value.type()) + " doesnt match function");
+                break;
+            case MAP:
+                if (value.type() == Types.MAP) {
+                    Variables.setConstant(name, value);
+                } else throw new TypeException(
+                        Types.typeToString(value.type()) + " doesnt match map");
+                break;
+                case NUMBER:
+                if (value.type() == Types.NUMBER) {
+                    Variables.setConstant(name, value);
+                } else throw new TypeException(
+                        Types.typeToString(value.type()) + " doesnt match number");
+                break;
+            case STRING:
+                if (value.type() == Types.STRING) {
+                    Variables.setConstant(name, value);
+                } else throw new TypeException(
+                        Types.typeToString(value.type()) + " doesnt match string");
                 break;
             case ANY:
-                Variables.setConstant(name, expression.eval());
+                Variables.setConstant(name, value);
                 break;
             default:
                 throw new TypeException(Types.typeToString(
-                        expression.eval().type()) + " doesnt support");
+                        value.type()) + " doesnt support");
         }
+        return value;
     }
 
     @Override
@@ -69,6 +97,6 @@ public final class DeclareConstStatement implements Statement {
 
     @Override
     public String toString() {
-        return String.format("const %s = %s" , name, expression);
+        return String.format("const %s: %s = %s" , name, type, expression);
     }
 }

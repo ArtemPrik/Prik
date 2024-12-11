@@ -14,7 +14,7 @@ patterns = [
   "\u001b[36m"
 ]
 
-func drawTree() {
+def drawTree() {
     println(sprintf(green))
 
     for (i = 1, i < 15, i += 2) {
@@ -33,7 +33,7 @@ func drawTree() {
     }
 }
 
-func HappyNewYear() {
+def HappyNewYear() {
     pattern = patterns[rand(0, patterns.length)]
 
     print(sprintf(pattern))

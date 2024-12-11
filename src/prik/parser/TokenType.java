@@ -9,6 +9,7 @@ public enum TokenType {
     HEX_NUMBER,
     WORD,
     TEXT,
+    CHAR,
     
     LONG_NUMBER,
     HEX_LONG_NUMBER,
@@ -22,12 +23,13 @@ public enum TokenType {
     TRUE,
     FALSE,
     
-    INTEGER_DATA,
-    DOUBLE_DATA,
-    FLOAT_DATA,
+    ARRAY_DATA,
+    BOOLEAN_DATA,
+    CHAR_DATA,
+    ANONIMOUS_FN_DATA,
+    MAP_DATA,
     NUMBER_DATA,
     STRING_DATA,
-    BOOLEAN_DATA,
     ANY_DATA,
     
     PRINT,
@@ -55,14 +57,16 @@ public enum TokenType {
     
     NULL,
     REPEAT,
+    ASSERT,
     READLN,
     VAR,
     CONST,
     MACRO,
     LIB,
-    ARROW,
+    ENUM,
     
-    ASSERT,
+    
+    ARROW,
     
     PLUS,
     MINUS, 

@@ -96,7 +96,7 @@ public class PrintVisitor implements ResultVisitor<StringBuilder, StringBuilder>
         newLine(t);
 
         increaseIndent();
-        for (AssignmentExpression field : s.fields) {
+        for (Statement field : s.fields) {
             field.accept(this, t);
         }
         for (FunctionDefineStatement method : s.methods) {

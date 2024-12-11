@@ -42,7 +42,7 @@ public final class StringValue implements Value {
                         return new FunctionValue((Value... args) -> {
                             Arguments.check(1, args.length);
                             StringBuilder buffer = new StringBuilder();
-                            for (int i = 1; i < args[0].asInt() +1; i++) {
+                            for (int i = 1; i < args[0].asInt() + 1; i++) {
                                 buffer.append(value);
                             }
                             return new StringValue(buffer.toString());
@@ -90,10 +90,6 @@ public final class StringValue implements Value {
     
     public int length() {
         return value.length();
-    }
-    
-    public static StringValue fromBoolean(boolean b) {
-        return b ? new StringValue("true") : new StringValue("false");
     }
     
     @Override

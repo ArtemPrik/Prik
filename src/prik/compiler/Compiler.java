@@ -14,7 +14,7 @@ public class Compiler {
         try {
             File output = new File("output.asclii");
             pw = new PrintWriter(output);
-            for (String s : input.split("\\ ")) {
+            for (String s : input.split("\\+")) {
                 pw.println(s);
             }
         } catch (FileNotFoundException ex) {
