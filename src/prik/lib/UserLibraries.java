@@ -23,7 +23,7 @@ public class UserLibraries {
     }
 
     public static prik.parser.ast.Statement get(String name) {
-        return (prik.parser.ast.Statement) libraries.get(name);
+        return libraries.get(name);
     }
     
     

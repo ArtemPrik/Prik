@@ -506,7 +506,7 @@ public final class Lexer {
         types.set("int", args -> NumberValue.of(args[0].asInt()));
         types.set("long", args -> NumberValue.of((long)args[0].asNumber()));
         types.set("float", args -> NumberValue.of((float)args[0].asInt()));
-        Functions.set("double", args -> NumberValue.of(args[0].asNumber()));
+        Functions.set("digit", args -> NumberValue.of(args[0].asNumber()));
         
         types.set("isString", (Value... args) -> {
             prik.lib.Arguments.check(1, args.length);

@@ -24,6 +24,7 @@ public class EnumDeclarationStatement implements Statement {
 
     @Override
     public void accept(Visitor visitor) {
+        visitor.visit(this);
     }
 
     @Override

@@ -89,8 +89,7 @@ public final class ImportStatement extends InterruptableNode implements Statemen
                         Variables.setConstant(newName, Variables.get(modName));
                         Variables.remove(modName);
                     }
-                } 
-                else if (modNamePack.startsWith("lang")) {
+                } else if (modNamePack.startsWith("lang")) {
                     modName = modNamePack.substring(5);
                     if (Variables.isExists(modName)) {
                         Variables.setConstant(newName, Variables.get(modName));

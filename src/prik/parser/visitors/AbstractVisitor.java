@@ -85,6 +85,10 @@ public abstract class AbstractVisitor implements Visitor {
     }
 
     @Override
+    public void visit(EnumDeclarationStatement s) {
+    }
+
+    @Override
     public void visit(ExprStatement s) {
         s.expr.accept(this);
     }

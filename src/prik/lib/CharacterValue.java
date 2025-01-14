@@ -18,8 +18,7 @@ public class CharacterValue implements Value {
 
     @Override
     public String asString() {
-//        return Character.toString(value);
-        return String.format("%s[%s]",Character.toString(value), NumberValue.of(value).asString());
+        return Character.toString(value);
     }
 
     @Override

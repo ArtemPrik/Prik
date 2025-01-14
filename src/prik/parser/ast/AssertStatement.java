@@ -1,6 +1,5 @@
 package prik.parser.ast;
 
-import java.io.UnsupportedEncodingException;
 import prik.exceptions.PrikException;
 
 
@@ -10,14 +9,24 @@ import prik.exceptions.PrikException;
  */
 public final class AssertStatement implements Statement {
     public final Expression condition;
+    public String message;
 
     public AssertStatement(Expression expression) {
         this.condition = expression;
+        this.message = null;
+    }
+
+    public AssertStatement(Expression condition, String message) {
+        this.condition = condition;
+        this.message = message;
     }
     
     @Override
     public void execute() {
         if (condition.eval().asNumber() != 1) {
+            if (message != null) {
+                throw new PrikException("AssertionError", message);
+            }
             throw new PrikException("AssertionError", "Assertion failed: " + condition);
         }
     }

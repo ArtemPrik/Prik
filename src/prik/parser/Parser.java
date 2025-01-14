@@ -175,7 +175,7 @@ public class Parser {
             return repeatStatement();
         }
         if (match(TokenType.ASSERT)) {
-            return new AssertStatement(expression());
+            return assertStatement();
         }
         if (match(TokenType.READLN)) {
             return new ReadlnStatement();
@@ -295,14 +295,18 @@ public class Parser {
         consume(TokenType.COLON);
         if (match(TokenType.ANONIMOUS_FN_DATA)) {
             type = prik.lib.Datatypes.FUNCTION;
-        }else if (match(TokenType.NUMBER_DATA)) {
-            type = prik.lib.Datatypes.NUMBER;
-        } else if (match(TokenType.STRING_DATA)) {
-            type = prik.lib.Datatypes.STRING;
+        } else if (match(TokenType.ARRAY_DATA)) {
+            type = prik.lib.Datatypes.ARRAY;
         } else if (match(TokenType.BOOLEAN_DATA)) {
             type = prik.lib.Datatypes.BOOLEAN;
         } else if (match(TokenType.CHAR_DATA)) {
             type = prik.lib.Datatypes.CHAR;
+        } else if (match(TokenType.MAP_DATA)) {
+            type = prik.lib.Datatypes.MAP;
+        } else if (match(TokenType.NUMBER_DATA)) {
+            type = prik.lib.Datatypes.NUMBER;
+        } else if (match(TokenType.STRING_DATA)) {
+            type = prik.lib.Datatypes.STRING;
         } else if (match(TokenType.ANY_DATA)) {
             type = prik.lib.Datatypes.ANY;
         } else {
@@ -322,6 +326,15 @@ public class Parser {
             enumMap.set(en, new StringValue(en));
         }
         return new EnumDeclarationStatement(name, enumMap);
+    }
+    
+    private Statement assertStatement() {
+        final Expression expression = expression();
+        if (match(TokenType.COMMA)) {
+            return new AssertStatement(expression, consume(TokenType.TEXT).getText());
+        } else {
+            return new AssertStatement(expression);
+        }
     }
     
     private Statement repeatStatement() {
@@ -557,7 +570,7 @@ public class Parser {
         // class Name {
         //   var x = 123
         //   var str = ""
-        //   def method() = str
+        //   def method() -> str
         // }
         final String name = consume(TokenType.WORD).getText();
         final ClassDeclarationStatement classDeclaration = new ClassDeclarationStatement(name);
@@ -991,10 +1004,14 @@ public class Parser {
     }
 
     private Number createNumber(String text, int radix) {
+        if (text.contains(".")) {
+            return Double.parseDouble(text);
+        }
+        
         try {
             return Integer.parseInt(text, radix);
         } catch (NumberFormatException nfe) {
-            return Double.parseDouble(text);
+            return Long.parseLong(text);
         }
     }
     

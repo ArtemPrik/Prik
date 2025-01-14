@@ -79,13 +79,13 @@ public final class StringValue implements Value {
                         break;
                 }
             case Types.NUMBER:
-                return get(propertyValue.asInt());
+                return new CharacterValue(get(propertyValue.asInt()));
         }
         throw new RuntimeException("Unkown property: " + prop);
     }
     
-    public Value get(int index) {
-        return new StringValue(Character.toString(value.charAt(index)));
+    public char get(int index) {
+        return value.charAt(index);
     }
     
     public int length() {
